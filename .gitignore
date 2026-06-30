@@ -26,10 +26,11 @@ work/*
 *.tif
 *.tiff
 
-# Godot import cache & large imported assets
+# Godot import cache & (re)generated assets. The glb and the textures Godot
+# extracts from it are rebuilt by stage 4 from work/mesh/ — not git's job.
 godot/.godot/
-godot/assets/*.glb
-godot/assets/*.obj
+godot/assets/*
+!godot/assets/.gitkeep
 
 # Python
 .venv/
