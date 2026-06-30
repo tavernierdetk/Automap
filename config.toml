@@ -1,0 +1,22 @@
+# Automap tunables. These are the memory guardrails for a 16 GB M4 — every heavy
+# stage reads its knobs from here. Override per-run via CLI flags where exposed.
+
+[frames]
+# Stage 1 — frame extraction (scripts/01_extract_frames.py)
+fps = 1.0                  # frames to extract per second of video
+max_frames = 120           # hard cap after culling (memory guardrail for stage 2)
+sharpness_threshold = 80.0 # min variance-of-Laplacian; frames below are culled. 0 disables
+resize = 2048              # longest-edge px for extracted frames (downscale guardrail). 0 = native
+jpeg_quality = 90          # output JPEG quality (1-100)
+
+[odm]
+# Stage 2 — OpenDroneMap (scripts/02_run_odm.sh). Defaults proven by ADR 0001:
+# 32 imgs -> textured .obj in 8m30s, peak 2.81 GiB of a 12 GiB Docker VM.
+feature_quality = "medium"
+pc_quality = "low"
+max_concurrency = 4
+end_with = "mvs_texturing"  # stop at the textured mesh; skip ortho/DEM for the mesh-first path
+
+[mesh]
+# Stage 3 — Blender headless cleanup (used later)
+decimate_ratio = 0.25      # target fraction of faces to keep
