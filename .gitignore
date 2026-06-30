@@ -32,6 +32,10 @@ godot/.godot/
 godot/assets/*
 !godot/assets/.gitkeep
 
+# Generated scene registry — points to local, regenerated glbs (format documented
+# in docs/explorations/named-ingestion.md). Local state, like work/.
+scenes/manifest.json
+
 # Python
 .venv/
 __pycache__/
