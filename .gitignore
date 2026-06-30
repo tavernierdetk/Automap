@@ -1,0 +1,41 @@
+# ---------------------------------------------------------------------------
+# Automap .gitignore
+# The #1 rule: drone footage (~1.24 GB) and all pipeline intermediates NEVER
+# enter git. Only the toolchain (scripts, config, docs, Godot project) is
+# version-controlled.
+# ---------------------------------------------------------------------------
+
+# Input footage and all stage intermediates
+input/*
+work/*
+
+# ...but keep the empty drop-zones tracked
+!input/.gitkeep
+!work/.gitkeep
+
+# Large 3D / media binaries, wherever they land
+*.mp4
+*.mov
+*.srt
+*.obj
+*.glb
+*.gltf
+*.ply
+*.las
+*.laz
+*.tif
+*.tiff
+
+# Godot import cache & large imported assets
+godot/.godot/
+godot/assets/*.glb
+godot/assets/*.obj
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# macOS
+.DS_Store
