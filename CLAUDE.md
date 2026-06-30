@@ -41,6 +41,17 @@ point; you run each stage and inspect its artifact before the next.
 plus media/3D binary extensions. The park clip is ~1.24 GB. Verify `git status` is
 clean of it before any commit.
 
+## Dev setup / how to run
+- Python venv: **`.venv`** (Python 3.13, native arm64; gitignored). Deps:
+  `opencv-python`, `piexif`, `typer`, `pytest`. Recreate with
+  `python3.13 -m venv .venv && .venv/bin/pip install -e ".[dev]"`.
+- Tests: `.venv/bin/python -m pytest -q` (stage-1 tests self-generate a synthetic
+  clip; nothing binary is committed).
+- Stage 1: `.venv/bin/python scripts/01_extract_frames.py` (reads `input/`, writes
+  `work/frames/`; flags override `config.toml`).
+- `samples/frames/` is a committed fallback frame set (downscaled Sheffield Park 3,
+  BSD) so stages 2+ can run before real footage exists.
+
 ## Prerequisites (status as of 2026-06-30)
 - ffmpeg ✅ (arm64, homebrew)
 - Docker ✅ running — **VM allocated only ~7.65 GB / 10 CPUs**; may need bumping for ODM
