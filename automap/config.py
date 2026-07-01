@@ -33,10 +33,17 @@ class MeshConfig:
 
 
 @dataclass
+class TerrainConfig:
+    grid_resolution: int = 256       # grid cells on the long edge
+    z_exaggeration: float = 1.0      # vertical scale multiplier
+
+
+@dataclass
 class Config:
     frames: FramesConfig
     odm: OdmConfig
     mesh: MeshConfig
+    terrain: TerrainConfig
 
 
 def _build(cls, data: dict):
@@ -55,4 +62,5 @@ def load_config(path: str | Path = "config.toml") -> Config:
         frames=_build(FramesConfig, data.get("frames", {})),
         odm=_build(OdmConfig, data.get("odm", {})),
         mesh=_build(MeshConfig, data.get("mesh", {})),
+        terrain=_build(TerrainConfig, data.get("terrain", {})),
     )

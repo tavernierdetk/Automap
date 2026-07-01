@@ -21,7 +21,9 @@ class ScenePaths:
     odm: Path         # work/<name>/odm
     mesh_dir: Path    # work/<name>/mesh
     glb: Path         # work/<name>/mesh/<name>.glb
-    obj: Path         # ODM's textured mesh, stage-3 input
+    obj: Path         # ODM's textured mesh, mesh-first stage-3 input
+    dtm: Path         # ODM's bare-ground DEM, terrain-first stage-3b input
+    ortho: Path       # ODM's orthophoto, terrain-first ground texture
 
 
 def scene_paths(root: str | Path, name: str) -> ScenePaths:
@@ -34,6 +36,8 @@ def scene_paths(root: str | Path, name: str) -> ScenePaths:
         mesh_dir=base / "mesh",
         glb=base / "mesh" / f"{name}.glb",
         obj=base / "odm" / "odm_texturing" / "odm_textured_model_geo.obj",
+        dtm=base / "odm" / "odm_dem" / "dtm.tif",
+        ortho=base / "odm" / "odm_orthophoto" / "odm_orthophoto.tif",
     )
 
 

@@ -16,7 +16,14 @@ feature_quality = "medium"
 pc_quality = "low"
 max_concurrency = 4
 end_with = "mvs_texturing"  # stop at the textured mesh; skip ortho/DEM for the mesh-first path
+dem_resolution = 5          # cm/px for DSM/DTM (terrain mode only)
+orthophoto_resolution = 8   # cm/px for the orthophoto (terrain mode only)
 
 [mesh]
-# Stage 3 — Blender headless cleanup (used later)
+# Stage 3 — Blender headless cleanup (mesh-first path)
 decimate_ratio = 0.25      # target fraction of faces to keep
+
+[terrain]
+# Stage 3b — terrain-first path (DEM -> grid mesh). 2.5D; no cliffs/overhangs.
+grid_resolution = 256      # grid cells on the long edge
+z_exaggeration = 1.0       # vertical scale multiplier

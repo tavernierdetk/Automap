@@ -50,6 +50,7 @@ def main(
     srt: Optional[Path] = typer.Option(None, "--srt", help="GPS sidecar (else sibling auto-detect)"),
     from_stage: str = typer.Option("frames", "--from", help="Start at: frames|odm|mesh"),
     stop_after: str = typer.Option("mesh", "--stop-after", help="Stop after: frames|odm|mesh"),
+    terrain: bool = typer.Option(False, "--terrain", help="Terrain-first: heightmap ground (2.5D) instead of the scan mesh"),
     config: Path = typer.Option(ROOT / "config.toml", "--config", help="Tunables"),
     fps: Optional[float] = typer.Option(None, help="Override extraction fps"),
     max_frames: Optional[int] = typer.Option(None, help="Override frame cap"),
@@ -97,31 +98,39 @@ def main(
     if "odm" in stages:
         if not list(sp.frames.glob("*.jpg")):
             raise typer.BadParameter(f"no frames in {sp.frames} - run the frames stage first")
-        log("stage 2: OpenDroneMap (this is the slow one)")
-        r = subprocess.run(
-            ["bash", str(ROOT / "scripts" / "02_run_odm.sh"),
-             "--frames", str(sp.frames), "--output", str(sp.odm), "--config", str(config)],
-            check=False,
-        )
+        log(f"stage 2: OpenDroneMap{' (+DEM/ortho for terrain)' if terrain else ''} (this is the slow one)")
+        cmd = ["bash", str(ROOT / "scripts" / "02_run_odm.sh"),
+               "--frames", str(sp.frames), "--output", str(sp.odm), "--config", str(config)]
+        if terrain:
+            cmd.append("--terrain")
+        r = subprocess.run(cmd, check=False)
         if r.returncode != 0:
             raise typer.Exit(code=r.returncode)
 
-    # --- Stage 3: mesh -> glb ---
+    # --- Stage 3: mesh -> glb  (terrain-first uses 3b instead) ---
     if "mesh" in stages:
-        if not sp.obj.exists():
-            raise typer.BadParameter(f"ODM mesh missing: {sp.obj} - run the odm stage first")
         sp.mesh_dir.mkdir(parents=True, exist_ok=True)
-        log("stage 3: Blender mesh cleanup -> glb")
-        r = subprocess.run(
-            [sys.executable, str(ROOT / "scripts" / "03_mesh_to_glb.py"),
-             "--input", str(sp.obj), "--output", str(sp.glb)],
-            check=False,
-        )
+        if terrain:
+            for need in (sp.dtm, sp.ortho):
+                if not need.exists():
+                    raise typer.BadParameter(f"terrain input missing: {need} - run the odm stage with --terrain first")
+            log("stage 3b: DEM -> terrain glb")
+            cmd = [sys.executable, str(ROOT / "scripts" / "03b_dem_to_terrain.py"),
+                   "--dtm", str(sp.dtm), "--ortho", str(sp.ortho),
+                   "--output", str(sp.glb), "--config", str(config)]
+        else:
+            if not sp.obj.exists():
+                raise typer.BadParameter(f"ODM mesh missing: {sp.obj} - run the odm stage first")
+            log("stage 3: Blender mesh cleanup -> glb")
+            cmd = [sys.executable, str(ROOT / "scripts" / "03_mesh_to_glb.py"),
+                   "--input", str(sp.obj), "--output", str(sp.glb)]
+        r = subprocess.run(cmd, check=False)
         if r.returncode != 0:
             raise typer.Exit(code=r.returncode)
 
     # --- Register in the manifest ---
-    entry = {"updated": datetime.now().isoformat(timespec="seconds")}
+    entry = {"updated": datetime.now().isoformat(timespec="seconds"),
+             "kind": "terrain" if terrain else "mesh"}
     if video is not None:
         entry["source_video"] = str(video)
     if frame_count is not None:

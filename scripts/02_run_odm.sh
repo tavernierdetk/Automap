@@ -14,12 +14,14 @@ FRAMES_DIR="$ROOT/work/frames"
 OUT_DIR="$ROOT/work/odm"
 CONFIG="$ROOT/config.toml"
 IMAGE="opendronemap/odm:latest"
+TERRAIN=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --frames) FRAMES_DIR="$2"; shift 2;;
     --output) OUT_DIR="$2"; shift 2;;
     --config) CONFIG="$2"; shift 2;;
+    --terrain) TERRAIN=1; shift;;   # also produce DSM/DTM + orthophoto for terrain-first
     -h|--help) sed -n '2,12p' "$0"; exit 0;;
     *) echo "unknown arg: $1" >&2; exit 2;;
   esac
@@ -34,8 +36,17 @@ emit("feature_quality", "medium")
 emit("pc_quality", "low")
 emit("max_concurrency", 4)
 emit("end_with", "mvs_texturing")
+emit("dem_resolution", 5)
+emit("orthophoto_resolution", 8)
 PY
 )"
+
+# Terrain-first also needs the elevation model + orthophoto; run through to it.
+terrain_arg=()
+if [[ "$TERRAIN" == "1" ]]; then
+  END_WITH="odm_orthophoto"
+  terrain_arg=(--dsm --dtm --dem-resolution "$DEM_RESOLUTION" --orthophoto-resolution "$ORTHOPHOTO_RESOLUTION")
+fi
 
 # --- assemble an ODM project: <OUT_DIR>/images/ + optional geo.txt ---
 shopt -s nullglob
@@ -72,14 +83,21 @@ docker run -i --rm --platform linux/amd64 \
   --max-concurrency "$MAX_CONCURRENCY" \
   --end-with "$END_WITH" \
   ${geo_arg[@]+"${geo_arg[@]}"} \
+  ${terrain_arg[@]+"${terrain_arg[@]}"} \
   code
 
-# --- report the textured mesh ---
-obj="$(find "$OUT_DIR/odm_texturing" -maxdepth 1 -iname '*.obj' 2>/dev/null | head -1 || true)"
+# --- report outputs ---
 echo "[stage 2] done in ${SECONDS}s ($((SECONDS/60))m$((SECONDS%60))s)"
+obj="$(find "$OUT_DIR/odm_texturing" -maxdepth 1 -iname '*.obj' 2>/dev/null | head -1 || true)"
 if [[ -n "$obj" ]]; then
   echo "[stage 2] textured mesh: $obj"
 else
   echo "[stage 2] WARNING: no textured .obj found under $OUT_DIR/odm_texturing" >&2
   exit 1
+fi
+if [[ "$TERRAIN" == "1" ]]; then
+  for f in odm_dem/dtm.tif odm_dem/dsm.tif odm_orthophoto/odm_orthophoto.tif; do
+    [[ -f "$OUT_DIR/$f" ]] && echo "[stage 2] terrain: $OUT_DIR/$f" \
+      || echo "[stage 2] WARNING: expected $f missing" >&2
+  done
 fi
