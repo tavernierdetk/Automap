@@ -1,7 +1,10 @@
 # Exploration — Terrain-first branch (DEM → Godot terrain)
 
-**Status:** De-risk probe **done** (empirical). Branch not built. This records what
-the ODM elevation products actually look like and what building the branch involves.
+**Status:** **BUILT (Option A).** De-risk probe done, then implemented:
+`02_run_odm.sh --terrain` produces the DEM/orthophoto, `scripts/03b_dem_to_terrain.py`
+turns the DTM + orthophoto into a textured grid-mesh `.glb`, and `ingest.py --terrain`
+orchestrates it (manifest `kind: terrain`). Terrain3D (Option B) remains a future
+upgrade. This doc records what the elevation products look like and the design.
 
 **Idea:** instead of decimating the lumpy textured scan mesh (mesh-first), build a
 clean **heightmap terrain** from ODM's elevation model, textured with the
