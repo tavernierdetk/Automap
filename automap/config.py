@@ -39,11 +39,19 @@ class TerrainConfig:
 
 
 @dataclass
+class FeaturesConfig:
+    min_height: float = 2.0          # min canopy height (m) to count as a tree
+    exg_threshold: float = 0.05      # min excess-green index (vegetation)
+    min_spacing_m: float = 3.0       # min spacing between detected tree tops
+
+
+@dataclass
 class Config:
     frames: FramesConfig
     odm: OdmConfig
     mesh: MeshConfig
     terrain: TerrainConfig
+    features: FeaturesConfig
 
 
 def _build(cls, data: dict):
@@ -63,4 +71,5 @@ def load_config(path: str | Path = "config.toml") -> Config:
         odm=_build(OdmConfig, data.get("odm", {})),
         mesh=_build(MeshConfig, data.get("mesh", {})),
         terrain=_build(TerrainConfig, data.get("terrain", {})),
+        features=_build(FeaturesConfig, data.get("features", {})),
     )

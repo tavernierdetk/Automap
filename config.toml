@@ -27,3 +27,9 @@ decimate_ratio = 0.25      # target fraction of faces to keep
 # Stage 3b — terrain-first path (DEM -> grid mesh). 2.5D; no cliffs/overhangs.
 grid_resolution = 256      # grid cells on the long edge
 z_exaggeration = 1.0       # vertical scale multiplier
+
+[features]
+# Stage 5 — tree detection (CHM + excess-green on the orthophoto)
+min_height = 2.0           # min canopy height (m) to count as a tree
+exg_threshold = 0.05       # min excess-green vegetation index
+min_spacing_m = 3.0        # min spacing between detected tree tops

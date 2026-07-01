@@ -15,6 +15,9 @@ dependencies = [
     "rasterio>=1.4",
     "trimesh>=4.0",
     "pillow>=10.0",
+    # feature detection + presentation (stages 5-6)
+    "scipy>=1.11",
+    "rtree>=1.0",
 ]
 
 [project.optional-dependencies]
