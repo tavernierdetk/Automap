@@ -183,27 +183,42 @@ flowchart LR
 - **`entropy` consumes everything and feeds nothing** — the dependency
   direction that keeps the platform honest.
 
-## Decisions to lock (the commenting agenda)
+## Decisions locked (2026-07-08)
 
-- [ ] **Module boundaries**: is the §10 repo split right? (e.g. does
-  `narrative` start inside `godot-runtime`? is `asset-factory` one repo or
-  per-family?)
-- [ ] **World model scope**: single per-scene document vs. game-scoped store
-  with per-scene views (brief §7.8).
-- [ ] **IFC-complete building schema**: which attributes are mandatory at
-  which LOD tier?
-- [ ] **Spec registry mechanics**: JSON Schema everywhere? codegen targets?
-  version-pinning convention between repos?
-- [ ] **The `gate` placement**: are validators a shared service (as drawn)
-  or embedded per-module?
-- [ ] **2D/3D duality** (brief §7.3): is `b_2d` a first-class backend of the
-  same asset library, or a separate 2D track?
-- [ ] **Where manual editing enters**: Godot editor plugins vs. spec-file
-  editing vs. dedicated tools — currently implicit.
-- [ ] **Naming**: module names above are placeholders; lock them when repos
-  are created.
+- [x] **Module boundaries**: only `platform-specs` earns a repo today
+  (`Cowork/platform-specs`). Everything else incubates where it lives:
+  fusion engine + worldmodel in Automap, narrative inside `godot/`, the
+  spec cascade in PixelAssetCreator until extracted. A module earns a repo
+  when it has an owner-session, a spec boundary, and a consumer (brief §10
+  rule 2, applied literally).
+- [x] **World model scope**: per-scene world-model documents (features.json
+  grown up, **stable feature IDs from v1**) + a thin game-level manifest
+  listing scenes and persistent state. Promote to a game-scoped store only
+  when cross-scene reconciliation actually appears.
+- [x] **IFC-complete building schema**: mandatory attributes per LOD tier
+  are decided inside the schema-writing work (worldmodel v1 + ifc-adapter),
+  not before it. Deferred deliberately, not forgotten.
+- [x] **Spec registry mechanics**: JSON Schema 2020-12; semver carried in
+  each schema's `$id`; one Python validator library in `platform-specs`.
+  GDScript mirrors stay hand-written until schema churn proves codegen is
+  worth building. No TS target until a TS consumer exists.
+- [x] **The `gate` placement**: validators are a shared **library**
+  (shipped by `platform-specs`), invoked per-module — not a service. The
+  diagram's `gate` box is a pattern, not a deployable.
+- [x] **2D/3D duality**: 3D-first, one runtime, one scene model. Pixel-art
+  is a visual-identity style mask (low-res render + palette quantize +
+  dither). PixelAssetCreator's compositor/quantizer survive as 2D **asset**
+  backends (sprites, icons, tilesets), not a second game runtime.
+- [x] **Where manual editing enters**: spec-file editing is the v1
+  mechanism (diffable, reviewable, survives regeneration as a top-priority
+  source). Godot editor plugins are a later convenience layer over the same
+  files.
+- [x] **Naming**: module names stay placeholders; each locks when its repo
+  is created. First locked name: `platform-specs`.
 
 ## Changelog
 
+- 2026-07-08 — v0.2: all eight agenda decisions locked (session review);
+  `platform-specs` bootstrap greenlit.
 - 2026-07-08 — v0.1: initial diagram from the architecture brief (§2, §10,
   §11 statuses).
