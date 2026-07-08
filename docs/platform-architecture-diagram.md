@@ -48,10 +48,10 @@ flowchart LR
   end
 
   %% ==================== SPECS ====================
-  subgraph SPECS["platform-specs — schema registry (the shared center)"]
+  subgraph SPECS["platform-specs — schema registry (the shared center · repo LIVE)"]
     direction TB
-    reg["Versioned JSON Schemas<br/>validators · codegen (py/gd/ts)"]:::missing
-    vid["Visual identity spec<br/>palette · resolution · style masks"]:::partial
+    reg["Versioned JSON Schemas + validator lib<br/>founding four @1.0.0: scene-features ·<br/>visual-identity · game · character-profile<br/>(codegen deferred by decision)"]:::have
+    vid["Visual identity spec<br/>colors/transformers @1.0.0 ·<br/>resolution + style masks = v2"]:::partial
     gspec["Game spec<br/>scope · mechanics · difficulty envelope"]:::missing
   end
 
@@ -218,6 +218,9 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-08 — v0.3: `platform-specs` repo bootstrapped at
+  `Cowork/platform-specs` (founding four schemas transcribed + validator lib,
+  12 tests incl. the real phare game.json) — `reg` flips missing → have.
 - 2026-07-08 — v0.2: all eight agenda decisions locked (session review);
   `platform-specs` bootstrap greenlit.
 - 2026-07-08 — v0.1: initial diagram from the architecture brief (§2, §10,
