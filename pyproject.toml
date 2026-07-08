@@ -18,6 +18,7 @@ dependencies = [
     # feature detection + presentation (stages 5-6)
     "scipy>=1.11",
     "rtree>=1.0",
+    "laspy[lazrs]>=2.5",  # point-cloud support gate (stage 5)
 ]
 
 [project.optional-dependencies]

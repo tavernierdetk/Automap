@@ -38,8 +38,15 @@ emit("max_concurrency", 4)
 emit("end_with", "mvs_texturing")
 emit("dem_resolution", 5)
 emit("orthophoto_resolution", 8)
+emit("auto_boundary", True)
 PY
 )"
+
+# Crop to the camera footprint (drops far-away sea/horizon outliers).
+boundary_arg=()
+if [[ "$AUTO_BOUNDARY" == "True" ]]; then
+  boundary_arg=(--auto-boundary)
+fi
 
 # Terrain-first also needs the elevation model + orthophoto; run through to it.
 terrain_arg=()
@@ -84,6 +91,7 @@ docker run -i --rm --platform linux/amd64 \
   --end-with "$END_WITH" \
   ${geo_arg[@]+"${geo_arg[@]}"} \
   ${terrain_arg[@]+"${terrain_arg[@]}"} \
+  ${boundary_arg[@]+"${boundary_arg[@]}"} \
   code
 
 # --- report outputs ---

@@ -31,6 +31,31 @@ app = typer.Typer(add_completion=False)
 # as more entries; transformers stay the same.
 IDENTITIES = {
     "placeholder": VisualIdentity(name="placeholder"),
+    # Madelinot postcard: site-true Iles-de-la-Madeleine — bright painted
+    # houses, golden-green grass, pale sand cliffs, teal sea.
+    "madelinot": VisualIdentity(
+        name="madelinot",
+        transformers=["style_terrain", "instance_trees", "instance_buildings",
+                      "instance_roads", "instance_water"],
+        tree_kit="varied",
+        trunk_color=(0.36, 0.27, 0.18),
+        canopy_color=(0.23, 0.37, 0.20),          # wind-bent dark spruce green
+        building_details=True,
+        wall_color=(0.95, 0.93, 0.87),            # bright white-cream siding
+        trim_color=(0.98, 0.97, 0.94),
+        roof_saturation=1.6,                      # postcard-boost detected roofs
+        roof_palette=((0.78, 0.21, 0.18),         # painted red
+                      (0.18, 0.49, 0.28),         # painted green
+                      (0.89, 0.73, 0.24),         # painted yellow
+                      (0.20, 0.37, 0.64)),        # painted blue
+        road_color=(0.72, 0.69, 0.63),            # pale gravel
+        path_color=(0.62, 0.52, 0.38),
+        water_color=(0.18, 0.49, 0.55),           # teal
+        grass_color=(0.50, 0.64, 0.30),           # golden-green
+        cliff_color=(0.79, 0.66, 0.48),           # pale sand cliffs
+        sand_color=(0.87, 0.78, 0.60),
+        seafloor_color=(0.10, 0.30, 0.36),
+    ),
 }
 
 

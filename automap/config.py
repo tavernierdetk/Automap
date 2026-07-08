@@ -41,8 +41,32 @@ class TerrainConfig:
 @dataclass
 class FeaturesConfig:
     min_height: float = 2.0          # min canopy height (m) to count as a tree
+    max_height: float = 40.0         # taller than this = reconstruction junk
     exg_threshold: float = 0.05      # min excess-green index (vegetation)
+    gob_threshold: float = 0.02      # min green-over-blue index (water veto)
+    max_slope_deg: float = 30.0      # reject peaks on steeper bare ground (cliffs)
+    edge_margin_m: float = 3.0       # distrust pixels this close to no-data (melt zone)
     min_spacing_m: float = 3.0       # min spacing between detected tree tops
+    prominence_min: float = 2.0      # peak must stand this far above nearby low surface
+    prominence_radius_m: float = 12.0  # neighbourhood for the prominence reference
+    min_area_m2: float = 3.0         # smallest believable crown area
+    max_radius_m: float = 8.0        # crown radius cap
+    min_support_density: float = 1.0  # min reconstruction pts/m^2 under a crown
+    # building detection (clusters of building-classified cloud points)
+    bld_min_points: int = 25         # min points in a cluster
+    bld_min_height: float = 2.0      # cluster's p75 height-above-ground must reach this
+    bld_max_height: float = 25.0     # ridge taller than this = reconstruction junk
+    bld_min_area_m2: float = 12.0    # smallest believable footprint
+    bld_max_area_m2: float = 1500.0  # larger than this = melt sheet
+    bld_min_fill: float = 0.35       # cluster area / bounding-rect area (streak filter)
+    bld_min_side_m: float = 2.5      # bounding rect's short side (streak filter)
+    bld_max_blueness: float = 15.0   # median B-R above this = sea surface, not a roof
+    gable_delta: float = 1.0         # ridge - wall height (m) to call a roof gabled
+    # OSM overlay (buildings cross-check/backfill; needs network once, then cached)
+    osm_match_dist_m: float = 12.0   # centroid distance to pair a detection with OSM
+    osm_default_wall: float = 3.0    # wall height for untagged OSM-only buildings
+    osm_default_ridge: float = 5.0   # ridge height for untagged OSM-only buildings
+    osm_level_m: float = 3.0         # meters per building:levels tag level
 
 
 @dataclass

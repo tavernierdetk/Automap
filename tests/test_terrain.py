@@ -41,3 +41,59 @@ def test_z_exaggeration():
     h = np.array([[0.0, 0.0], [4.0, 4.0]])
     verts, _, _ = build_grid_mesh(h, pixel_size=1.0, z_exaggeration=2.0)
     assert np.isclose(verts[:, 1].max(), 8.0)          # 4 * 2.0
+
+
+def _coastal_world():
+    """Left half sea (hallucinated high + noisy), right half land at 5-8 m."""
+    H, W = 30, 40
+    h = np.full((H, W), 6.0)
+    h[:, 20:] += 2.0                                  # land plateau
+    rng = np.random.default_rng(2)
+    h[:, :20] = 12.0 + rng.uniform(-8, 8, (H, 20))    # sea smear above AND below land
+    water_like = np.zeros((H, W), bool)
+    water_like[:, :20] = True
+    valid = np.ones((H, W), bool)
+    return h, valid, water_like
+
+
+def test_flatten_sea_clamps_to_point_level():
+    from automap.terrain import flatten_sea
+    h, valid, water = _coastal_world()
+    rows, cols = np.mgrid[5:25, 2:18]                 # points on the sea
+    rc = np.column_stack([rows.ravel(), cols.ravel()])
+    elev = np.full(len(rc), 1.0)                      # true sea level 1 m
+    h2, sea, level = flatten_sea(h, valid, water, points_rc=rc, points_elev=elev)
+    assert level == 1.0
+    assert sea[:, :20].all() and not sea[:, 20:].any()
+    assert np.allclose(h2[sea], 1.0 - 0.2)
+    assert (h2[:, 20:] == h[:, 20:]).all()            # land untouched
+
+
+def test_flatten_sea_percentile_fallback_and_no_sea():
+    from automap.terrain import flatten_sea
+    h, valid, water = _coastal_world()
+    h2, sea, level = flatten_sea(h, valid, water)     # no points -> p5 of sea heights
+    assert sea.any() and level < 8.0
+    h3, sea3, level3 = flatten_sea(h, valid, np.zeros_like(water))
+    assert level3 is None and not sea3.any() and (h3 == h).all()
+
+
+def test_flatten_sea_raises_land_pits():
+    from automap.terrain import flatten_sea
+    h, valid, water = _coastal_world()
+    h[10, 30] = -6.0                                  # melt pit below sea level
+    rows, cols = np.mgrid[5:25, 2:18]
+    rc = np.column_stack([rows.ravel(), cols.ravel()])
+    h2, sea, level = flatten_sea(h, valid, water,
+                                 points_rc=rc, points_elev=np.full(len(rc), 1.0))
+    assert h2[10, 30] == 1.0 + 0.2                    # raised just above the sea
+    assert h2[5, 30] == h[5, 30]                      # normal land untouched
+
+
+def test_flatten_sea_ignores_interior_water():
+    from automap.terrain import flatten_sea
+    h = np.full((20, 20), 5.0)
+    water = np.zeros((20, 20), bool)
+    water[8:12, 8:12] = True                          # a blue pool/roof, not the sea
+    h2, sea, level = flatten_sea(h, np.ones((20, 20), bool), water)
+    assert level is None and not sea.any()

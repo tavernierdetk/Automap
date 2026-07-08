@@ -5,8 +5,12 @@ NEW styled glb; the faithful sources are never modified. The visual identity is
 *data* (asset/colour choices + an ordered transformer list), so changing the
 game's look means changing config, not code.
 
-First transformer: instance_trees - replace tree features with a procedural
-stand-in asset, placed on the terrain surface (raycast) and scaled by height.
+Transformers: instance_trees replaces tree features with a procedural
+stand-in asset, placed on the terrain surface (raycast) and scaled by height;
+instance_buildings extrudes detected footprints into wall-colored prisms with
+a flat slab or gable roof tinted by the roof color the detector sampled;
+instance_roads drapes road ribbons over the terrain; instance_water floats a
+sea plane at the level where the OSM coastline meets the terrain.
 """
 from __future__ import annotations
 
@@ -19,10 +23,27 @@ import trimesh
 @dataclass
 class VisualIdentity:
     name: str = "placeholder"
-    transformers: list[str] = field(default_factory=lambda: ["instance_trees"])
+    transformers: list[str] = field(
+        default_factory=lambda: [
+            "instance_trees", "instance_buildings", "instance_roads", "instance_water"])
     trunk_color: tuple = (0.43, 0.31, 0.19)     # rgb 0-1
     canopy_color: tuple = (0.24, 0.47, 0.22)
     tree_scale: float = 1.0
+    wall_color: tuple = (0.87, 0.83, 0.74)      # plaster-ish default walls
+    road_color: tuple = (0.27, 0.26, 0.27)      # asphalt
+    path_color: tuple = (0.52, 0.44, 0.33)      # dirt (footway/path/track)
+    water_color: tuple = (0.16, 0.34, 0.45)
+    # --- richer looks (defaults keep the placeholder identity unchanged) ---
+    tree_kit: str = "simple"                    # "simple" | "varied" (stacked forms + jitter)
+    building_details: bool = False              # chimney + door/window quads
+    trim_color: tuple = (0.95, 0.94, 0.90)      # door/window/chimney trim
+    roof_saturation: float = 1.0                # boost detected roof colors (>1 = punchier)
+    roof_palette: tuple = ()                    # colors for near-gray/unknown roofs
+    # terrain zone colors (style_terrain transformer; None fields unused otherwise)
+    grass_color: tuple = (0.50, 0.64, 0.30)
+    cliff_color: tuple = (0.79, 0.66, 0.48)
+    sand_color: tuple = (0.87, 0.78, 0.60)
+    seafloor_color: tuple = (0.10, 0.30, 0.36)
 
 
 def _flat_material(rgb):
@@ -32,28 +53,104 @@ def _flat_material(rgb):
     )
 
 
-def proxy_tree_parts(height: float, radius: float, identity: VisualIdentity):
-    """A low-poly stand-in tree (trunk cylinder + canopy cone), base at y=0.
+def _instance_rng(x: float, z: float) -> np.random.Generator:
+    """Deterministic per-instance RNG so re-runs style identically."""
+    return np.random.default_rng(hash((round(float(x), 2), round(float(z), 2))) & 0xFFFFFFFF)
 
-    Returns [trunk, canopy] as separate colored meshes so each keeps a flat
-    material that renders reliably in Godot.
+
+def _shift_color(rgb, hue: float = 0.0, value: float = 0.0):
+    """Nudge a 0-1 RGB color in hue/brightness (small, stylized variation)."""
+    import colorsys
+    h, s, v = colorsys.rgb_to_hsv(*[float(np.clip(c, 0, 1)) for c in rgb])
+    return colorsys.hsv_to_rgb((h + hue) % 1.0, s, float(np.clip(v + value, 0, 1)))
+
+
+def _saturate(rgb, factor: float):
+    """Scale saturation of a 0-1 RGB color (postcard-boost detected colors)."""
+    import colorsys
+    h, s, v = colorsys.rgb_to_hsv(*[float(np.clip(c, 0, 1)) for c in rgb])
+    return colorsys.hsv_to_rgb(h, float(np.clip(s * factor, 0, 1)), v)
+
+
+def _sea_flat_level(ground: trimesh.Trimesh) -> float | None:
+    """The sea level terrain.flatten_sea left behind: the dominant co-planar
+    vertex set. Only face-referenced vertices count (grid meshes park their
+    nodata vertices at a bogus y). None when no big flat exists."""
+    vy = np.round(ground.vertices[np.unique(ground.faces), 1], 2)
+    vals, counts = np.unique(vy, return_counts=True)
+    if counts.max() >= 500:
+        return float(vals[counts.argmax()])
+    return None
+
+
+_UP = None
+
+
+def _up():
+    global _UP
+    if _UP is None:
+        # trimesh primitives are built along +Z; rotate so the axis stands up (+Y).
+        _UP = trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0])
+    return _UP
+
+
+def proxy_tree_parts(height: float, radius: float, identity: VisualIdentity,
+                     rng: np.random.Generator | None = None):
+    """A low-poly stand-in tree, base at y=0, as separate colored meshes.
+
+    tree_kit "simple": trunk cylinder + one canopy cone (the placeholder look).
+    tree_kit "varied": conifers (tall/narrow -> 2-3 stacked cones) and
+    squat deciduous forms (stacked spheres), with per-instance size/hue
+    variation when an rng is provided.
     """
     h = max(height, 1.0) * identity.tree_scale
-    trunk_h, canopy_h = h * 0.3, h * 0.7
-    # trimesh primitives are built along +Z; rotate so the axis stands up (+Y).
-    up = trimesh.transformations.rotation_matrix(-np.pi / 2, [1, 0, 0])
+    r = max(radius, 0.8)
+    canopy_rgb = identity.canopy_color
+    if identity.tree_kit == "varied" and rng is not None:
+        h *= 1.0 + float(rng.uniform(-0.15, 0.15))
+        r *= 1.0 + float(rng.uniform(-0.15, 0.15))
+        canopy_rgb = _shift_color(canopy_rgb, hue=float(rng.uniform(-0.02, 0.02)),
+                                  value=float(rng.uniform(-0.05, 0.05)))
 
-    trunk = trimesh.creation.cylinder(radius=max(radius * 0.15, 0.1), height=trunk_h, sections=6)
-    trunk.apply_transform(up)
+    trunk_h = h * 0.25
+    trunk = trimesh.creation.cylinder(radius=max(r * 0.12, 0.1), height=trunk_h, sections=6)
+    trunk.apply_transform(_up())
     trunk.apply_translation([0, -trunk.bounds[0][1], 0])              # base -> y=0
-
-    canopy = trimesh.creation.cone(radius=max(radius, 0.8), height=canopy_h, sections=8)
-    canopy.apply_transform(up)
-    canopy.apply_translation([0, trunk_h - canopy.bounds[0][1], 0])   # base -> trunk top
-
     trunk.visual = trimesh.visual.TextureVisuals(material=_flat_material(identity.trunk_color))
-    canopy.visual = trimesh.visual.TextureVisuals(material=_flat_material(identity.canopy_color))
-    return [trunk, canopy]
+    parts = [trunk]
+
+    if identity.tree_kit != "varied":
+        canopy = trimesh.creation.cone(radius=r, height=h - trunk_h, sections=8)
+        canopy.apply_transform(_up())
+        canopy.apply_translation([0, trunk_h - canopy.bounds[0][1], 0])
+        canopy.visual = trimesh.visual.TextureVisuals(material=_flat_material(canopy_rgb))
+        return parts + [canopy]
+
+    canopy_h = h - trunk_h
+    if h >= 3.0 * r:                                                  # conifer: stacked cones
+        tiers, y = 3 if h > 6 else 2, trunk_h
+        for i in range(tiers):
+            frac = 1.0 - 0.28 * i
+            th = canopy_h / tiers * 1.45                              # tiers overlap
+            cone = trimesh.creation.cone(radius=r * frac, height=th, sections=8)
+            cone.apply_transform(_up())
+            cone.apply_translation([0, y - cone.bounds[0][1], 0])
+            cone.visual = trimesh.visual.TextureVisuals(
+                material=_flat_material(_shift_color(canopy_rgb, value=0.03 * i)))
+            parts.append(cone)
+            y += canopy_h / tiers * 0.72
+    else:                                                             # deciduous: stacked blobs
+        blobs = [(0.0, 0.0, trunk_h + canopy_h * 0.35, r),
+                 (r * 0.45, r * 0.2, trunk_h + canopy_h * 0.6, r * 0.7),
+                 (-r * 0.4, -r * 0.25, trunk_h + canopy_h * 0.7, r * 0.6)]
+        for bx, bz, by, br in blobs:
+            br = max(br, 0.5)
+            blob = trimesh.creation.icosphere(subdivisions=1, radius=br)
+            blob.apply_translation([bx, max(by, br + 0.05), bz])  # keep off the ground
+            blob.visual = trimesh.visual.TextureVisuals(
+                material=_flat_material(_shift_color(canopy_rgb, value=0.02)))
+            parts.append(blob)
+    return parts
 
 
 def _ground_heights(ground: trimesh.Trimesh, xz: np.ndarray) -> np.ndarray:
@@ -82,15 +179,272 @@ def instance_trees(scene: trimesh.Scene, ground: trimesh.Trimesh, features, iden
     for t, y in zip(trees, ys):
         if np.isnan(y):
             continue  # outside the terrain footprint
-        T = np.eye(4)
+        rng = _instance_rng(t["x"], t["z"])
+        T = trimesh.transformations.rotation_matrix(
+            float(rng.uniform(0, 2 * np.pi)), [0, 1, 0])
         T[:3, 3] = [t["x"], y, t["z"]]
-        for part in proxy_tree_parts(t["height"], t["radius"], identity):
+        for part in proxy_tree_parts(t["height"], t["radius"], identity, rng=rng):
             scene.add_geometry(part, transform=T)
         placed += 1
     return placed
 
 
-TRANSFORMERS = {"instance_trees": instance_trees}
+def _solid(vertices, faces, rgb) -> trimesh.Trimesh:
+    """A closed colored solid; winding repaired via face adjacency."""
+    m = trimesh.Trimesh(vertices=np.asarray(vertices, float),
+                        faces=np.asarray(faces, int), process=False)
+    trimesh.repair.fix_normals(m)
+    m.visual = trimesh.visual.TextureVisuals(material=_flat_material(rgb))
+    return m
+
+
+def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
+                         ridge_h: float, roof: str, roof_rgb, identity: VisualIdentity):
+    """A stand-in building: wall prism + roof solid, in world coordinates.
+
+    corners are 4 ordered (x, z) footprint corners; the body is sunk slightly
+    below y0 so slopes leave no gap under the walls.
+    """
+    c = np.asarray(corners, float)
+    sink = 0.5
+    wall_h = max(wall_h, 2.0)
+    base = np.column_stack([c[:, 0], np.full(4, y0 - sink), c[:, 1]])
+    top = base.copy()
+    top[:, 1] = y0 + wall_h
+    quads = [[i, (i + 1) % 4, 4 + (i + 1) % 4, 4 + i] for i in range(4)] + [[3, 2, 1, 0], [4, 5, 6, 7]]
+    body = _solid(np.vstack([base, top]),
+                  [t for a, b, d, e in quads for t in ([a, b, d], [a, d, e])],
+                  identity.wall_color)
+
+    parts = [body]
+    ridge_pts = None
+    if roof == "gable" and ridge_h > wall_h + 0.2:
+        # ridge along the long axis: above the midpoints of the two short edges
+        long01 = np.linalg.norm(c[1] - c[0]) >= np.linalg.norm(c[2] - c[1])
+        (sa, sb), (sc_, sd) = ((1, 2), (3, 0)) if long01 else ((0, 1), (2, 3))
+        t = top.copy()
+        ra = (t[sa] + t[sb]) / 2.0
+        rb = (t[sc_] + t[sd]) / 2.0
+        ra[1] = rb[1] = y0 + ridge_h
+        v = np.vstack([top, ra, rb])                 # 0-3 eaves, 4-5 ridge
+        faces = [[sa, sb, 4], [sc_, sd, 5],          # gable end triangles
+                 [sb, sc_, 5], [sb, 5, 4], [sd, sa, 4], [sd, 4, 5],  # slopes
+                 [3, 2, 1], [3, 1, 0]]               # underside (closes it)
+        parts.append(_solid(v, faces, roof_rgb))
+        ridge_pts = (ra, rb)
+    else:
+        slab = top.copy()
+        lid = top.copy()
+        lid[:, 1] += 0.2
+        parts.append(_solid(np.vstack([slab, lid]),
+                            [t for a, b, d, e in quads for t in ([a, b, d], [a, d, e])],
+                            roof_rgb))
+
+    if identity.building_details:
+        # chimney: a small trim-colored box near one end of the ridge (or slab)
+        if ridge_pts is not None:
+            spot = ridge_pts[0] * 0.7 + ridge_pts[1] * 0.3
+        else:
+            cx, cz = c.mean(axis=0)
+            spot = np.array([cx, y0 + wall_h + 0.2, cz])
+        chimney = trimesh.creation.box(extents=[0.6, 1.6, 0.6])
+        chimney.apply_translation([spot[0], spot[1] + 0.4, spot[2]])
+        chimney.visual = trimesh.visual.TextureVisuals(
+            material=_flat_material(identity.trim_color))
+        parts.append(chimney)
+        # door + window: thin trim-colored boxes proud of the longest wall
+        e01, e12 = c[1] - c[0], c[2] - c[1]
+        if np.linalg.norm(e01) >= np.linalg.norm(e12):
+            a, b, inward = c[0], c[1], c[2] - c[1]
+        else:
+            a, b, inward = c[1], c[2], c[3] - c[2]
+        out = -inward / max(np.linalg.norm(inward), 1e-9)
+        along = (b - a) / max(np.linalg.norm(b - a), 1e-9)
+        # rotate the box's local +X onto the wall direction in the XZ plane
+        wall_dir = np.arctan2(-along[1], along[0])
+        for frac, w, hgt, y_c in ((0.35, 0.9, 1.9, y0 + 0.95), (0.7, 1.0, 1.0, y0 + wall_h * 0.55)):
+            p = a + (b - a) * frac + out * 0.06
+            box = trimesh.creation.box(extents=[w, hgt, 0.12])
+            rot = trimesh.transformations.rotation_matrix(wall_dir, [0, 1, 0])
+            box.apply_transform(rot)
+            box.apply_translation([p[0], y_c, p[1]])
+            box.visual = trimesh.visual.TextureVisuals(
+                material=_flat_material(identity.trim_color))
+            parts.append(box)
+    return parts
+
+
+def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
+    blds = [f for f in features if f.get("type") == "building"]
+    if not blds:
+        return 0
+    placed = 0
+    for b in blds:
+        c = np.asarray(b["footprint"], float)
+        probe = np.vstack([c, c.mean(axis=0, keepdims=True)])
+        ys = _ground_heights(ground, probe)
+        if np.isnan(ys).all():
+            continue  # outside the terrain footprint
+        y0 = float(np.nanmin(ys))
+        rgb = [v / 255.0 for v in b.get("roof_color", (120, 120, 120))]
+        if identity.roof_palette and max(rgb) - min(rgb) < 0.08:
+            # near-gray (or OSM default): paint it from the identity's palette
+            rng = _instance_rng(*c.mean(axis=0))
+            rgb = identity.roof_palette[int(rng.integers(len(identity.roof_palette)))]
+        elif identity.roof_saturation != 1.0:
+            rgb = _saturate(rgb, identity.roof_saturation)
+        for part in proxy_building_parts(
+                c, y0, b["height"], b.get("ridge", b["height"]),
+                b.get("roof", "flat"), rgb, identity):
+            scene.add_geometry(part)
+        placed += 1
+    return placed
+
+
+def _resample_path(path: np.ndarray, step: float) -> np.ndarray:
+    """Resample a polyline to roughly even spacing so draping follows terrain."""
+    seg = np.linalg.norm(np.diff(path, axis=0), axis=1)
+    s = np.concatenate([[0.0], np.cumsum(seg)])
+    if s[-1] < 1e-9:
+        return path[:1]
+    t = np.linspace(0.0, s[-1], max(int(np.ceil(s[-1] / step)) + 1, 2))
+    return np.column_stack([np.interp(t, s, path[:, 0]), np.interp(t, s, path[:, 1])])
+
+
+ROAD_LIFT = 0.35   # ribbon height above terrain (bumpy melt pokes through less)
+DIRT_KINDS = {"footway", "path", "track", "steps", "bridleway"}
+
+
+def road_ribbon(path: np.ndarray, width: float, ground: trimesh.Trimesh) -> trimesh.Trimesh | None:
+    """A terrain-draped ribbon mesh for one road; None if it misses the terrain."""
+    pts = _resample_path(np.asarray(path, float), step=2.0)
+    if len(pts) < 2:
+        return None
+    d = np.gradient(pts, axis=0)
+    d /= np.maximum(np.linalg.norm(d, axis=1, keepdims=True), 1e-9)
+    perp = np.column_stack([-d[:, 1], d[:, 0]]) * (width / 2.0)
+    left, right = pts + perp, pts - perp
+    ys = _ground_heights(ground, np.vstack([left, right]))
+    yl, yr = ys[:len(pts)], ys[len(pts):]
+    ok = np.isfinite(yl) & np.isfinite(yr)
+
+    n = len(pts)
+    verts = np.zeros((2 * n, 3))
+    verts[:n] = np.column_stack([left[:, 0], yl + ROAD_LIFT, left[:, 1]])
+    verts[n:] = np.column_stack([right[:, 0], yr + ROAD_LIFT, right[:, 1]])
+    faces = []
+    for i in range(n - 1):
+        if ok[i] and ok[i + 1]:
+            faces += [[i, i + 1, n + i], [n + i, i + 1, n + i + 1]]
+    if not faces:
+        return None
+    m = trimesh.Trimesh(vertices=np.nan_to_num(verts), faces=faces, process=False)
+    m.remove_unreferenced_vertices()
+    return m
+
+
+def instance_roads(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
+    placed = 0
+    for r in (f for f in features if f.get("type") == "road"):
+        ribbon = road_ribbon(np.asarray(r["path"]), r.get("width", 5.0), ground)
+        if ribbon is None:
+            continue
+        color = identity.path_color if r.get("kind") in DIRT_KINDS else identity.road_color
+        ribbon.visual = trimesh.visual.TextureVisuals(material=_flat_material(color))
+        scene.add_geometry(ribbon)
+        placed += 1
+    return placed
+
+
+def instance_water(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
+    """A sea plane at the level the coastline meets the terrain."""
+    placed = 0
+    for w in (f for f in features if f.get("type") == "water"):
+        outline = np.asarray(w["outline"], float)
+        ys = _ground_heights(ground, outline)
+        ys = ys[np.isfinite(ys)]
+        if len(ys) == 0:
+            continue
+        # terrain.flatten_sea leaves a huge co-planar vertex set at the sea
+        # level; when present that modal flat is the exact anchor. Otherwise
+        # fall back to a low percentile of the coastline raycasts (err low so
+        # the water never floods the town).
+        flat = _sea_flat_level(ground)
+        level = flat + 0.15 if flat is not None else float(np.percentile(ys, 10)) + 0.3
+        (x0, _, z0), (x1, _, z1) = ground.bounds
+        verts = [[x0, level, z0], [x1, level, z0], [x1, level, z1], [x0, level, z1]]
+        # wound so the normal faces +Y (up)
+        plane = trimesh.Trimesh(vertices=verts, faces=[[0, 2, 1], [0, 3, 2]], process=False)
+        plane.visual = trimesh.visual.TextureVisuals(material=_flat_material(identity.water_color))
+        scene.add_geometry(plane)
+        placed += 1
+    return placed
+
+
+def style_terrain(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
+    """Replace the terrain's photo texture with stylized per-vertex zone colors.
+
+    Zones come from the geometry itself: below/at the sea flat -> seafloor,
+    a strip just above it -> sand, steep faces -> cliff, everything else ->
+    grass, with a little deterministic brightness variation so fields don't
+    read as one flat poster. Applies to the source terrain meshes (the scene
+    content present before any instancing runs), so it must be first in the
+    transformer chain.
+    """
+    sea = _sea_flat_level(ground)
+    styled = 0
+    for name, mesh in list(scene.geometry.items()):
+        v = mesh.vertices
+        # slope from height-smoothed geometry: real cliffs are large-amplitude
+        # features that survive smoothing, reconstruction-melt bumps are not —
+        # without this the whole melt zone reads as cliff. Hand-rolled (heights
+        # only, edge-adjacency averaging) because trimesh's filter_laplacian
+        # rejects meshes with unreferenced (nodata) vertices.
+        from scipy.sparse import coo_matrix
+        e = mesh.edges_unique
+        adj = coo_matrix(
+            (np.ones(2 * len(e)),
+             (np.concatenate([e[:, 0], e[:, 1]]), np.concatenate([e[:, 1], e[:, 0]]))),
+            shape=(len(v), len(v))).tocsr()
+        deg = np.maximum(np.asarray(adj.sum(axis=1)).ravel(), 1)
+        y_s = v[:, 1].copy()
+        for _ in range(6):
+            y_s = 0.5 * y_s + 0.5 * (adj.dot(y_s) / deg)
+        smooth = mesh.copy()
+        sv = smooth.vertices.copy()
+        sv[:, 1] = y_s
+        smooth.vertices = sv
+        steep = smooth.vertex_normals[:, 1] < np.cos(np.radians(38))
+        colors = np.tile(np.array(identity.grass_color), (len(v), 1))
+        colors[steep] = identity.cliff_color
+        if sea is not None:
+            # sand = low AND close to actual sea cells — low-lying inland melt
+            # (raised to just above sea level) must stay grass, not beach
+            on_sea = v[:, 1] <= sea + 0.05
+            near_shore = np.zeros(len(v), bool)
+            if on_sea.any():
+                from scipy.spatial import cKDTree
+                d, _ = cKDTree(v[on_sea][:, [0, 2]]).query(
+                    v[:, [0, 2]], distance_upper_bound=15.0)
+                near_shore = np.isfinite(d)
+            colors[(v[:, 1] <= sea + 1.2) & ~steep & near_shore] = identity.sand_color
+            colors[on_sea] = identity.seafloor_color
+        # deterministic per-vertex brightness grain
+        grain = (np.sin(v[:, 0] * 12.9898 + v[:, 2] * 78.233) * 43758.5453) % 1.0
+        colors *= (0.95 + 0.08 * grain)[:, None]
+        rgba = np.hstack([np.clip(colors, 0, 1) * 255, np.full((len(v), 1), 255)])
+        mesh.visual = trimesh.visual.ColorVisuals(mesh, vertex_colors=rgba.astype(np.uint8))
+        styled += 1
+    return styled
+
+
+TRANSFORMERS = {
+    "style_terrain": style_terrain,
+    "instance_trees": instance_trees,
+    "instance_buildings": instance_buildings,
+    "instance_roads": instance_roads,
+    "instance_water": instance_water,
+}
 
 
 def style_scene(source_glb, features, identity: VisualIdentity, on_log=lambda _m: None):

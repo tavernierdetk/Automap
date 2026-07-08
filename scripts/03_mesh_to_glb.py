@@ -2,8 +2,10 @@
 """Stage 3 - clean the ODM mesh and export a Godot-ready .glb (via Blender headless).
 
 Owns the coordinate-system fix: ODM outputs real-world-scale, **Z-up** geometry;
-Godot is **Y-up**, metric. We import Z-up into Blender, decimate, recenter to the
-origin, and let the glTF exporter convert Z-up -> Y-up on the way out.
+Godot is **Y-up**, metric. We import Z-up into Blender, flip upright when the
+surface normals say the scan faces down (auto-detected — ODM's mesh-first and
+georeferenced outputs disagree on this), decimate, recenter to the origin, and
+let the glTF exporter convert Z-up -> Y-up on the way out.
 
 Run it directly - it re-executes itself inside Blender's bundled Python:
 
@@ -56,8 +58,9 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--decimate", type=float, default=None, help="face keep-ratio (0-1)")
     p.add_argument("--up-axis", default="Z", help="OBJ up axis (ODM is Z)")
     p.add_argument("--forward-axis", default="Y", help="OBJ forward axis")
-    p.add_argument("--flip-vertical", action=argparse.BooleanOptionalAction, default=True,
-                   help="flip the scan upright (ODM's surface imports facing down)")
+    p.add_argument("--flip-vertical", action=argparse.BooleanOptionalAction, default=None,
+                   help="force/forbid the upright flip; default: auto-detect from "
+                        "the imported surface normals")
     return p.parse_args(argv)
 
 
@@ -111,13 +114,21 @@ def main() -> None:
         bpy.ops.object.join()
     obj = bpy.context.view_layer.objects.active
 
-    # ODM's georeferenced .obj imports with the scanned surface facing -Z, so the
-    # Y-up glb lands upside-down in Godot. A 180 deg rotation about X brings it
-    # upright; being a proper rotation it preserves winding/normals (no mirror).
-    if args.flip_vertical:
+    # Which way is the scanned surface facing? ODM's frame differs between the
+    # mesh-first and georeferenced/terrain outputs, so don't assume: measure the
+    # area-weighted mean normal and flip only when it points down. A 180 deg
+    # rotation about X is a proper rotation, so winding/normals survive (no mirror).
+    flip = args.flip_vertical
+    if flip is None:
+        rot = obj.matrix_world.to_3x3()
+        up = sum((rot @ p.normal).z * p.area for p in obj.data.polygons)
+        flip = up < 0
+        print(f"[stage 3] surface faces {'down' if flip else 'up'} "
+              f"(mean normal Z {'< 0' if flip else '>= 0'})")
+    if flip:
         obj.rotation_euler = (math.pi, 0.0, 0.0)
         bpy.ops.object.transform_apply(rotation=True)
-        print("[stage 3] flipped vertical (ODM -Z surface -> up)")
+        print("[stage 3] flipped vertical (surface -> up)")
 
     n_before = len(obj.data.polygons)
 

@@ -2,8 +2,10 @@
 """Stage 5 (semantic layer) - detect features from ODM's orthophoto + DEM.
 
 The feature pipeline, parallel to geometry: reads the georeferenced orthophoto
-(what things look like) and the DSM/DTM (how tall they are), detects trees, and
-writes a world-placed features.json in the same metric frame as the terrain glb.
+(what things look like), the DSM/DTM (how tall things are) and the classified
+point cloud (what the reconstruction actually saw), detects trees and
+buildings, and writes a world-placed features.json in the same metric frame
+as the terrain glb.
 
     python scripts/05_detect_features.py \
         --dsm work/<name>/odm/odm_dem/dsm.tif \
@@ -27,13 +29,21 @@ from rasterio.enums import Resampling
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from automap.config import load_config  # noqa: E402
-from automap.features import detect_trees  # noqa: E402
+from automap.features import Road, Water, detect_buildings, detect_trees, slope_degrees  # noqa: E402
+from automap.osm import (  # noqa: E402
+    buildings_from_osm,
+    coastline_from_osm,
+    fetch_osm,
+    merge_osm_buildings,
+    road_width,
+    roads_from_osm,
+)
 
 app = typer.Typer(add_completion=False)
 
 
 def _read_aligned(dsm_p, dtm_p, ortho_p):
-    """Read DSM/DTM/ortho onto the DSM grid. Returns chm, rgb, valid, pixel_size."""
+    """Read DSM/DTM/ortho onto the DSM grid. Returns chm, rgb, valid, slope, pixel_size."""
     with rasterio.open(dsm_p) as dsm_ds:
         H, W = dsm_ds.height, dsm_ds.width
         px = abs(dsm_ds.transform.a)
@@ -46,15 +56,90 @@ def _read_aligned(dsm_p, dtm_p, ortho_p):
         dtm_nod = dtm_ds.nodata
     with rasterio.open(ortho_p) as o_ds:
         rgb = o_ds.read([1, 2, 3], out_shape=(3, H, W), resampling=Resampling.bilinear)
+        # the ortho's own no-data (alpha) marks failed-reconstruction holes the
+        # DEMs interpolate over; those melt zones must count as invalid
+        ortho_valid = o_ds.read_masks(1, out_shape=(H, W), resampling=Resampling.nearest) > 0
     rgb = np.transpose(rgb, (1, 2, 0))
 
-    valid = dsm_valid & dtm_valid
+    valid = dsm_valid & dtm_valid & ortho_valid
     if dsm_nod is not None:
         valid &= dsm != dsm_nod
     if dtm_nod is not None:
         valid &= dtm != dtm_nod
     chm = np.where(valid, dsm - dtm, np.nan)
-    return chm, rgb, valid, px
+    slope = slope_degrees(np.where(valid, dtm, np.nanmedian(dtm[valid])), px)
+    return chm, rgb, valid, slope, dtm, px
+
+
+def _read_support_xy(laz_p: Path, dsm_p: Path) -> tuple[np.ndarray, np.ndarray, np.ndarray] | None:
+    """(veg_xy, bld_xy, bld_z) in the centered metric frame, or None.
+
+    Auto-detect / no-op like the SRT sidecar: the gates quietly disengage when
+    the point cloud or the laspy dependency is unavailable. When the cloud
+    carries ASPRS classification (ODM's DTM step classifies it), vegetation
+    points (3/4/5) support trees and building points (6) veto them and seed
+    building detection; an unclassified cloud supports trees with every point
+    and yields no building evidence.
+    """
+    if not laz_p.exists():
+        return None
+    try:
+        import laspy
+    except ImportError:
+        return None
+    las = laspy.read(laz_p)
+    with rasterio.open(dsm_p) as ds:
+        T, H, W, px = ds.transform, ds.height, ds.width, abs(ds.transform.a)
+    col = (np.asarray(las.x) - T.c) / T.a
+    row = (np.asarray(las.y) - T.f) / T.e
+    xy = np.column_stack(((col - (W - 1) / 2.0) * px, (row - (H - 1) / 2.0) * px))
+    cls = np.asarray(las.classification)
+    is_veg = np.isin(cls, (3, 4, 5))
+    if not is_veg.any():
+        return xy, xy[:0], np.zeros(0), xy[:0]
+    is_bld = cls == 6
+    return xy[is_veg], xy[is_bld], np.asarray(las.z)[is_bld], xy[cls == 2]
+
+
+def _load_osm(cache: Path, dsm_p: Path, log) -> dict | None:
+    """The scene's OSM extract: from cache, else fetched+cached, else None.
+
+    Same auto-detect / no-op philosophy as the SRT sidecar and the point
+    cloud: no network (or no georeferencing) just means no overlay.
+    """
+    if cache.exists():
+        log(f"osm: using cached {cache.name}")
+        return json.loads(cache.read_text())
+    from rasterio.warp import transform_bounds
+    with rasterio.open(dsm_p) as ds:
+        if ds.crs is None:
+            log("osm: DSM has no CRS (not georeferenced) - overlay off")
+            return None
+        bbox = transform_bounds(ds.crs, "EPSG:4326", *ds.bounds)
+    try:
+        osm = fetch_osm(bbox)
+    except Exception as err:  # noqa: BLE001 - offline is a supported mode
+        log(f"osm: fetch failed ({err}) - overlay off")
+        return None
+    cache.write_text(json.dumps(osm))
+    log(f"osm: fetched + cached {cache.name}")
+    return osm
+
+
+def _lonlat_to_xz(dsm_p: Path):
+    """(lons, lats) -> centered metric (x, z) arrays, via the DSM's CRS."""
+    from rasterio.warp import transform as warp_transform
+    with rasterio.open(dsm_p) as ds:
+        T, H, W, crs = ds.transform, ds.height, ds.width, ds.crs
+    px = abs(T.a)
+
+    def go(lons, lats):
+        xs, ys = warp_transform("EPSG:4326", crs, list(lons), list(lats))
+        col = (np.asarray(xs) - T.c) / T.a
+        row = (np.asarray(ys) - T.f) / T.e
+        return (col - (W - 1) / 2.0) * px, (row - (H - 1) / 2.0) * px
+
+    return go
 
 
 @app.command()
@@ -62,6 +147,12 @@ def main(
     dsm: Path = typer.Option(..., "--dsm", help="Surface DEM (with trees)"),
     dtm: Path = typer.Option(..., "--dtm", help="Bare-ground DEM"),
     ortho: Path = typer.Option(..., "--ortho", help="Orthophoto"),
+    pointcloud: Path = typer.Option(
+        None, "--pointcloud",
+        help="Georeferenced .laz (support gate); default: alongside the DEMs"),
+    osm: bool = typer.Option(
+        True, "--osm/--no-osm",
+        help="Join OSM building footprints (fetched once, then cached)"),
     output: Path = typer.Option(..., "--output", help="features.json"),
     config: Path = typer.Option(Path(__file__).resolve().parent.parent / "config.toml", "--config"),
 ):
@@ -71,20 +162,81 @@ def main(
     cfg = load_config(config).features
     log = lambda m: typer.echo(f"[stage 5] {m}")
 
-    chm, rgb, valid, px = _read_aligned(dsm, dtm, ortho)
+    chm, rgb, valid, slope, dtm_arr, px = _read_aligned(dsm, dtm, ortho)
     log(f"grid {chm.shape[1]}x{chm.shape[0]}  cell={px:.2f}m  canopy_max={np.nanmax(chm):.1f}m")
 
+    if pointcloud is None:
+        pointcloud = dsm.parent.parent / "odm_georeferencing" / "odm_georeferenced_model.laz"
+    pts = _read_support_xy(pointcloud, dsm)
+    if pts is not None:
+        support_xy, veto_xy, bld_z, ground_xy = pts
+        H, W = dtm_arr.shape
+        rr = np.clip(np.round(veto_xy[:, 1] / px + (H - 1) / 2.0).astype(int), 0, H - 1)
+        cc = np.clip(np.round(veto_xy[:, 0] / px + (W - 1) / 2.0).astype(int), 0, W - 1)
+        bld_xyh = np.column_stack([veto_xy, bld_z - dtm_arr[rr, cc]])
+        log(f"support cloud: {len(support_xy)} veg, {len(veto_xy)} building, "
+            f"{len(ground_xy)} ground pts")
+    else:
+        support_xy, veto_xy, bld_xyh, ground_xy = None, None, None, None
+        log("support cloud: none (gates off)")
+
     trees = detect_trees(
-        chm, rgb, pixel_size=px, valid=valid,
-        min_height=cfg.min_height, exg_threshold=cfg.exg_threshold,
+        chm, rgb, pixel_size=px, valid=valid, slope=slope,
+        min_height=cfg.min_height, max_height=cfg.max_height,
+        exg_threshold=cfg.exg_threshold, gob_threshold=cfg.gob_threshold,
+        max_slope_deg=cfg.max_slope_deg, edge_margin_m=cfg.edge_margin_m,
         min_spacing_m=cfg.min_spacing_m,
+        prominence_min=cfg.prominence_min, prominence_radius_m=cfg.prominence_radius_m,
+        min_area_m2=cfg.min_area_m2, max_radius_m=cfg.max_radius_m,
+        support_xy=support_xy, veto_xy=veto_xy,
+        min_support_density=cfg.min_support_density,
     )
     log(f"detected {len(trees)} trees")
+
+    buildings = detect_buildings(
+        bld_xyh, support_xy, ground_xy, rgb=rgb, slope=slope, pixel_size=px,
+        min_points=cfg.bld_min_points,
+        min_height=cfg.bld_min_height, max_height=cfg.bld_max_height,
+        min_area_m2=cfg.bld_min_area_m2, max_area_m2=cfg.bld_max_area_m2,
+        min_fill=cfg.bld_min_fill, min_side_m=cfg.bld_min_side_m,
+        max_blueness=cfg.bld_max_blueness, gable_delta=cfg.gable_delta,
+    )
+    log(f"detected {len(buildings)} buildings")
+
+    roads: list[Road] = []
+    waters: list[Water] = []
+    if osm:
+        osm_doc = _load_osm(output.parent / "osm.json", dsm, log)
+        if osm_doc is not None:
+            to_xz = _lonlat_to_xz(dsm)
+            osm_blds = buildings_from_osm(osm_doc, to_xz)
+            buildings = merge_osm_buildings(
+                buildings, osm_blds,
+                default_wall=cfg.osm_default_wall, default_ridge=cfg.osm_default_ridge,
+                level_m=cfg.osm_level_m, match_dist_m=cfg.osm_match_dist_m)
+            srcs = [b.source for b in buildings]
+            log(f"osm: {len(osm_blds)} footprints -> "
+                f"{srcs.count('scan+osm')} matched, {srcs.count('osm')} backfilled, "
+                f"{srcs.count('scan')} scan-only ({len(buildings)} total)")
+
+            roads = [Road(path=[tuple(p) for p in r["path"]],
+                          width=road_width(r["tags"]),
+                          kind=r["tags"].get("highway", "road"))
+                     for r in roads_from_osm(osm_doc, to_xz)]
+            coast = coastline_from_osm(osm_doc, to_xz)
+            if coast:
+                waters = [Water(kind="sea",
+                                outline=[tuple(p) for c in coast for p in c])]
+            log(f"osm: {len(roads)} roads, "
+                f"{'sea (from ' + str(len(coast)) + ' coastline ways)' if coast else 'no water'}")
 
     output.parent.mkdir(parents=True, exist_ok=True)
     doc = {
         "frame": "centered-metric-yup",
-        "features": [t.as_feature() for t in trees],
+        "features": ([t.as_feature() for t in trees]
+                     + [b.as_feature() for b in buildings]
+                     + [r.as_feature() for r in roads]
+                     + [w.as_feature() for w in waters]),
     }
     output.write_text(json.dumps(doc, indent=2) + "\n")
     log(f"wrote {output}")

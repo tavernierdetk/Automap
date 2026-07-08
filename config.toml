@@ -18,10 +18,19 @@ max_concurrency = 4
 end_with = "mvs_texturing"  # stop at the textured mesh; skip ortho/DEM for the mesh-first path
 dem_resolution = 5          # cm/px for DSM/DTM (terrain mode only)
 orthophoto_resolution = 8   # cm/px for the orthophoto (terrain mode only)
+# Crop the reconstruction to the camera footprint. Essential for coastal/aerial
+# clips: it discards far-away sea/horizon outlier points that otherwise blow the
+# DEM bounding box into thousands of tiles (mountain_cross hit 20 GB / disk-full
+# without it) and removes background artifacts. Turn off only for full-area surveys.
+auto_boundary = true
 
 [mesh]
 # Stage 3 — Blender headless cleanup (mesh-first path)
-decimate_ratio = 0.25      # target fraction of faces to keep
+# 1.0 = keep all faces (no decimation). ODM meshes off a 16 GB M4 are modest
+# (the phare scan was ~72k faces — decimating to 0.25 threw away detail for no
+# memory reason). Lower this (e.g. 0.25) only if a dense capture yields a mesh
+# heavy enough to strain Godot.
+decimate_ratio = 1.0       # target fraction of faces to keep (1.0 = keep all)
 
 [terrain]
 # Stage 3b — terrain-first path (DEM -> grid mesh). 2.5D; no cliffs/overhangs.
@@ -29,7 +38,35 @@ grid_resolution = 256      # grid cells on the long edge
 z_exaggeration = 1.0       # vertical scale multiplier
 
 [features]
-# Stage 5 — tree detection (CHM + excess-green on the orthophoto)
+# Stage 5 — tree detection (CHM + excess-green on the orthophoto). The gates
+# below were calibrated on mountain_cross (coastal scene: water, cliffs, grass);
+# see docs/explorations/semantic-layer-v2.md.
 min_height = 2.0           # min canopy height (m) to count as a tree
+max_height = 40.0          # taller than this = reconstruction junk (water spikes)
 exg_threshold = 0.05       # min excess-green vegetation index
+gob_threshold = 0.02       # min green-over-blue index (vetoes blue-green water)
+max_slope_deg = 30.0       # reject peaks where bare-ground slope is steeper (cliffs)
+edge_margin_m = 3.0        # distrust pixels this close to no-data (reconstruction melt)
 min_spacing_m = 3.0        # min spacing between detected tree tops
+prominence_min = 2.0       # peak must stand this far above the nearby low surface
+prominence_radius_m = 12.0 # neighbourhood radius for the prominence reference
+min_area_m2 = 3.0          # smallest believable crown area (m^2)
+max_radius_m = 8.0         # crown radius cap (m)
+min_support_density = 1.0  # min reconstruction points/m^2 under a crown (melt gate)
+# Buildings — clusters of building-classified cloud points (point-first: the
+# DEM rasters smooth small houses below any raster threshold)
+bld_min_points = 25        # min points in a cluster
+bld_min_height = 2.0       # cluster p75 height-above-ground must reach this (m)
+bld_max_height = 25.0      # ridge taller than this = reconstruction junk
+bld_min_area_m2 = 12.0     # smallest believable footprint (m^2)
+bld_max_area_m2 = 1500.0   # larger than this = melt sheet
+bld_min_fill = 0.35        # cluster area / bounding-rect area (kills streaks)
+bld_min_side_m = 2.5       # bounding rect short side (kills streaks)
+bld_max_blueness = 15.0    # median B-R above this = sea surface, not a roof
+gable_delta = 1.0          # ridge minus wall height (m) to call a roof gabled
+# OSM overlay — surveyed footprints join scan detections (--no-osm to disable;
+# fetched once per scene via Overpass, then cached at work/<name>/osm.json)
+osm_match_dist_m = 12.0    # centroid distance (m) to pair a detection with OSM
+osm_default_wall = 3.0     # wall height (m) for untagged OSM-only buildings
+osm_default_ridge = 5.0    # ridge height (m) for untagged OSM-only buildings
+osm_level_m = 3.0          # meters per building:levels level
