@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://b8qm4kxr0objm"]
+
+[ext_resource type="Script" path="res://game/objective_marker.gd" id="1_marker"]
+
+[sub_resource type="CylinderMesh" id="BeamMesh"]
+top_radius = 0.12
+bottom_radius = 0.12
+height = 4.0
+
+[sub_resource type="StandardMaterial3D" id="BeamMat"]
+transparency = 1
+albedo_color = Color(1, 0.85, 0.2, 0.55)
+emission_enabled = true
+emission = Color(1, 0.8, 0.15, 1)
+emission_energy_multiplier = 4.0
+
+[sub_resource type="SphereMesh" id="OrbMesh"]
+radius = 0.4
+height = 0.8
+
+[sub_resource type="StandardMaterial3D" id="OrbMat"]
+albedo_color = Color(1, 0.9, 0.35, 1)
+emission_enabled = true
+emission = Color(1, 0.85, 0.2, 1)
+emission_energy_multiplier = 6.0
+
+[node name="ObjectiveMarker" type="Node3D"]
+script = ExtResource("1_marker")
+
+[node name="Beam" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("BeamMesh")
+surface_material_override/0 = SubResource("BeamMat")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="Orb" type="MeshInstance3D" parent="Head"]
+mesh = SubResource("OrbMesh")
+surface_material_override/0 = SubResource("OrbMat")
+
+[node name="OrbLight" type="OmniLight3D" parent="Head"]
+light_color = Color(1, 0.85, 0.3, 1)
+light_energy = 2.0
+omni_range = 8.0

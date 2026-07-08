@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" uid="uid://ckqlj6fw560mr" path="res://scenes/game.tscn" id="1_game"]
+[ext_resource type="PackedScene" path="res://scenes/mountain_cross/sraw_mountain_cross.glb" id="2_map"]
+
+[node name="sraw_mountain_cross" instance=ExtResource("1_game")]
+map_scene = ExtResource("2_map")

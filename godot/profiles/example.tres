@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="CharacterProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/character_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+height_m = 1.92
+build = 1.18
+skin_color = Color(0.7, 0.5, 0.36, 1)
+hair_color = Color(0.85, 0.7, 0.3, 1)
+shirt_color = Color(0.7, 0.2, 0.25, 1)
+pants_color = Color(0.15, 0.16, 0.18, 1)
+hairstyle = "long"
+glasses = true
+facial_hair = true

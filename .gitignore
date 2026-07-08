@@ -32,6 +32,15 @@ godot/.godot/
 godot/assets/*
 !godot/assets/.gitkeep
 
+# Generation output/intermediates must NEVER live inside the Godot project — the
+# engine loads glbs from work/ by path (generation & playback are decoupled). If a
+# scene tree ever gets copied in here, keep its frames/odm/glbs out of git.
+godot/scenes/*/frames/
+godot/scenes/*/odm/
+godot/scenes/**/*.glb
+godot/scenes/**/*.jpg
+godot/scenes/**/*.png
+
 # Generated scene registry — points to local, regenerated glbs (format documented
 # in docs/explorations/named-ingestion.md). Local state, like work/.
 scenes/manifest.json

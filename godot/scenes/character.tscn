@@ -1,0 +1,165 @@
+[gd_scene load_steps=16 format=3 uid="uid://dsuqn2c1bvy0x"]
+
+[ext_resource type="Script" uid="uid://cf3v0iblnv7vy" path="res://scripts/character.gd" id="1_char"]
+
+[sub_resource type="BoxMesh" id="TorsoMesh"]
+size = Vector3(0.36, 0.6, 0.22)
+
+[sub_resource type="CylinderMesh" id="NeckMesh"]
+top_radius = 0.06
+bottom_radius = 0.06
+height = 0.1
+
+[sub_resource type="SphereMesh" id="HeadMesh"]
+radius = 0.13
+height = 0.26
+
+[sub_resource type="BoxMesh" id="NoseMesh"]
+size = Vector3(0.04, 0.04, 0.04)
+
+[sub_resource type="BoxMesh" id="GlassesMesh"]
+size = Vector3(0.26, 0.05, 0.02)
+
+[sub_resource type="BoxMesh" id="FacialHairMesh"]
+size = Vector3(0.16, 0.07, 0.05)
+
+[sub_resource type="SphereMesh" id="HairCapMesh"]
+radius = 0.15
+height = 0.3
+
+[sub_resource type="BoxMesh" id="HairBackMesh"]
+size = Vector3(0.22, 0.3, 0.08)
+
+[sub_resource type="CapsuleMesh" id="HairTailMesh"]
+radius = 0.05
+height = 0.26
+
+[sub_resource type="SphereMesh" id="HairAfroMesh"]
+radius = 0.22
+height = 0.44
+
+[sub_resource type="CapsuleMesh" id="ArmMesh"]
+radius = 0.06
+height = 0.5
+
+[sub_resource type="BoxMesh" id="HandMesh"]
+size = Vector3(0.09, 0.12, 0.09)
+
+[sub_resource type="CapsuleMesh" id="LegMesh"]
+radius = 0.08
+height = 0.8
+
+[sub_resource type="BoxMesh" id="FootMesh"]
+size = Vector3(0.11, 0.08, 0.24)
+
+[node name="Character" type="Node3D"]
+script = ExtResource("1_char")
+
+[node name="Torso" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15, 0)
+mesh = SubResource("TorsoMesh")
+
+[node name="Neck" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+mesh = SubResource("NeckMesh")
+
+[node name="Head" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.63, 0)
+mesh = SubResource("HeadMesh")
+
+[node name="Nose" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.01, -0.13)
+mesh = SubResource("NoseMesh")
+
+[node name="Glasses" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -0.12)
+visible = false
+mesh = SubResource("GlassesMesh")
+
+[node name="FacialHair" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.09, -0.1)
+visible = false
+mesh = SubResource("FacialHairMesh")
+
+[node name="Hair" type="Node3D" parent="Head"]
+
+[node name="short" type="MeshInstance3D" parent="Head/Hair"]
+transform = Transform3D(1, 0, 0, 0, 0.65, 0, 0, 0, 1, 0, 0.04, 0)
+visible = false
+mesh = SubResource("HairCapMesh")
+
+[node name="medium" type="MeshInstance3D" parent="Head/Hair"]
+transform = Transform3D(1.05, 0, 0, 0, 0.9, 0, 0, 0, 1.05, 0, 0.02, 0)
+visible = false
+mesh = SubResource("HairCapMesh")
+
+[node name="long" type="Node3D" parent="Head/Hair"]
+visible = false
+
+[node name="Cap" type="MeshInstance3D" parent="Head/Hair/long"]
+transform = Transform3D(1.05, 0, 0, 0, 0.9, 0, 0, 0, 1.05, 0, 0.02, 0)
+mesh = SubResource("HairCapMesh")
+
+[node name="Back" type="MeshInstance3D" parent="Head/Hair/long"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.12, 0.07)
+mesh = SubResource("HairBackMesh")
+
+[node name="ponytail" type="Node3D" parent="Head/Hair"]
+visible = false
+
+[node name="Cap" type="MeshInstance3D" parent="Head/Hair/ponytail"]
+transform = Transform3D(1, 0, 0, 0, 0.7, 0, 0, 0, 1, 0, 0.04, 0)
+mesh = SubResource("HairCapMesh")
+
+[node name="Tail" type="MeshInstance3D" parent="Head/Hair/ponytail"]
+transform = Transform3D(1, 0, 0, 0, 0.5403, 0.8415, 0, -0.8415, 0.5403, 0, -0.02, 0.16)
+mesh = SubResource("HairTailMesh")
+
+[node name="afro" type="MeshInstance3D" parent="Head/Hair"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+visible = false
+mesh = SubResource("HairAfroMesh")
+
+[node name="ArmL" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.26, 1.38, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="ArmL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+mesh = SubResource("ArmMesh")
+
+[node name="Hand" type="MeshInstance3D" parent="ArmL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.52, 0)
+mesh = SubResource("HandMesh")
+
+[node name="ArmR" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.26, 1.38, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="ArmR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+mesh = SubResource("ArmMesh")
+
+[node name="Hand" type="MeshInstance3D" parent="ArmR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.52, 0)
+mesh = SubResource("HandMesh")
+
+[node name="LegL" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.11, 0.9, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="LegL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+mesh = SubResource("LegMesh")
+
+[node name="Foot" type="MeshInstance3D" parent="LegL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.82, 0.06)
+mesh = SubResource("FootMesh")
+
+[node name="LegR" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.11, 0.9, 0)
+
+[node name="Mesh" type="MeshInstance3D" parent="LegR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.4, 0)
+mesh = SubResource("LegMesh")
+
+[node name="Foot" type="MeshInstance3D" parent="LegR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.82, 0.06)
+mesh = SubResource("FootMesh")

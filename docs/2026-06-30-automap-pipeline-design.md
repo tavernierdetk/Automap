@@ -64,13 +64,13 @@ We deliberately do **not** build a one-button orchestrator in v1: it would hide 
 | 1 | **Extract frames** | `ffmpeg` + OpenCV sharpness cull | `input/` | `work/frames/*.jpg` | Frames sharp, well-overlapped? |
 | 2 | **Photogrammetry** ⚠️ | **OpenDroneMap (Docker)** — the swappable risky box | `work/frames/` | `work/odm/` (textured `.obj`, point cloud, DEM, orthophoto) | Mesh reconstructed? Holes? |
 | 3 | **Mesh cleanup** | **Blender headless** (`--background --python`) | `work/odm/…obj` | `work/mesh/scene.glb` | Decimated, scaled, Y-up, centered? |
-| 4 | **Godot scene** | **Godot 4.x** | `work/mesh/scene.glb` | `godot/assets/` + walkable scene | Can I walk around it? |
+| 4 | **Godot scene** | **Godot 4.x** | `work/mesh/*.glb` (by path) | — (engine loads at runtime; writes nothing back) | Can I walk around it? |
 
 ### Stage notes
 - **Stage 1 — DJI `.SRT` is auto-detected, never required.** If a sidecar is present, parse it → write GPS EXIF onto frames (or an ODM `geo.txt`) so ODM gets georeferencing for free. If absent (the common AirDrop case for the DJI Mini 3), skip silently; ODM solves structure-from-motion blind. Frame rate, max-frame cap, and sharpness threshold live in `config.toml` — these are the **memory guardrails**.
 - **Stage 2** is a thin shell wrapper around the Docker invocation, with ODM quality knobs (`--resize-to`, `--feature-quality`, `--pc-quality`, `--max-concurrency`) surfaced in config. This is the box we tune hardest for 16 GB and the box we'd swap if the spike fails.
 - **Stage 3** owns the coordinate-system fix that will otherwise bite: ODM outputs real-world scale, Z-up; Godot is Y-up, metric. Blender recenters to origin, rotates, decimates.
-- **Stage 4** ships a minimal Godot project with a fly/walk camera and trimesh static-body collision — both the v1 viewer *and* the seed for future-C.
+- **Stage 4** is a **standalone walking engine** (Godot 4.x), not a baked scene. It loads any pipeline-generated `.glb` *at runtime by path* (`GLTFDocument`, resolved from a launch arg `-- --scene <path>` / env `AUTOMAP_SCENE` / a `res://` fallback / a procedural ground), generates trimesh static-body collision, and lifts the player above the loaded mesh. It ships a first-person fly/walk inspector (`main.tscn`) and a third-person character (`game.tscn`) — the v1 viewer *and* the seed for future-C. See §11.
 
 ---
 
@@ -93,10 +93,14 @@ Automap/
 │   ├── 02_run_odm.sh
 │   ├── 03_mesh_to_glb.py        ← run via Blender's bundled Python
 │   └── 04_prepare_godot.py
-├── godot/                       ← Godot 4.x project (viewer + future-game seed)
+├── godot/                       ← standalone walking engine (viewer + future-game seed)
 │   ├── project.godot
-│   ├── scenes/main.tscn
-│   └── assets/                  ← glb lands here (large ones gitignored)
+│   ├── engine/map_loader.gd     ← runtime glb loader + collision + player placement
+│   ├── scripts/player.gd        ← first-person fly/walk inspector
+│   ├── scripts/player_tps.gd    ← third-person character controller
+│   ├── scenes/main.tscn         ← inspector shell   (no baked mesh)
+│   ├── scenes/game.tscn         ← third-person shell (no baked mesh)
+│   └── assets/                  ← optional res:// fallback glb only (gitignored)
 ├── samples/                     ← tiny fallback frame set, runs the chain pre-footage
 └── docs/
     ├── pipeline.md              ← how to run + what to inspect at each stage
@@ -134,6 +138,27 @@ Two deliberate choices:
 
 - **Terrain-first branch.** Same ODM output (stage 2) → a `03b_dem_to_heightmap.py` (GDAL) → Godot **Terrain3D**, orthophoto as ground texture. Cleaner, performant, LOD — the better substrate for the game, but 2.5D (loses cliffs/overhangs). Added as a parallel stage 3, not a replacement.
 - **Future-C game.** The `godot/` project already carries a player controller and a real scene; gameplay grows there incrementally.
+- **Character pipeline (photo → recognizable character).** A second staged pipeline of
+  swappable boxes, mirroring the scene one, applied to the player character:
+  `photo → attributes → parametric build → Godot character`. The aim is *recognition by
+  high-level traits* (hair colour/style, build, height, glasses, skin tone), not a
+  photoreal face scan. Runbook: [docs/character-pipeline.md](character-pipeline.md).
+  - **Contract:** a `CharacterProfile` resource (`godot/scripts/character_profile.gd`)
+    is the stable seam every stage speaks. It is **text (`.tres`) → git-clean and
+    reproducible**; the rendered model is a regenerated artifact, never committed
+    (same hard rule as scene `.glb`s).
+  - **Stage A (built — Phase A):** the profile drives a primitive figure
+    (`godot/scenes/character.tscn` + `character.gd`) — scale by height, widen by build,
+    colour skin/hair/clothes, pick a hairstyle, toggle glasses/facial hair; procedural
+    walk + idle breathing.
+  - **Stage B (designed):** swap the render backend behind the same profile —
+    **MakeHuman/MPFB2** headless in Blender (reuses stage 3) for a rigged parametric
+    human, and/or **Mixamo** as a retargeted animation library (use-don't-redistribute;
+    fits gitignore).
+  - **Stage C (designed):** a **local** vision model (Ollama + a VLM, structured-JSON
+    output) reads a photo → writes a `CharacterProfile`. Faces never leave the machine.
+    Height is the known-hard part from a single image (no scale reference — the same
+    problem stage 3 owns for scenes); treat as manual/estimated input.
 
 ---
 
@@ -156,3 +181,32 @@ The `samples/` fallback lets the whole chain run green before the 1.24 GB clip e
 - **Staged manually-chained CLI** (approach A), not one-button.
 - Repo at `~/Cowork/Automap`, own git, personal GitHub, never Baseline.
 - **De-risk ODM-on-M4 before anything else.**
+- **Engine/pipeline separation (project condition).** The walking engine is a
+  standalone, reusable component that loads *any* pipeline-generated `.glb` at runtime
+  by path. Generation (stages 0–3) and playback (stage 4) are decoupled: the engine
+  never writes into the pipeline, the pipeline never bakes a scene into the engine, and
+  neither depends on the other's internals. See §11.
+
+---
+
+## 11. Engine/pipeline separation (project condition)
+
+The "walk around the world" engine and the "generate the world" pipeline are
+**independent components with a one-way, path-based seam**:
+
+- **The seam is a file path, not a baked asset.** The engine loads a `.glb` at runtime
+  (`GLTFDocument.append_from_file`), accepting an absolute OS path (e.g.
+  `work/mesh/scene.glb`, outside `res://`) or a `res://` path. Nothing is copied into
+  or imported by the engine project per scene.
+- **Scene selection** resolves in order: launch arg `-- --scene <path>` → env
+  `AUTOMAP_SCENE` → `res://assets/scene.glb` (opt-in fallback) → a procedural ground
+  plane (so the engine always launches standalone, with no committed binary — `*.glb`
+  is gitignored wholesale).
+- **No cross-writing.** Stage 4 (`04_prepare_godot.py`) only *launches* the engine
+  pointed at a mesh; it does not modify `godot/`. The pipeline only *produces* `.glb`s.
+- **Reusable across scenes.** Any generated map plays in the same engine without
+  editing scene files. `main.tscn` (first-person inspector) and `game.tscn`
+  (third-person character) are thin shells over `engine/map_loader.gd`.
+
+Consequence: future-C gameplay grows inside `godot/` freely, and the pipeline can be
+re-run, swapped (§3), or branched (§8, terrain-first) without ever touching the engine.
