@@ -16,27 +16,36 @@ MANIFEST_REL = "scenes/manifest.json"
 @dataclass
 class ScenePaths:
     name: str
-    base: Path        # work/<name>
-    frames: Path      # work/<name>/frames
-    odm: Path         # work/<name>/odm
-    mesh_dir: Path    # work/<name>/mesh
-    glb: Path         # work/<name>/mesh/<name>.glb
-    obj: Path         # ODM's textured mesh, mesh-first stage-3 input
-    dtm: Path         # ODM's bare-ground DEM, terrain-first stage-3b input
-    ortho: Path       # ODM's orthophoto, terrain-first ground texture
+    base: Path         # work/<name>
+    frames: Path       # work/<name>/frames
+    odm: Path          # work/<name>/odm
+    mesh_dir: Path     # work/<name>/mesh
+    raw_glb: Path      # work/<name>/mesh/sraw_<name>.glb  (faithful geometry)
+    styled_glb: Path   # work/<name>/mesh/sf_<name>.glb    (styled + features)
+    base_glb: Path     # work/<name>/mesh/_base_<name>.glb (terrain base for styling)
+    features: Path     # work/<name>/features.json         (semantic layer)
+    obj: Path          # ODM's textured mesh, mesh-first stage-3 input
+    dsm: Path          # ODM's surface DEM (feature detection)
+    dtm: Path          # ODM's bare-ground DEM, terrain-first + detection
+    ortho: Path        # ODM's orthophoto, ground texture + detection
 
 
 def scene_paths(root: str | Path, name: str) -> ScenePaths:
     base = Path(root) / "work" / name
+    dem = base / "odm" / "odm_dem"
     return ScenePaths(
         name=name,
         base=base,
         frames=base / "frames",
         odm=base / "odm",
         mesh_dir=base / "mesh",
-        glb=base / "mesh" / f"{name}.glb",
+        raw_glb=base / "mesh" / f"sraw_{name}.glb",
+        styled_glb=base / "mesh" / f"sf_{name}.glb",
+        base_glb=base / "mesh" / f"_base_{name}.glb",
+        features=base / "features.json",
         obj=base / "odm" / "odm_texturing" / "odm_textured_model_geo.obj",
-        dtm=base / "odm" / "odm_dem" / "dtm.tif",
+        dsm=dem / "dsm.tif",
+        dtm=dem / "dtm.tif",
         ortho=base / "odm" / "odm_orthophoto" / "odm_orthophoto.tif",
     )
 

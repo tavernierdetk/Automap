@@ -7,8 +7,11 @@ def test_scene_paths(tmp_path):
     base = tmp_path / "work" / "birch-park"
     assert sp.frames == base / "frames"
     assert sp.odm == base / "odm"
-    assert sp.glb == base / "mesh" / "birch-park.glb"
+    assert sp.raw_glb == base / "mesh" / "sraw_birch-park.glb"
+    assert sp.styled_glb == base / "mesh" / "sf_birch-park.glb"
+    assert sp.features == base / "features.json"
     assert sp.obj == base / "odm" / "odm_texturing" / "odm_textured_model_geo.obj"
+    assert sp.dsm == base / "odm" / "odm_dem" / "dsm.tif"
 
 
 def test_manifest_empty_when_missing(tmp_path):

@@ -11,7 +11,33 @@ Handles two DJI variants:
 from __future__ import annotations
 
 import re
+import shutil
+import subprocess
 from pathlib import Path
+
+
+def extract_embedded_srt(video: str | Path, out_path: str | Path) -> Path | None:
+    """Pull the first embedded subtitle track out of a video into out_path.
+
+    DJI clips can carry the telemetry as a subtitle *track* inside the .MP4
+    (mov_text) instead of a sibling .SRT. This mirrors the sidecar case: it is
+    best-effort and a pure no-op (returns None) when ffmpeg is missing, the file
+    has no subtitle stream, or extraction yields nothing usable.
+    """
+    video, out_path = Path(video), Path(out_path)
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg or not video.exists():
+        return None
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    r = subprocess.run(
+        [ffmpeg, "-v", "error", "-y", "-i", str(video), "-map", "0:s:0", str(out_path)],
+        capture_output=True, text=True,
+    )
+    # No subtitle stream (or any failure) -> no-op; drop a truncated/empty file.
+    if r.returncode != 0 or not out_path.exists() or out_path.stat().st_size == 0:
+        out_path.unlink(missing_ok=True)
+        return None
+    return out_path
 
 _TIME_RE = re.compile(r"(\d{2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->")
 _LAT_RE = re.compile(r"latitude\s*:?\s*([-\d.]+)", re.I)
