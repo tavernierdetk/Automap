@@ -80,7 +80,7 @@ flowchart LR
   end
 
   %% ==================== GPU NODE ====================
-  gpu["genserver — private GPU node<br/>backend registry · job runner · CAS cache<br/>ODM-native · SAM/DeepForest · TRELLIS · Blender"]:::missing
+  gpu["genserver — private GPU node (repo LIVE)<br/>transport v1: job keys · registry · ssh/rsync/docker<br/>node unprovisioned — ODM-native = acceptance test"]:::partial
 
   %% ==================== GODOT RUNTIME ====================
   subgraph GR["godot-runtime (addons)"]
@@ -214,10 +214,17 @@ flowchart LR
   source). Godot editor plugins are a later convenience layer over the same
   files.
 - [x] **Naming**: module names stay placeholders; each locks when its repo
-  is created. First locked name: `platform-specs`.
+  is created. Locked so far: `platform-specs`, `genserver`.
 
 ## Changelog
 
+- 2026-07-09 — v0.5: `genserver` repo bootstrapped at `Cowork/genserver`
+  (second locked module name): transport v1 — content-derived job keys,
+  backend registry (echo + odm mirroring stage 2), LocalTarget/SshTarget
+  over ssh/rsync/docker, proven end-to-end on local Docker (fresh run /
+  cache hit / failure diagnosis) — `gpu` flips missing → partial. Node
+  provisioning runbook written; ODM-native on the node is the acceptance
+  test that flips it to built.
 - 2026-07-09 — v0.4: worldmodel v1 lands (brief §9 step 2): per-scene
   world-model documents (`scene-features@2.0.0` — stable feature ids,
   per-attribute provenance, building LOD tiers) + the generic fusion engine
