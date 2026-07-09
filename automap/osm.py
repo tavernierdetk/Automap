@@ -1,16 +1,11 @@
 """OSM overlay for the semantic layer (slice 3 of semantic-layer-v2).
 
 The scan is georeferenced (geo.txt -> UTM), so we can pull OpenStreetMap
-building footprints for the scene bbox and join them with the scan-detected
-buildings:
-
-- a detected building that matches an OSM footprint keeps its scanned heights
-  / roof / color but adopts the surveyed OSM footprint (scan footprints run
-  fat from photogrammetry melt) -> source "scan+osm";
-- an OSM footprint nobody detected is backfilled with default or tag-derived
-  heights -> source "osm" (fixes edge-of-scene recall where the cloud is thin);
-- a detection without OSM counterpart is kept as-is -> source "scan" (OSM
-  coverage is incomplete too).
+building footprints, roads, coastline and water for the scene bbox. This
+module only fetches and parses; reconciliation with the scan detections is
+the fusion engine's job (automap.worldmodel) — OSM is one observation source
+among several, feeding per-attribute merges (footprint: OSM over scan;
+heights: scan over tags; unmatched footprints backfill edge-of-scene recall).
 
 Network happens only in fetch_osm(); everything else is pure so it stays
 testable offline. The stage-5 script caches the Overpass response next to
@@ -144,64 +139,27 @@ def tag_heights(tags: dict, level_m: float = 3.0) -> tuple[float, float] | None:
     return None
 
 
-def merge_osm_buildings(
-    detected: list,
-    osm_blds: list[dict],
-    *,
-    default_wall: float = 3.0,
-    default_ridge: float = 5.0,
-    default_color: tuple = (150, 145, 140),
-    level_m: float = 3.0,
-    match_dist_m: float = 12.0,
-) -> list:
-    """Join scan detections with OSM footprints (see module docstring).
+def building_batch(osm_blds: list[dict], level_m: float = 3.0) -> list[dict]:
+    """OSM buildings -> world-model observation dicts for the fusion engine.
 
-    detected is a list of automap.features.Building; returns a new list.
-    Matching is greedy nearest-centroid, one-to-one, within match_dist_m.
+    Each carries only what OSM actually knows: the footprint always
+    (rectified to a min-area rectangle so the proxy builder gets 4 corners),
+    heights + roof form only when tagged. The fusion engine settles conflicts
+    per attribute (footprint: OSM over scan; heights: scan over tags) and
+    finalize() fills defaults on backfilled buildings nobody scanned.
     """
-    from automap.features import Building
-
-    osm_rects = []
+    out = []
     for ob in osm_blds:
         pts = ob["poly"][:-1] if np.allclose(ob["poly"][0], ob["poly"][-1]) else ob["poly"]
         rect = cv2.boxPoints(cv2.minAreaRect(pts.astype(np.float32)))
-        osm_rects.append({
-            "corners": [(float(x), float(z)) for x, z in rect],
-            "centroid": pts.mean(axis=0),
-            "tags": ob["tags"],
-        })
-
-    det_centroids = [np.asarray(b.footprint).mean(axis=0) for b in detected]
-    pairs = sorted(
-        ((float(np.linalg.norm(det_centroids[i] - r["centroid"])), i, j)
-         for i in range(len(detected)) for j, r in enumerate(osm_rects)),
-        key=lambda t: t[0])
-    det_match: dict[int, int] = {}
-    osm_taken: set[int] = set()
-    for dist, i, j in pairs:
-        if dist > match_dist_m:
-            break
-        if i in det_match or j in osm_taken:
-            continue
-        det_match[i] = j
-        osm_taken.add(j)
-
-    merged: list = []
-    for i, b in enumerate(detected):
-        j = det_match.get(i)
-        if j is None:
-            merged.append(b)
-        else:
-            merged.append(Building(
-                footprint=osm_rects[j]["corners"], height=b.height, ridge=b.ridge,
-                roof=b.roof, roof_color=b.roof_color, source="scan+osm"))
-    for j, r in enumerate(osm_rects):
-        if j in osm_taken:
-            continue
-        th = tag_heights(r["tags"], level_m)
-        wall, ridge = th if th else (default_wall, default_ridge)
-        merged.append(Building(
-            footprint=r["corners"], height=wall, ridge=ridge,
-            roof="gable" if ridge - wall >= 1.0 else "flat",
-            roof_color=default_color, source="osm"))
-    return merged
+        feat: dict = {
+            "type": "building",
+            "footprint": [[round(float(x), 3), round(float(z), 3)] for x, z in rect],
+        }
+        th = tag_heights(ob["tags"], level_m)
+        if th is not None:
+            wall, ridge = th
+            feat.update(height=round(wall, 2), ridge=round(ridge, 2),
+                        roof="gable" if ridge - wall >= 1.0 else "flat")
+        out.append(feat)
+    return out

@@ -1,11 +1,16 @@
-"""Tests for the OSM overlay merge (pure logic; no network)."""
+"""Tests for the OSM fetch/parse layer (pure logic; no network).
+
+Reconciliation with scan detections lives in automap.worldmodel and is
+tested in test_worldmodel.py; here we only check that OSM elements parse
+into correct observation batches.
+"""
 import numpy as np
 
-from automap.features import Building, Road, Water
+from automap.features import Road, Water
 from automap.osm import (
+    building_batch,
     buildings_from_osm,
     coastline_from_osm,
-    merge_osm_buildings,
     overpass_query,
     road_width,
     roads_from_osm,
@@ -16,14 +21,6 @@ from automap.osm import (
 def _rect(cx, cz, w=10.0, d=6.0):
     return [(cx - w / 2, cz - d / 2), (cx + w / 2, cz - d / 2),
             (cx + w / 2, cz + d / 2), (cx - w / 2, cz + d / 2)]
-
-
-def _det(cx, cz, **kw):
-    kw.setdefault("height", 4.0)
-    kw.setdefault("ridge", 6.0)
-    kw.setdefault("roof", "gable")
-    kw.setdefault("roof_color", (90, 80, 70))
-    return Building(footprint=_rect(cx, cz), **kw)
 
 
 def _osm(cx, cz, tags=None, w=8.0, d=5.0):
@@ -59,28 +56,17 @@ def test_tag_heights():
     assert tag_heights({"height": "tall"}) is None
 
 
-def test_merge_matched_keeps_scan_attrs_takes_osm_footprint():
-    det = [_det(0.0, 0.0)]
-    merged = merge_osm_buildings(det, [_osm(2.0, 1.0)])   # 2.2 m apart -> match
-    assert len(merged) == 1
-    b = merged[0]
-    assert b.source == "scan+osm"
-    assert b.height == 4.0 and b.roof == "gable"          # scan attributes kept
-    c = np.asarray(b.footprint).mean(axis=0)              # OSM footprint adopted
-    assert np.allclose(c, [2.0, 1.0], atol=0.1)
+def test_building_batch_footprint_only_when_untagged():
+    (feat,) = building_batch([_osm(2.0, 1.0)])
+    assert feat["type"] == "building"
+    assert np.allclose(np.asarray(feat["footprint"]).mean(axis=0), [2.0, 1.0], atol=0.1)
+    assert "height" not in feat and "roof" not in feat    # OSM observed no heights
 
 
-def test_merge_backfills_unmatched_osm():
-    merged = merge_osm_buildings([], [_osm(50.0, 50.0, {"building": "yes", "height": "6"})])
-    assert len(merged) == 1
-    b = merged[0]
-    assert b.source == "osm" and b.ridge == 6.0
-
-
-def test_merge_keeps_scan_only():
-    merged = merge_osm_buildings([_det(0.0, 0.0)], [_osm(100.0, 100.0)])
-    srcs = sorted(b.source for b in merged)
-    assert srcs == ["osm", "scan"]
+def test_building_batch_carries_tagged_heights():
+    (feat,) = building_batch([_osm(50.0, 50.0, {"building": "yes", "height": "6"})])
+    assert feat["ridge"] == 6.0 and feat["height"] == 3.6
+    assert feat["roof"] == "gable"                        # ridge - wall >= 1 m
 
 
 def test_roads_and_coastline_parsing():
@@ -114,11 +100,3 @@ def test_road_water_features_schema():
     assert w["type"] == "water" and w["kind"] == "sea" and w["source"] == "osm"
 
 
-def test_merge_is_one_to_one():
-    # two detections near one OSM footprint: only the closest pairs up
-    det = [_det(0.0, 0.0), _det(3.0, 0.0)]
-    merged = merge_osm_buildings(det, [_osm(2.5, 0.0)])
-    srcs = sorted(b.source for b in merged)
-    assert srcs == ["scan", "scan+osm"]
-    matched = next(b for b in merged if b.source == "scan+osm")
-    assert np.allclose(np.asarray(matched.footprint).mean(axis=0), [2.5, 0.0], atol=0.1)

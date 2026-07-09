@@ -28,13 +28,14 @@ import typer
 from rasterio.enums import Resampling
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from automap import worldmodel  # noqa: E402
 from automap.config import load_config  # noqa: E402
 from automap.features import Road, Water, detect_buildings, detect_trees, slope_degrees  # noqa: E402
 from automap.osm import (  # noqa: E402
+    building_batch,
     buildings_from_osm,
     coastline_from_osm,
     fetch_osm,
-    merge_osm_buildings,
     road_width,
     roads_from_osm,
 )
@@ -203,43 +204,56 @@ def main(
     )
     log(f"detected {len(buildings)} buildings")
 
-    roads: list[Road] = []
-    waters: list[Water] = []
+    osm_batch: list[dict] = []
     if osm:
         osm_doc = _load_osm(output.parent / "osm.json", dsm, log)
         if osm_doc is not None:
             to_xz = _lonlat_to_xz(dsm)
             osm_blds = buildings_from_osm(osm_doc, to_xz)
-            buildings = merge_osm_buildings(
-                buildings, osm_blds,
-                default_wall=cfg.osm_default_wall, default_ridge=cfg.osm_default_ridge,
-                level_m=cfg.osm_level_m, match_dist_m=cfg.osm_match_dist_m)
-            srcs = [b.source for b in buildings]
-            log(f"osm: {len(osm_blds)} footprints -> "
-                f"{srcs.count('scan+osm')} matched, {srcs.count('osm')} backfilled, "
-                f"{srcs.count('scan')} scan-only ({len(buildings)} total)")
-
             roads = [Road(path=[tuple(p) for p in r["path"]],
                           width=road_width(r["tags"]),
                           kind=r["tags"].get("highway", "road"))
                      for r in roads_from_osm(osm_doc, to_xz)]
             coast = coastline_from_osm(osm_doc, to_xz)
+            osm_batch = (building_batch(osm_blds, level_m=cfg.osm_level_m)
+                         + [r.as_feature() for r in roads])
             if coast:
-                waters = [Water(kind="sea",
-                                outline=[tuple(p) for c in coast for p in c])]
-            log(f"osm: {len(roads)} roads, "
+                osm_batch.append(Water(
+                    kind="sea", outline=[tuple(p) for c in coast for p in c]).as_feature())
+            log(f"osm: {len(osm_blds)} footprints, {len(roads)} roads, "
                 f"{'sea (from ' + str(len(coast)) + ' coastline ways)' if coast else 'no water'}")
 
+    # fusion: the scan pass and the OSM pass are two observation sources
+    # reconciled into the per-scene world model. Re-runs match against the
+    # existing document, so stable ids and manual edits survive regeneration.
+    if output.exists():
+        doc = worldmodel.load(output)
+        log(f"worldmodel: fusing into existing {output.name} "
+            f"({len(doc['features'])} features)")
+    else:
+        doc = worldmodel.new_document(scene=output.parent.name)
+    doc = worldmodel.fuse(
+        doc, [t.as_feature() for t in trees] + [b.as_feature() for b in buildings],
+        "scan", observed_types={"tree", "building"})
+    if osm_batch:
+        doc = worldmodel.fuse(
+            doc, osm_batch, "osm",
+            observed_types={"building", "road", "water"},
+            match_dist={"building": cfg.osm_match_dist_m})
+    doc = worldmodel.finalize(doc, building_defaults={
+        "height": cfg.osm_default_wall, "ridge": cfg.osm_default_ridge})
+
+    blds = [f for f in doc["features"] if f["type"] == "building"]
+    srcs = [f.get("source", "") for f in blds]
+    log(f"buildings: {srcs.count('osm+scan')} matched, "
+        f"{sum(1 for s in srcs if s in ('osm', 'default+osm'))} osm-backfilled, "
+        f"{srcs.count('scan')} scan-only ({len(blds)} total)")
+
     output.parent.mkdir(parents=True, exist_ok=True)
-    doc = {
-        "frame": "centered-metric-yup",
-        "features": ([t.as_feature() for t in trees]
-                     + [b.as_feature() for b in buildings]
-                     + [r.as_feature() for r in roads]
-                     + [w.as_feature() for w in waters]),
-    }
-    output.write_text(json.dumps(doc, indent=2) + "\n")
-    log(f"wrote {output}")
+    if worldmodel.validate(doc):
+        log("worldmodel: valid against scene-features@2.0.0")
+    worldmodel.save(doc, output)
+    log(f"wrote {output} ({len(doc['features'])} features)")
 
 
 if __name__ == "__main__":

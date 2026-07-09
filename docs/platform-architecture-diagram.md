@@ -42,8 +42,8 @@ flowchart LR
   %% ==================== HUB ====================
   subgraph HUB["worldmodel — the hub"]
     direction TB
-    fusion["Fusion / reconciliation engine<br/>stable IDs · per-attribute provenance<br/>source priority · manual edits survive"]:::partial
-    wm["Canonical world model<br/>terrain · features (IFC-complete buildings)<br/>regions · placements · LOD tiers"]:::partial
+    fusion["Fusion / reconciliation engine<br/>stable IDs · per-attribute provenance<br/>source priority · manual edits survive"]:::have
+    wm["Canonical world model<br/>per-scene docs LIVE (scene-features@2.0.0)<br/>IFC-complete buildings · regions · LOD 3+ = next"]:::partial
     fusion --> wm
   end
 
@@ -218,6 +218,14 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-09 — v0.4: worldmodel v1 lands (brief §9 step 2): per-scene
+  world-model documents (`scene-features@2.0.0` — stable feature ids,
+  per-attribute provenance, building LOD tiers) + the generic fusion engine
+  (`automap/worldmodel.py`, extracted from the OSM merge). Proven on
+  mountain_cross: re-run is a byte-identical fixed point, manual edits
+  (provenance `manual`) survive regeneration, stage 6 consumes v2 unchanged —
+  `fusion` flips partial → have; worldmodel keeps incubating in Automap per
+  the module-boundary decision.
 - 2026-07-08 — v0.3: `platform-specs` repo bootstrapped at
   `Cowork/platform-specs` (founding four schemas transcribed + validator lib,
   12 tests incl. the real phare game.json) — `reg` flips missing → have.

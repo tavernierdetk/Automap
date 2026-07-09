@@ -44,7 +44,14 @@ clean of it before any commit.
 ## Dev setup / how to run
 - Python venv: **`.venv`** (Python 3.13, native arm64; gitignored). Deps:
   `opencv-python`, `piexif`, `typer`, `pytest`. Recreate with
-  `python3.13 -m venv .venv && .venv/bin/pip install -e ".[dev]"`.
+  `python3.13 -m venv .venv && .venv/bin/pip install -e ".[dev]"`, then
+  `.venv/bin/pip install -e ../platform-specs` (schema validation; runtime
+  auto-detect/no-op without it).
+- `work/<scene>/features.json` is the **per-scene world model**
+  (`scene-features@2.0.0`; `automap/worldmodel.py` is the fusion engine).
+  Stage-5 re-runs preserve feature ids and merge per attribute; to hand-edit
+  a value so regeneration keeps it, also set its `provenance` entry to
+  `"manual"`.
 - Tests: `.venv/bin/python -m pytest -q` (stage-1 tests self-generate a synthetic
   clip; nothing binary is committed).
 - Stage 1: `.venv/bin/python scripts/01_extract_frames.py` (reads `input/`, writes
