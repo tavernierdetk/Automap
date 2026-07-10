@@ -265,7 +265,7 @@ def main(
 
     output.parent.mkdir(parents=True, exist_ok=True)
     if worldmodel.validate(doc):
-        log("worldmodel: valid against scene-features@2.0.0")
+        log(f"worldmodel: valid against scene-features@{worldmodel.SPEC[1]}")
     worldmodel.save(doc, output)
     log(f"wrote {output} ({len(doc['features'])} features)")
 

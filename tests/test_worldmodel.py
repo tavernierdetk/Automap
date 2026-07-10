@@ -130,6 +130,24 @@ def test_osm_over_scan_footprint_scan_over_osm_heights():
     assert b["source"] == "osm+scan"
 
 
+def test_bim_dropin_outranks_and_survives_scan_rerun():
+    # a scan-detected building, then an IFC plan dropped onto it (source bim)
+    doc = wm.fuse(wm.new_document(), [_bld(0.0, 0.0, height=4.0)], "scan")
+    dropin = dict(_bld(0.2, 0.1, height=7.5, ridge=9.0),
+                  representation={"kind": "asset", "asset": "assets/building-0000.glb"})
+    doc = wm.fuse(doc, [dropin], "bim")
+    b = doc["features"][0]
+    assert b["height"] == 7.5 and b["provenance"]["height"] == "bim"    # bim > scan
+    assert b["provenance"]["footprint"] == "bim"
+    assert b["representation"]["kind"] == "asset"
+    # a later scan re-run must not clobber the dropped-in geometry
+    doc = wm.fuse(doc, [_bld(0.0, 0.0, height=4.0)], "scan",
+                  observed_types={"building"})
+    b = doc["features"][0]
+    assert b["height"] == 7.5 and b["representation"]["asset"].endswith(".glb")
+    assert b["provenance"]["footprint"] == "bim"
+
+
 def test_osm_backfill_and_finalize_defaults():
     footprint_only = {"type": "building",
                       "footprint": [[50.0, 50.0], [58.0, 50.0], [58.0, 55.0], [50.0, 55.0]]}

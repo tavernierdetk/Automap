@@ -310,6 +310,64 @@ def from_ifc(path: str | Path) -> dict:
     return feat
 
 
+def ifc_to_glb(path: str | Path, out_glb: str | Path, *, placement=None) -> dict:
+    """Tessellate a building .ifc into a scene-frame .glb (base at y=0).
+
+    Meshes every physical element with the geometry kernel (world coords),
+    remaps IFC axes (x=east, y=north, z=up) to the scene frame (x=east,
+    y=up, z=south), applies the horizontal `placement` (a placement.Placement
+    yaw+translation) if given, and drops the base to y=0 so the presentation
+    stage seats it on the terrain. Returns {"path", "footprint_xz",
+    "size": [w, h, d]} — footprint_xz is the placed footprint hull for the
+    world-model record.
+    """
+    _require()
+    import trimesh
+    import ifcopenshell.geom as geom
+
+    settings = geom.settings()
+    settings.set(settings.USE_WORLD_COORDS, True)
+    g = ifcopenshell.open(str(path))
+    meshes = []
+    for el in g:
+        if el.is_a() not in _PHYSICAL:
+            continue
+        try:
+            shape = geom.create_shape(settings, el)
+        except (RuntimeError, Exception):  # noqa: BLE001
+            continue
+        v = np.asarray(shape.geometry.verts, float).reshape(-1, 3)
+        faces = np.asarray(shape.geometry.faces, int).reshape(-1, 3)
+        if len(v) and len(faces):
+            meshes.append(trimesh.Trimesh(vertices=v, faces=faces, process=False))
+    if not meshes:
+        raise ValueError(f"{path}: no meshable geometry")
+    mesh = trimesh.util.concatenate(meshes)
+
+    # IFC (x=east, y=north, z=up) -> scene (x=east, y=up, z=south)
+    v = mesh.vertices
+    mesh.vertices = np.column_stack([v[:, 0], v[:, 2], -v[:, 1]])
+
+    if placement is not None:
+        xz = placement.apply_xz(mesh.vertices[:, [0, 2]])
+        mesh.vertices = np.column_stack([xz[:, 0], mesh.vertices[:, 1], xz[:, 1]])
+    mesh.vertices[:, 1] -= mesh.vertices[:, 1].min()   # base to y=0
+
+    out_glb = Path(out_glb)
+    out_glb.parent.mkdir(parents=True, exist_ok=True)
+    trimesh.Scene(mesh).export(out_glb)
+    lo, hi = mesh.vertices.min(axis=0), mesh.vertices.max(axis=0)
+    hull_xz = mesh.vertices[:, [0, 2]]
+    return {
+        "path": out_glb,
+        "footprint_xz": [[round(float(lo[0]), 3), round(float(lo[2]), 3)],
+                         [round(float(hi[0]), 3), round(float(lo[2]), 3)],
+                         [round(float(hi[0]), 3), round(float(hi[2]), 3)],
+                         [round(float(lo[0]), 3), round(float(hi[2]), 3)]],
+        "size": [round(float(hi[i] - lo[i]), 2) for i in range(3)],
+    }
+
+
 def read_anchor(path: str | Path) -> dict | None:
     """The IfcMapConversion of a file, if georeferenced."""
     _require()

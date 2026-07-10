@@ -67,6 +67,13 @@ clean of it before any commit.
   `pip install -e '.[ifc]'`). `ifc.from_ifc` reads external plan→IFC models
   back as a `bim` fusion source. **CEC-SHA (`~/Claude/CEC-SHA`) is proprietary
   Baseline — never copy its code or `.ifc` here; the seam is IFC files only.**
+- **Building substitution (stage 9)**: `scripts/09_replace_building.py
+  --scene <name> --ifc <plan.ifc> --id building-NNNN` drops an authored IFC
+  in place of a generated building — tessellated to `work/<scene>/assets/`,
+  placed (georeference or `--footprint-fit`), written as a `representation`
+  override with source `bim`. `bim` outranks detectors in the fusion engine,
+  so the drop-in survives every re-run. Stage 6 renders the asset (add
+  `--restyle` to repaint it in the identity).
 
 ## Prerequisites (status as of 2026-06-30)
 - ffmpeg ✅ (arm64, homebrew)

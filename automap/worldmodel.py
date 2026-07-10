@@ -39,15 +39,19 @@ from pathlib import Path
 
 import numpy as np
 
-SPEC = ("scene-features", "2.0.0")
+SPEC = ("scene-features", "2.1.0")
 FRAME = "centered-metric-yup"
 MANUAL = "manual"
+BIM = "bim"
 
 # Lower index = stronger claim. Unknown sources rank below every listed one.
-DEFAULT_PRIORITY = (MANUAL, "scan", "lidar", "osm", "overture", "generated", "default")
+# `bim` sits just under `manual`: an authored IFC model (a dropped-in plan)
+# is truth for a building, outranking any detector — and so survives regen.
+DEFAULT_PRIORITY = (MANUAL, BIM, "scan", "lidar", "osm", "overture", "generated", "default")
 ATTRIBUTE_PRIORITY = {
     # brief §5: footprint: survey > scan; height: scan/LiDAR > tags; color: scan.
-    "footprint": (MANUAL, "osm", "overture", "lidar", "scan", "generated", "default"),
+    # a dropped-in IFC footprint is authoritative, so bim leads here too.
+    "footprint": (MANUAL, BIM, "osm", "overture", "lidar", "scan", "generated", "default"),
 }
 
 # How far apart two observations of the same feature may sit (meters).

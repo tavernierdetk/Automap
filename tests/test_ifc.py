@@ -140,6 +140,69 @@ def _detailed_model(tmp_path):
     return p
 
 
+def test_ifc_to_glb_tessellates_and_places(tmp_path):
+    import trimesh
+    from automap import placement as pl
+
+    p = _detailed_model(tmp_path)
+    # place the plan at a target 40 m away, rotated
+    target = np.array([[38.0, -12.0], [50.0, -12.0], [50.0, -4.0], [38.0, -4.0]])
+    plan = ifc.from_ifc(p)
+    place = pl.fit_footprint(plan["footprint"], target)
+    info = ifc.ifc_to_glb(p, tmp_path / "asset.glb", placement=place)
+    assert (tmp_path / "asset.glb").exists()
+    assert info["size"][1] > 2.0                         # ~3 m tall walls
+    loaded = trimesh.load(tmp_path / "asset.glb", force="scene")
+    verts = np.vstack([g.vertices for g in loaded.geometry.values()])
+    assert abs(verts[:, 1].min()) < 1e-6                 # base seated at y=0
+    # the placed bbox centroid lands on the target centroid (44, -8)
+    fp = np.array(info["footprint_xz"])
+    assert abs(fp[:, 0].mean() - 44.0) < 1.0 and abs(fp[:, 1].mean() - (-8.0)) < 1.0
+
+
+def test_dropin_asset_renders_and_survives_rerun(tmp_path):
+    """Full seam in-process: detailed plan -> placed asset -> representation
+    override -> presentation instances the mesh -> a scan re-run keeps it."""
+    import trimesh
+    from automap import placement as pl, presentation, worldmodel as wm
+
+    # a scene with one scan-detected building
+    tgt = {"type": "building", "footprint": [[0.0, 0.0], [12.0, 0.0], [12.0, 8.0], [0.0, 8.0]],
+           "height": 3.0, "ridge": 5.0, "roof": "gable", "roof_color": [120, 100, 80]}
+    doc = wm.finalize(wm.fuse(wm.new_document("t"), [tgt], "scan"))
+    bid = doc["features"][0]["id"]
+
+    # drop a detailed plan onto it
+    p = _detailed_model(tmp_path)
+    plan = ifc.from_ifc(p)
+    target_fp = next(f for f in doc["features"] if f["id"] == bid)["footprint"]
+    place = pl.fit_footprint(plan["footprint"], target_fp)
+    info = ifc.ifc_to_glb(p, tmp_path / "assets" / f"{bid}.glb", placement=place)
+
+    b = next(f for f in doc["features"] if f["id"] == bid)
+    b["footprint"] = info["footprint_xz"]; b["height"] = plan["height"]
+    b["representation"] = {"kind": "asset", "asset": f"assets/{bid}.glb",
+                           "ground_xz": list(place.ground_xz)}
+    b["provenance"].update(footprint="bim", height="bim", representation="bim")
+    doc = wm.finalize(doc)
+    assert wm.validate(doc)
+
+    # presentation instances the asset (not a proxy) onto flat ground
+    ground = trimesh.creation.box(extents=[100, 0.1, 100])
+    ground.apply_translation([25, 0, 0])
+    scene = trimesh.Scene()
+    b["representation"]["_abs"] = str(tmp_path / "assets" / f"{bid}.glb")
+    n = presentation.instance_buildings(scene, ground, doc["features"],
+                                        presentation.VisualIdentity())
+    assert n == 1 and len(scene.geometry) >= 1          # the plan mesh, not a box
+
+    # a scan re-run must not clobber the dropped-in building
+    doc2 = wm.fuse(doc, [dict(tgt)], "scan", observed_types={"building"})
+    kept = next(f for f in doc2["features"] if f["id"] == bid)
+    assert kept["representation"]["asset"].endswith(f"{bid}.glb")
+    assert kept["provenance"]["footprint"] == "bim"
+
+
 def test_reduce_detailed_model_seam(tmp_path):
     """A walls/storeys model (no building envelope) reduces to footprint +
     height, records storeys, and fuses as a 'bim' source — the CEC-SHA seam."""

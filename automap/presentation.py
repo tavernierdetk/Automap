@@ -33,6 +33,9 @@ class VisualIdentity:
     road_color: tuple = (0.27, 0.26, 0.27)      # asphalt
     path_color: tuple = (0.52, 0.44, 0.33)      # dirt (footway/path/track)
     water_color: tuple = (0.16, 0.34, 0.45)
+    # dropped-in IFC buildings render with their authored materials by
+    # default; set True (via --restyle) to repaint them in this identity.
+    restyle_assets: bool = False
     # --- richer looks (defaults keep the placeholder identity unchanged) ---
     tree_kit: str = "simple"                    # "simple" | "varied" (stacked forms + jitter)
     building_details: bool = False              # chimney + door/window quads
@@ -274,12 +277,47 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
     return parts
 
 
+def _place_asset(scene, ground, feature, identity) -> bool:
+    """Instance a dropped-in building asset (representation override).
+
+    The glb is pre-placed horizontally with its base at y=0 (see
+    ifc.ifc_to_glb); here we only drape it onto the terrain by sampling the
+    ground at ground_xz. Authored materials are kept unless the identity asks
+    to restyle. Returns False if the asset can't be loaded/seated.
+    """
+    rep = feature["representation"]
+    asset = rep.get("_abs", rep["asset"])
+    try:
+        loaded = trimesh.load(asset, force="scene")
+    except Exception:  # noqa: BLE001 - missing/corrupt asset: fall back to proxy
+        return False
+    gx, gz = rep.get("ground_xz", np.asarray(feature["footprint"], float).mean(axis=0))
+    y = _ground_heights(ground, np.array([[gx, gz]]))[0]
+    if np.isnan(y):
+        c = np.asarray(feature["footprint"], float)
+        ys = _ground_heights(ground, np.vstack([c, c.mean(axis=0, keepdims=True)]))
+        if np.isnan(ys).all():
+            return False
+        y = float(np.nanmin(ys))
+    for geom in loaded.geometry.values():
+        g = geom.copy()
+        g.apply_translation([0.0, float(y), 0.0])
+        if getattr(identity, "restyle_assets", False):
+            g.visual = trimesh.visual.TextureVisuals(material=_flat_material(identity.wall_color))
+        scene.add_geometry(g)
+    return True
+
+
 def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
     blds = [f for f in features if f.get("type") == "building"]
     if not blds:
         return 0
     placed = 0
     for b in blds:
+        if b.get("representation", {}).get("kind") == "asset":
+            if _place_asset(scene, ground, b, identity):
+                placed += 1
+                continue  # dropped-in asset replaces the generated proxy
         c = np.asarray(b["footprint"], float)
         probe = np.vstack([c, c.mean(axis=0, keepdims=True)])
         ys = _ground_heights(ground, probe)
@@ -447,8 +485,20 @@ TRANSFORMERS = {
 }
 
 
-def style_scene(source_glb, features, identity: VisualIdentity, on_log=lambda _m: None):
-    """Load the source glb, run the identity's transformer chain, return a Scene."""
+def style_scene(source_glb, features, identity: VisualIdentity, on_log=lambda _m: None,
+                scene_dir=None):
+    """Load the source glb, run the identity's transformer chain, return a Scene.
+
+    scene_dir (the work/<scene>/ folder) resolves scene-relative asset paths
+    in building representation overrides to absolute, so on-disk paths stay
+    portable while the transformer just loads a file.
+    """
+    if scene_dir is not None:
+        from pathlib import Path
+        for feat in features:
+            rep = feat.get("representation") if isinstance(feat, dict) else None
+            if rep and rep.get("asset"):
+                rep["_abs"] = str(Path(scene_dir) / rep["asset"])
     scene = trimesh.load(source_glb)
     if not isinstance(scene, trimesh.Scene):
         scene = trimesh.Scene(scene)

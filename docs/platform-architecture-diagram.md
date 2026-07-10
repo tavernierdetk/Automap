@@ -130,6 +130,7 @@ flowchart LR
   ifcart --> bim
   bim -.->|from_ifc| toifc
   planifc -.->|.ifc → from_ifc → source "bim"| fusion
+  toifc -.->|building substitution<br/>ifc_to_glb → representation override| alib
 
   alib --> publish
   alib -.->|stat blocks| mech
@@ -220,6 +221,16 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-10 — v0.8: **building substitution** — drop an IFC plan in to
+  replace a generated building (`scripts/09_replace_building.py`). from_ifc +
+  `automap/placement.py` (georeference or footprint-fit) + `ifc.ifc_to_glb`
+  produce a placed asset; the world model gains an optional building
+  `representation` override (`scene-features@2.1.0`, additive) written as
+  source `bim` — which now ranks just under `manual` in the fusion engine, so
+  it outranks detectors and survives regeneration. Stage 6 instances the
+  asset (terrain-draped) instead of a proxy. Proven on lagrave (manoir →
+  building-0072, survives a stage-5 re-run). Plans can originate from the
+  external CEC-SHA pipeline — IFC files only, no code crosses.
 - 2026-07-10 — v0.7: **ifc-adapter v1** (brief §4, the deferred IFC decision):
   `automap/ifc.py` — `to_ifc` projects world-model buildings to georeferenced
   IFC4 (LOD0-2 tiers decided here, provenance pset, IfcMapConversion), proven

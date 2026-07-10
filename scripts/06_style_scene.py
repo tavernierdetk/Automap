@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import sys
+from dataclasses import replace
 from pathlib import Path
 
 import typer
@@ -65,6 +66,9 @@ def main(
     features: Path = typer.Option(..., "--features", help="features.json"),
     output: Path = typer.Option(..., "--output", help="Styled glb"),
     identity: str = typer.Option("placeholder", "--identity", help=f"one of {list(IDENTITIES)}"),
+    restyle_assets: bool = typer.Option(
+        False, "--restyle/--keep-authored",
+        help="Repaint dropped-in IFC buildings in the identity (default: keep authored materials)"),
 ):
     if not source.exists():
         raise typer.BadParameter(f"source glb not found: {source}")
@@ -72,9 +76,10 @@ def main(
         raise typer.BadParameter(f"unknown identity {identity!r}; have {list(IDENTITIES)}")
     feats = json.loads(features.read_text()).get("features", []) if features.exists() else []
 
+    ident = replace(IDENTITIES[identity], restyle_assets=restyle_assets)
     log = lambda m: typer.echo(f"[stage 6] {m}")
     log(f"identity '{identity}', {len(feats)} features, source {source.name}")
-    scene = style_scene(source, feats, IDENTITIES[identity], on_log=log)
+    scene = style_scene(source, feats, ident, on_log=log, scene_dir=features.parent)
 
     output.parent.mkdir(parents=True, exist_ok=True)
     scene.export(output)
