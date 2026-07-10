@@ -106,7 +106,10 @@ def _read_sea_points(dem_p: Path, shape) -> tuple[np.ndarray, np.ndarray] | None
 @app.command()
 def main(
     dtm: Path = typer.Option(..., "--dtm", help="Bare-ground DEM GeoTIFF"),
-    ortho: Path = typer.Option(..., "--ortho", help="Orthophoto GeoTIFF (ground texture)"),
+    ortho: Optional[Path] = typer.Option(
+        None, "--ortho",
+        help="Orthophoto GeoTIFF (ground texture); omit for untextured terrain "
+             "(geodata scenes) — stage 6 styling colors it"),
     output: Path = typer.Option(..., "--output", help="Output .glb"),
     use_dsm: Optional[Path] = typer.Option(None, "--use-dsm", help="Use this DSM instead of the DTM (keeps trees as bumps)"),
     grid: Optional[int] = typer.Option(None, "--grid", help="Grid cells on the long edge"),
@@ -117,7 +120,7 @@ def main(
     dem = use_dsm or dtm
     if not dem.exists():
         raise typer.BadParameter(f"DEM not found: {dem}")
-    if not ortho.exists():
+    if ortho is not None and not ortho.exists():
         raise typer.BadParameter(f"orthophoto not found: {ortho}")
 
     log = lambda m: typer.echo(f"[stage 3b] {m}")
@@ -126,8 +129,14 @@ def main(
     log(f"grid {h.shape[1]}x{h.shape[0]}  cell={px:.2f}m  valid={int(mask.sum())}/{mask.size}")
 
     pts = _read_sea_points(dem, h.shape)
+    if ortho is not None:
+        water = _water_like(ortho, h.shape, px, pts)
+    else:
+        # no imagery: open water is at/below the vertical datum's mean sea
+        # level (LiDAR DTMs are orthometric; CGVD2013 sea ≈ 0)
+        water = mask & (np.nan_to_num(h, nan=1e9) <= 0.0)
     h, sea, level = flatten_sea(
-        h, mask, _water_like(ortho, h.shape, px, pts),
+        h, mask, water,
         points_rc=pts[0] if pts else None, points_elev=pts[1] if pts else None)
     if level is not None:
         log(f"sea: flattened {int(sea.sum())} cells "
@@ -139,10 +148,15 @@ def main(
     size = verts.max(axis=0) - verts.min(axis=0)
     log(f"mesh: {len(verts)} verts, {len(faces)} faces, extent X={size[0]:.0f} Y={size[1]:.0f} Z={size[2]:.0f} m")
 
-    tex = _read_texture(ortho)
-    material = trimesh.visual.material.PBRMaterial(
-        baseColorTexture=tex, metallicFactor=0.0, roughnessFactor=1.0
-    )
+    if ortho is not None:
+        material = trimesh.visual.material.PBRMaterial(
+            baseColorTexture=_read_texture(ortho), metallicFactor=0.0, roughnessFactor=1.0
+        )
+    else:
+        material = trimesh.visual.material.PBRMaterial(
+            baseColorFactor=[0.62, 0.58, 0.48, 1.0],   # neutral ground; identity restyles
+            metallicFactor=0.0, roughnessFactor=1.0,
+        )
     mesh = trimesh.Trimesh(
         vertices=verts, faces=faces,
         visual=trimesh.visual.TextureVisuals(uv=uvs, material=material),

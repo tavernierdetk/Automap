@@ -21,7 +21,7 @@ flowchart LR
     direction TB
     drone["Drone footage (MP4 + SRT)"]:::have
     osm["OSM / Overture"]:::partial
-    lidar["Open LiDAR / DEM (Qc, Canada)"]:::missing
+    lidar["Open LiDAR / DEM (Qc, Canada)"]:::have
     citygml["Montréal CityGML LOD2 (textured)"]:::missing
     cadastre["Cadastre / municipal data"]:::missing
     photos["Photos (people)"]:::have
@@ -34,7 +34,7 @@ flowchart LR
   subgraph ING["Ingestion adapters"]
     direction TB
     ingdrone["ingest-drone<br/>frames → ODM → DEM/mesh → detectors"]:::have
-    inggeo["ingest-geodata<br/>providers + reprojection + cache"]:::partial
+    inggeo["ingest-geodata<br/>OSM + HRDEM LiDAR providers<br/>coverage probe · UTM reproject · cache"]:::have
     ingmedia["ingest-media<br/>VLM photo→traits · LLM text→spec"]:::partial
     proc["procedural generators<br/>noise, grammars, scattering"]:::partial
   end
@@ -218,6 +218,13 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-10 — v0.6: **end-state B proven** (brief §9 step 3): `lagrave`
+  (La Grave, Havre-Aubert) built from public data only — NRCan HRDEM LiDAR
+  (`automap/geodata.py`: STAC + COG windowed reads + pixel coverage probe)
+  + OSM through the fusion engine, madelinot-styled, published. Same funnel,
+  different intake, zero drone footage — `inggeo` and the `lidar` source
+  flip to have. Follow-ups logged: LiDAR-CHM tree detection (no-RGB gates),
+  open orthophoto texture provider, Overture footprints.
 - 2026-07-09 — v0.5: `genserver` repo bootstrapped at `Cowork/genserver`
   (second locked module name): transport v1 — content-derived job keys,
   backend registry (echo + odm mirroring stage 2), LocalTarget/SshTarget

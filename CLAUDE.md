@@ -58,6 +58,10 @@ clean of it before any commit.
   `work/frames/`; flags override `config.toml`).
 - `samples/frames/` is a committed fallback frame set (downscaled Sheffield Park 3,
   BSD) so stages 2+ can run before real footage exists.
+- **Geodata scenes (end-state B)**: `scripts/02b_fetch_geodata.py --scene <name>
+  --center lat,lon --size m` replaces stages 0–2 with public LiDAR (NRCan
+  HRDEM); then 03b/05/06/07 run without `--ortho` (no scan detection — OSM
+  features only through the fusion engine). Proven scene: `lagrave`.
 
 ## Prerequisites (status as of 2026-06-30)
 - ffmpeg ✅ (arm64, homebrew)

@@ -21,6 +21,7 @@ from __future__ import annotations
 import json
 import sys
 from pathlib import Path
+from typing import Optional
 
 import numpy as np
 import rasterio
@@ -44,7 +45,11 @@ app = typer.Typer(add_completion=False)
 
 
 def _read_aligned(dsm_p, dtm_p, ortho_p):
-    """Read DSM/DTM/ortho onto the DSM grid. Returns chm, rgb, valid, slope, pixel_size."""
+    """Read DSM/DTM/ortho onto the DSM grid. Returns chm, rgb, valid, slope, pixel_size.
+
+    ortho_p may be None (geodata scenes have no imagery): rgb comes back None
+    and only the DEM masks define validity.
+    """
     with rasterio.open(dsm_p) as dsm_ds:
         H, W = dsm_ds.height, dsm_ds.width
         px = abs(dsm_ds.transform.a)
@@ -55,12 +60,14 @@ def _read_aligned(dsm_p, dtm_p, ortho_p):
         dtm = dtm_ds.read(1, out_shape=(H, W), resampling=Resampling.bilinear).astype(np.float64)
         dtm_valid = dtm_ds.read_masks(1, out_shape=(H, W), resampling=Resampling.nearest) > 0
         dtm_nod = dtm_ds.nodata
-    with rasterio.open(ortho_p) as o_ds:
-        rgb = o_ds.read([1, 2, 3], out_shape=(3, H, W), resampling=Resampling.bilinear)
-        # the ortho's own no-data (alpha) marks failed-reconstruction holes the
-        # DEMs interpolate over; those melt zones must count as invalid
-        ortho_valid = o_ds.read_masks(1, out_shape=(H, W), resampling=Resampling.nearest) > 0
-    rgb = np.transpose(rgb, (1, 2, 0))
+    rgb, ortho_valid = None, True
+    if ortho_p is not None:
+        with rasterio.open(ortho_p) as o_ds:
+            rgb = o_ds.read([1, 2, 3], out_shape=(3, H, W), resampling=Resampling.bilinear)
+            # the ortho's own no-data (alpha) marks failed-reconstruction holes the
+            # DEMs interpolate over; those melt zones must count as invalid
+            ortho_valid = o_ds.read_masks(1, out_shape=(H, W), resampling=Resampling.nearest) > 0
+        rgb = np.transpose(rgb, (1, 2, 0))
 
     valid = dsm_valid & dtm_valid & ortho_valid
     if dsm_nod is not None:
@@ -147,7 +154,10 @@ def _lonlat_to_xz(dsm_p: Path):
 def main(
     dsm: Path = typer.Option(..., "--dsm", help="Surface DEM (with trees)"),
     dtm: Path = typer.Option(..., "--dtm", help="Bare-ground DEM"),
-    ortho: Path = typer.Option(..., "--ortho", help="Orthophoto"),
+    ortho: Optional[Path] = typer.Option(
+        None, "--ortho",
+        help="Orthophoto; omit for geodata scenes (scan detection off, "
+             "OSM features flow through the fusion engine alone)"),
     pointcloud: Path = typer.Option(
         None, "--pointcloud",
         help="Georeferenced .laz (support gate); default: alongside the DEMs"),
@@ -157,7 +167,7 @@ def main(
     output: Path = typer.Option(..., "--output", help="features.json"),
     config: Path = typer.Option(Path(__file__).resolve().parent.parent / "config.toml", "--config"),
 ):
-    for p in (dsm, dtm, ortho):
+    for p in (dsm, dtm) + ((ortho,) if ortho else ()):
         if not p.exists():
             raise typer.BadParameter(f"missing input: {p} (run stage 2 with --terrain)")
     cfg = load_config(config).features
@@ -168,7 +178,7 @@ def main(
 
     if pointcloud is None:
         pointcloud = dsm.parent.parent / "odm_georeferencing" / "odm_georeferenced_model.laz"
-    pts = _read_support_xy(pointcloud, dsm)
+    pts = _read_support_xy(pointcloud, dsm) if rgb is not None else None
     if pts is not None:
         support_xy, veto_xy, bld_z, ground_xy = pts
         H, W = dtm_arr.shape
@@ -181,28 +191,32 @@ def main(
         support_xy, veto_xy, bld_xyh, ground_xy = None, None, None, None
         log("support cloud: none (gates off)")
 
-    trees = detect_trees(
-        chm, rgb, pixel_size=px, valid=valid, slope=slope,
-        min_height=cfg.min_height, max_height=cfg.max_height,
-        exg_threshold=cfg.exg_threshold, gob_threshold=cfg.gob_threshold,
-        max_slope_deg=cfg.max_slope_deg, edge_margin_m=cfg.edge_margin_m,
-        min_spacing_m=cfg.min_spacing_m,
-        prominence_min=cfg.prominence_min, prominence_radius_m=cfg.prominence_radius_m,
-        min_area_m2=cfg.min_area_m2, max_radius_m=cfg.max_radius_m,
-        support_xy=support_xy, veto_xy=veto_xy,
-        min_support_density=cfg.min_support_density,
-    )
-    log(f"detected {len(trees)} trees")
+    if rgb is None:
+        log("no ortho: scan detection off (geodata mode) - OSM features only")
+        trees, buildings = [], []
+    else:
+        trees = detect_trees(
+            chm, rgb, pixel_size=px, valid=valid, slope=slope,
+            min_height=cfg.min_height, max_height=cfg.max_height,
+            exg_threshold=cfg.exg_threshold, gob_threshold=cfg.gob_threshold,
+            max_slope_deg=cfg.max_slope_deg, edge_margin_m=cfg.edge_margin_m,
+            min_spacing_m=cfg.min_spacing_m,
+            prominence_min=cfg.prominence_min, prominence_radius_m=cfg.prominence_radius_m,
+            min_area_m2=cfg.min_area_m2, max_radius_m=cfg.max_radius_m,
+            support_xy=support_xy, veto_xy=veto_xy,
+            min_support_density=cfg.min_support_density,
+        )
+        log(f"detected {len(trees)} trees")
 
-    buildings = detect_buildings(
-        bld_xyh, support_xy, ground_xy, rgb=rgb, slope=slope, pixel_size=px,
-        min_points=cfg.bld_min_points,
-        min_height=cfg.bld_min_height, max_height=cfg.bld_max_height,
-        min_area_m2=cfg.bld_min_area_m2, max_area_m2=cfg.bld_max_area_m2,
-        min_fill=cfg.bld_min_fill, min_side_m=cfg.bld_min_side_m,
-        max_blueness=cfg.bld_max_blueness, gable_delta=cfg.gable_delta,
-    )
-    log(f"detected {len(buildings)} buildings")
+        buildings = detect_buildings(
+            bld_xyh, support_xy, ground_xy, rgb=rgb, slope=slope, pixel_size=px,
+            min_points=cfg.bld_min_points,
+            min_height=cfg.bld_min_height, max_height=cfg.bld_max_height,
+            min_area_m2=cfg.bld_min_area_m2, max_area_m2=cfg.bld_max_area_m2,
+            min_fill=cfg.bld_min_fill, min_side_m=cfg.bld_min_side_m,
+            max_blueness=cfg.bld_max_blueness, gable_delta=cfg.gable_delta,
+        )
+        log(f"detected {len(buildings)} buildings")
 
     osm_batch: list[dict] = []
     if osm:
