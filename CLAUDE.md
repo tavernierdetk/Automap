@@ -62,6 +62,11 @@ clean of it before any commit.
   --center lat,lon --size m` replaces stages 0–2 with public LiDAR (NRCan
   HRDEM); then 03b/05/06/07 run without `--ortho` (no scan detection — OSM
   features only through the fusion engine). Proven scene: `lagrave`.
+- **IFC projection (stage 8)**: `scripts/08_export_ifc.py --scene <name>`
+  writes one georeferenced `.ifc` per building (`automap/ifc.py`; needs
+  `pip install -e '.[ifc]'`). `ifc.from_ifc` reads external plan→IFC models
+  back as a `bim` fusion source. **CEC-SHA (`~/Claude/CEC-SHA`) is proprietary
+  Baseline — never copy its code or `.ifc` here; the seam is IFC files only.**
 
 ## Prerequisites (status as of 2026-06-30)
 - ffmpeg ✅ (arm64, homebrew)

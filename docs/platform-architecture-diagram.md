@@ -96,15 +96,16 @@ flowchart LR
   end
 
   %% ==================== IFC ====================
-  subgraph IFC["ifc-adapter"]
+  subgraph IFC["ifc-adapter (incubating in automap/ifc.py)"]
     direction TB
-    toifc["to_ifc / from_ifc<br/>(IfcOpenShell · IfcMapConversion)"]:::missing
-    ifcart[".ifc artifacts<br/>one per building"]:::missing
+    toifc["to_ifc / from_ifc<br/>IfcOpenShell 0.8 · IfcMapConversion<br/>LOD0-2 tiers · provenance pset"]:::have
+    ifcart[".ifc artifacts<br/>one per building (lagrave: 126)"]:::have
     toifc --> ifcart
   end
 
   game["entropy — reference game<br/>(acceptance test, consumer only)"]:::partial
   bim["External BIM world<br/>Revit · Bonsai · viewers"]:::ext
+  planifc["External plan→IFC modules<br/>(e.g. CubiCasa pipeline) — .ifc only,<br/>no code crosses the boundary"]:::ext
 
   %% ==================== FLOWS ====================
   drone --> ingdrone
@@ -128,6 +129,7 @@ flowchart LR
   wm --> toifc
   ifcart --> bim
   bim -.->|from_ifc| toifc
+  planifc -.->|.ifc → from_ifc → source "bim"| fusion
 
   alib --> publish
   alib -.->|stat blocks| mech
@@ -218,6 +220,14 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-10 — v0.7: **ifc-adapter v1** (brief §4, the deferred IFC decision):
+  `automap/ifc.py` — `to_ifc` projects world-model buildings to georeferenced
+  IFC4 (LOD0-2 tiers decided here, provenance pset, IfcMapConversion), proven
+  on all 126 lagrave buildings; `from_ifc` reads plan→IFC models back as a
+  `bim` fusion source, reducing detailed walls/storeys models to footprint +
+  height. `toifc`/`ifcart` flip to have. **CEC-SHA seam**: the mature
+  (proprietary Baseline) plan→IFC pipeline stays external — only `.ifc` files
+  cross, no code, per the IFC-as-module-boundary rule.
 - 2026-07-10 — v0.6: **end-state B proven** (brief §9 step 3): `lagrave`
   (La Grave, Havre-Aubert) built from public data only — NRCan HRDEM LiDAR
   (`automap/geodata.py`: STAC + COG windowed reads + pixel coverage probe)

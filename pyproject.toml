@@ -23,6 +23,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+# IFC projection (stage 8 / ifc-adapter incubation) — auto-detect/no-op elsewhere
+ifc = ["ifcopenshell>=0.8"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["automap"]
