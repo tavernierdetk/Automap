@@ -59,9 +59,12 @@ clean of it before any commit.
 - `samples/frames/` is a committed fallback frame set (downscaled Sheffield Park 3,
   BSD) so stages 2+ can run before real footage exists.
 - **Geodata scenes (end-state B)**: `scripts/02b_fetch_geodata.py --scene <name>
-  --center lat,lon --size m` replaces stages 0–2 with public LiDAR (NRCan
-  HRDEM); then 03b/05/06/07 run without `--ortho` (no scan detection — OSM
-  features only through the fusion engine). Proven scene: `lagrave`.
+  --center lat,lon --size m` (or `--geojson <polygon>.geojson` — bounds only,
+  clip is a logged gap) replaces stages 0–2 with public LiDAR (NRCan HRDEM);
+  then 03b/05/06/07 run without `--ortho` (no scan detection — OSM features
+  only through the fusion engine). Proven scenes: `lagrave` (madelinot
+  identity), `plateau` (MTL, plateau identity — see
+  docs/explorations/mtl-acceptance-run.md for the capability evaluation).
 - **IFC projection (stage 8)**: `scripts/08_export_ifc.py --scene <name>`
   writes one georeferenced `.ifc` per building (`automap/ifc.py`; needs
   `pip install -e '.[ifc]'`). `ifc.from_ifc` reads external plan→IFC models

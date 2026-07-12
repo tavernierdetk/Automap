@@ -12,10 +12,14 @@ the bbox's UTM zone so stages 3b/5 consume it exactly like ODM's DEMs.
     python scripts/02b_fetch_geodata.py --scene lagrave \
         --bbox -61.843,47.232,-61.827,47.243
 
+    python scripts/02b_fetch_geodata.py --scene plateau \
+        --geojson input/plateau.geojson
+
 Cached: re-runs with an existing work/<scene>/geodata/ are offline no-ops.
 """
 from __future__ import annotations
 
+import json
 import math
 import sys
 from pathlib import Path
@@ -24,7 +28,7 @@ from typing import Optional
 import typer
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from automap.geodata import fetch_scene_geodata  # noqa: E402
+from automap.geodata import fetch_scene_geodata, geojson_bounds  # noqa: E402
 
 app = typer.Typer(add_completion=False)
 
@@ -37,10 +41,19 @@ def main(
     size: float = typer.Option(1200.0, "--size", help="Scene edge length (m), with --center"),
     bbox: Optional[str] = typer.Option(
         None, "--bbox", help="west,south,east,north (WGS84); overrides --center"),
+    geojson: Optional[Path] = typer.Option(
+        None, "--geojson",
+        help="Neighbourhood polygon (GeoJSON); the scene covers its bbox "
+             "(v1: bounds only, no polygon clip); overrides --bbox/--center"),
     root: Path = typer.Option(Path(__file__).resolve().parent.parent, "--root"),
 ):
     log = lambda m: typer.echo(f"[stage 2b] {m}")
-    if bbox:
+    if geojson:
+        if not geojson.exists():
+            raise typer.BadParameter(f"GeoJSON not found: {geojson}")
+        w, s, e, n = geojson_bounds(json.loads(geojson.read_text()))
+        log(f"geojson {geojson.name} -> bbox (polygon clip is a known gap)")
+    elif bbox:
         w, s, e, n = (float(v) for v in bbox.split(","))
     elif center:
         lat, lon = (float(v) for v in center.split(","))
@@ -48,7 +61,7 @@ def main(
         dlon = dlat / math.cos(math.radians(lat))
         w, s, e, n = lon - dlon, lat - dlat, lon + dlon, lat + dlat
     else:
-        raise typer.BadParameter("pass --bbox or --center")
+        raise typer.BadParameter("pass --geojson, --bbox or --center")
 
     log(f"scene '{scene}' bbox ({w:.5f}, {s:.5f}, {e:.5f}, {n:.5f})")
     out = fetch_scene_geodata((w, s, e, n), root / "work" / scene / "geodata", on_log=log)

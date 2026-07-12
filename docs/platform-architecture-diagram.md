@@ -221,6 +221,16 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-12 — v0.11: **MTL acceptance run** (brief §1b aimed at its real
+  city): GeoJSON intake added to stage 2b (`geodata.geojson_bounds`; bounds
+  only, polygon clip logged) → CMM 2023 1 m LiDAR (coverage excellent) →
+  1,533 OSM buildings / 1,040 roads through fusion (12× lagrave, 7 s styling)
+  → new data-only `plateau` identity → published, playable, Square
+  Saint-Louis recognizable from the air. Evaluation
+  (explorations/mtl-acceptance-run.md): remaining distance is data
+  enrichment, not architecture — #1 per-footprint DSM−DTM building heights
+  (1,492/1,533 wear the 3 m default), #2 LiDAR-CHM trees, #3 landcover
+  zones, #4 lighting pass so palettes survive to the pixel.
 - 2026-07-12 — v0.10: **plateau locked (§9 step 5) + populate-the-world
   slice**: with §9 steps 1–4 done, the next plateau is **D — game-creation
   studio**, built as thin vertical slices (B-hardening and genserver

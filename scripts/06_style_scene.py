@@ -57,6 +57,31 @@ IDENTITIES = {
         sand_color=(0.87, 0.78, 0.60),
         seafloor_color=(0.10, 0.30, 0.36),
     ),
+    # Plateau-Mont-Royal: brick row housing, silver tin and dark membrane
+    # roofs, painted cornices, asphalt streets, park maples.
+    "plateau": VisualIdentity(
+        name="plateau",
+        transformers=["style_terrain", "instance_trees", "instance_buildings",
+                      "instance_roads", "instance_water"],
+        tree_kit="varied",
+        trunk_color=(0.30, 0.24, 0.18),
+        canopy_color=(0.24, 0.38, 0.16),          # street maples
+        building_details=True,
+        wall_color=(0.47, 0.27, 0.20),            # red-brown brick
+        trim_color=(0.92, 0.90, 0.84),            # painted wood cornices/balconies
+        roof_saturation=1.0,                      # no postcard boost — city greys stay grey
+        roof_palette=((0.72, 0.74, 0.76),         # silver tin (mansard/standing seam)
+                      (0.25, 0.25, 0.27),         # dark membrane flat roof
+                      (0.38, 0.52, 0.42),         # oxidized copper
+                      (0.52, 0.30, 0.24)),        # brick-red sheet
+        road_color=(0.29, 0.29, 0.31),            # asphalt
+        path_color=(0.56, 0.56, 0.54),            # concrete sidewalk grey
+        water_color=(0.20, 0.35, 0.45),
+        grass_color=(0.36, 0.50, 0.26),           # park green (Square Saint-Louis)
+        cliff_color=(0.55, 0.53, 0.50),           # greystone
+        sand_color=(0.70, 0.65, 0.55),
+        seafloor_color=(0.12, 0.25, 0.30),
+    ),
 }
 
 

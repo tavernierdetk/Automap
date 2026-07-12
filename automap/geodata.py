@@ -33,6 +33,46 @@ def utm_epsg(lon: float, lat: float) -> str:
     return f"EPSG:{(32600 if lat >= 0 else 32700) + zone}"
 
 
+def geojson_bounds(doc: dict) -> tuple[float, float, float, float]:
+    """(west, south, east, north) over every coordinate in a GeoJSON document.
+
+    Accepts a FeatureCollection, Feature, or bare geometry (any type, any
+    nesting). v1 intake reduces the polygon to its bbox — the scene stays a
+    square tile; clipping features to the polygon itself is a logged gap.
+    """
+    lons: list[float] = []
+    lats: list[float] = []
+
+    def walk(coords) -> None:
+        if isinstance(coords, (list, tuple)):
+            if len(coords) >= 2 and all(isinstance(v, (int, float)) for v in coords[:2]):
+                lons.append(float(coords[0]))
+                lats.append(float(coords[1]))
+            else:
+                for c in coords:
+                    walk(c)
+
+    def geoms(node: dict):
+        t = node.get("type")
+        if t == "FeatureCollection":
+            for f in node.get("features", []):
+                yield from geoms(f)
+        elif t == "Feature":
+            if node.get("geometry"):
+                yield from geoms(node["geometry"])
+        elif t == "GeometryCollection":
+            for g in node.get("geometries", []):
+                yield from geoms(g)
+        elif "coordinates" in node:
+            yield node
+
+    for g in geoms(doc):
+        walk(g["coordinates"])
+    if not lons:
+        raise ValueError("GeoJSON contains no coordinates")
+    return (min(lons), min(lats), max(lons), max(lats))
+
+
 def stac_search(bbox_wgs84, collection: str, limit: int = 20) -> list[dict]:
     """STAC items of one collection intersecting bbox (west,south,east,north)."""
     url = (f"{STAC_SEARCH}?collections={collection}"

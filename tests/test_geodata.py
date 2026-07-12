@@ -68,3 +68,27 @@ def test_fetch_dem_windows_and_reprojects(fake_cog, tmp_path):
         assert 0.0 <= vals.min() and vals.max() <= 20.0  # ramp values preserved
         assert vals.std() > 1.0                          # it's still a ramp
         assert abs(ds.transform.a) == 5.0                # requested resolution
+
+
+# --- GeoJSON intake (the neighbourhood-polygon front door) ---------------------
+
+def test_geojson_bounds_walks_any_nesting():
+    from automap.geodata import geojson_bounds
+    fc = {"type": "FeatureCollection", "features": [
+        {"type": "Feature", "properties": {},
+         "geometry": {"type": "Polygon",
+                      "coordinates": [[[-73.58, 45.51], [-73.56, 45.51],
+                                       [-73.56, 45.52], [-73.58, 45.52], [-73.58, 45.51]]]}},
+        {"type": "Feature", "properties": {},
+         "geometry": {"type": "Point", "coordinates": [-73.59, 45.515]}},
+    ]}
+    assert geojson_bounds(fc) == (-73.59, 45.51, -73.56, 45.52)
+    # a bare geometry works too
+    assert geojson_bounds({"type": "Point", "coordinates": [1.0, 2.0]}) == (1.0, 2.0, 1.0, 2.0)
+
+
+def test_geojson_bounds_rejects_empty():
+    import pytest
+    from automap.geodata import geojson_bounds
+    with pytest.raises(ValueError):
+        geojson_bounds({"type": "FeatureCollection", "features": []})
