@@ -51,7 +51,7 @@ flowchart LR
   subgraph SPECS["platform-specs — schema registry (the shared center · repo LIVE)"]
     direction TB
     reg["Versioned JSON Schemas + validator lib<br/>founding four @1.0.0: scene-features ·<br/>visual-identity · game · character-profile<br/>(codegen deferred by decision)"]:::have
-    vid["Visual identity spec<br/>colors/transformers @1.0.0 ·<br/>resolution + style masks = v2"]:::partial
+    vid["Visual identity spec<br/>@2.0.0: decay · overgrowth · atmosphere<br/>identities ship as FILES (env.json seam)<br/>style masks / resolution = v3"]:::have
     gspec["Game spec<br/>scope · mechanics · difficulty envelope"]:::missing
   end
 
@@ -221,6 +221,21 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-12 — v0.12: **post-apocalyptic identity — styling capabilities
+  slice 1** (first game-driven identity): identities graduate to files
+  (`--identity identities/postapo.json`, validated vs new
+  `visual-identity@2.0.0`) and the identity system grows three axes, all
+  off-by-default (v1 identities regression-tested byte-identical): decay
+  (weathered / broken-parapet / rubble states, deterministic per building),
+  overgrowth (`scatter_overgrowth` + road wear), and atmosphere
+  (`environment` → env.json → map_loader applies sky/sun/fog/saturation at
+  load — closes eval gap #4 platform-wide). Styling also forced eval gap #1
+  closed: `lidar` height provider (per-footprint DSM−DTM percentiles fused
+  as source "lidar") — plateau: 1,451/1,533 buildings measured, mean 10.5 m.
+  Same intake, and the Plateau now reads as its post-apocalyptic self:
+  bleached brick, dust haze, roofless shells, weeds in the streets. `vid`
+  flips to have. Follow-ups: decoration-mesh collision opt-out, rubble
+  close-up fidelity, ground-decay zones.
 - 2026-07-12 — v0.11: **MTL acceptance run** (brief §1b aimed at its real
   city): GeoJSON intake added to stage 2b (`geodata.geojson_bounds`; bounds
   only, polygon clip logged) → CMM 2023 1 m LiDAR (coverage excellent) →

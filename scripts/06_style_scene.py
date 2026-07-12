@@ -24,7 +24,7 @@ from pathlib import Path
 import typer
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from automap.presentation import VisualIdentity, style_scene  # noqa: E402
+from automap.presentation import VisualIdentity, identity_from_dict, style_scene  # noqa: E402
 
 app = typer.Typer(add_completion=False)
 
@@ -90,25 +90,50 @@ def main(
     source: Path = typer.Option(..., "--source", help="Source glb (terrain or mesh)"),
     features: Path = typer.Option(..., "--features", help="features.json"),
     output: Path = typer.Option(..., "--output", help="Styled glb"),
-    identity: str = typer.Option("placeholder", "--identity", help=f"one of {list(IDENTITIES)}"),
+    identity: str = typer.Option(
+        "placeholder", "--identity",
+        help=f"one of {list(IDENTITIES)}, or a path to a visual-identity JSON file"),
     restyle_assets: bool = typer.Option(
         False, "--restyle/--keep-authored",
         help="Repaint dropped-in IFC buildings in the identity (default: keep authored materials)"),
 ):
     if not source.exists():
         raise typer.BadParameter(f"source glb not found: {source}")
-    if identity not in IDENTITIES:
-        raise typer.BadParameter(f"unknown identity {identity!r}; have {list(IDENTITIES)}")
+    log = lambda m: typer.echo(f"[stage 6] {m}")
+
+    if identity in IDENTITIES:
+        ident = IDENTITIES[identity]
+    elif identity.endswith(".json") and Path(identity).exists():
+        # file-based identity (the visual-identity contract as data)
+        doc = json.loads(Path(identity).read_text())
+        try:
+            import platform_specs
+            platform_specs.validate(doc, "visual-identity", "2.0.0")
+            log("identity file valid (visual-identity@2.0.0)")
+        except ImportError:
+            log("WARNING: platform-specs not installed - identity file NOT validated")
+        ident = identity_from_dict(doc)
+    else:
+        raise typer.BadParameter(
+            f"unknown identity {identity!r}; have {list(IDENTITIES)} or a .json path")
     feats = json.loads(features.read_text()).get("features", []) if features.exists() else []
 
-    ident = replace(IDENTITIES[identity], restyle_assets=restyle_assets)
-    log = lambda m: typer.echo(f"[stage 6] {m}")
-    log(f"identity '{identity}', {len(feats)} features, source {source.name}")
+    ident = replace(ident, restyle_assets=restyle_assets)
+    log(f"identity '{ident.name}', {len(feats)} features, source {source.name}")
     scene = style_scene(source, feats, ident, on_log=log, scene_dir=features.parent)
 
     output.parent.mkdir(parents=True, exist_ok=True)
     scene.export(output)
     log(f"wrote {output} ({output.stat().st_size // 1024} KiB)")
+
+    env_sidecar = output.parent / f"{output.stem}.env.json"
+    if ident.environment:
+        env_sidecar.write_text(json.dumps(
+            {"identity": ident.name, **ident.environment}, indent=2) + "\n")
+        log(f"wrote {env_sidecar.name} (atmosphere; published beside the scene)")
+    elif env_sidecar.exists():
+        env_sidecar.unlink()  # stale atmosphere from a previous identity must not survive
+        log(f"removed stale {env_sidecar.name}")
 
 
 if __name__ == "__main__":

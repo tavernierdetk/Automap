@@ -93,6 +93,16 @@ def publish(root: Path, name: str, do_import: bool = True, on_log=print) -> list
         tscn.write_text(_tscn(res_glb, glb.stem, game_uid))
         written.append(tscn)
         on_log(f"published {glb.name} -> res://scenes/{name}/{tscn.name}")
+        # atmosphere sidecar (identity.environment via stage 6) rides along;
+        # a re-publish without one clears any stale env so looks never leak
+        env_src = glb.parent / f"{glb.stem}.env.json"
+        env_dst = dest / "env.json"
+        if env_src.exists():
+            shutil.copy2(env_src, env_dst)
+            on_log(f"published {env_src.name} -> res://scenes/{name}/env.json")
+        elif glb == sp.styled_glb and env_dst.exists():
+            env_dst.unlink()
+            on_log("removed stale env.json (identity has no atmosphere)")
 
     if not written:
         on_log(f"nothing to publish for {name!r} (no glbs in {sp.mesh_dir})")

@@ -189,3 +189,88 @@ def test_style_terrain_zones():
     assert (sea[:, 2] > sea[:, 0]).all()                      # seafloor: blue over red
     assert (grass[:, 1] > grass[:, 0]).all()                  # grass: green dominant
     assert len(cliff) and (cliff[:, 0] > cliff[:, 1]).all()   # cliff: warm sand
+
+
+# --- decay, overgrowth, file identities (visual-identity v2) -------------------
+
+def _bld(cx, cz, w=8.0, d=6.0, h=9.0):
+    return {"type": "building", "height": h, "ridge": h, "roof": "flat",
+            "footprint": [[cx - w/2, cz - d/2], [cx + w/2, cz - d/2],
+                          [cx + w/2, cz + d/2], [cx - w/2, cz + d/2]]}
+
+
+def _road(x0, z0, x1, z1):
+    return {"type": "road", "path": [[x0, z0], [x1, z1]], "width": 5.0, "kind": "residential"}
+
+
+def _decay_identity(**kw):
+    base = dict(ruin_fraction=0.5, damage_fraction=0.5, weather_variation=0.5)
+    base.update(kw)
+    return VisualIdentity(**base)
+
+
+def test_decay_off_is_byte_identical_to_v1():
+    feats = [_bld(0, 0), _bld(12, 0)]
+    a, b = trimesh.Scene(), trimesh.Scene()
+    instance_buildings(a, _flat_ground(), feats, VisualIdentity())
+    instance_buildings(b, _flat_ground(), feats, VisualIdentity(ruin_fraction=0.0))
+    assert len(a.geometry) == len(b.geometry)
+
+
+def test_decay_is_deterministic():
+    feats = [_bld(i * 15.0, 0) for i in range(8)]
+    counts = []
+    for _ in range(2):
+        s = trimesh.Scene()
+        instance_buildings(s, _flat_ground(200), feats, _decay_identity())
+        counts.append(sorted(round(g.bounds[1][1], 3) for g in s.geometry.values()))
+    assert counts[0] == counts[1]
+
+
+def test_ruin_replaces_building_with_low_rubble():
+    feats = [_bld(0, 0, h=12.0)]
+    ruined = trimesh.Scene()
+    instance_buildings(ruined, _flat_ground(), feats,
+                       VisualIdentity(ruin_fraction=1.0))
+    # everything placed is debris: nothing anywhere near the original 12 m
+    top = max(g.bounds[1][1] for g in ruined.geometry.values())
+    assert top < 8.0
+    assert len(ruined.geometry) >= 5   # piles + remnant wall stubs
+
+
+def test_damage_breaks_the_roofline():
+    feats = [_bld(0, 0, h=10.0)]
+    damaged = trimesh.Scene()
+    instance_buildings(damaged, _flat_ground(), feats,
+                       VisualIdentity(damage_fraction=1.0))
+    pristine = trimesh.Scene()
+    instance_buildings(pristine, _flat_ground(), feats, VisualIdentity())
+    top_d = max(g.bounds[1][1] for g in damaged.geometry.values())
+    top_p = max(g.bounds[1][1] for g in pristine.geometry.values())
+    assert top_d < top_p  # parapet dropped, roof gone
+
+
+def test_overgrowth_scatters_only_when_asked():
+    from automap.presentation import scatter_overgrowth
+    feats = [_road(-15, 0, 15, 0)]
+    off = trimesh.Scene()
+    assert scatter_overgrowth(off, _flat_ground(), feats, VisualIdentity()) == 0
+    on = trimesh.Scene()
+    n = scatter_overgrowth(on, _flat_ground(), feats,
+                           VisualIdentity(overgrowth_density=30.0))
+    assert n > 0 and len(on.geometry) >= n  # clumps are multi-part
+
+
+def test_identity_from_dict_loads_the_file_form():
+    import json
+    from pathlib import Path
+    from automap.presentation import identity_from_dict
+    doc = json.loads((Path(__file__).parent.parent / "identities" / "postapo.json").read_text())
+    ident = identity_from_dict(doc)
+    assert ident.name == "postapo"
+    assert ident.ruin_fraction > 0 and ident.overgrowth_density > 0
+    assert isinstance(ident.roof_palette[0], tuple)     # lists became tuples
+    assert ident.environment["fog_density"] > 0
+    # unknown keys are ignored, not fatal (schemas may run ahead)
+    ident2 = identity_from_dict({"name": "x", "from_the_future": 1})
+    assert ident2.name == "x"

@@ -92,3 +92,41 @@ def test_geojson_bounds_rejects_empty():
     from automap.geodata import geojson_bounds
     with pytest.raises(ValueError):
         geojson_bounds({"type": "FeatureCollection", "features": []})
+
+
+# --- LiDAR building heights (the MTL eval's #1 gap) ----------------------------
+
+def test_building_heights_from_dems(tmp_path):
+    import numpy as np
+    from automap.geodata import building_heights_from_dems
+
+    # 60x60 grid at 1 m, centered frame: dtm flat 100, dsm adds a 12 m block
+    # at scene coords x,z in [-10,0] and a 4 m one in [10,20]x[10,20]
+    H = W = 60
+    dtm = np.full((H, W), 100.0, dtype="float32")
+    dsm = dtm.copy()
+
+    def cell(x, z):  # scene xz -> row/col (px=1)
+        return int(round(z + (H - 1) / 2)), int(round(x + (W - 1) / 2))
+
+    r0, c0 = cell(-10, -10); r1, c1 = cell(0, 0)
+    dsm[r0:r1, c0:c1] += 12.0
+    r0, c0 = cell(10, 10); r1, c1 = cell(20, 20)
+    dsm[r0:r1, c0:c1] += 4.0
+
+    t = from_origin(500000, 5000000, 1, 1)
+    for name, arr in (("dtm.tif", dtm), ("dsm.tif", dsm)):
+        with rasterio.open(tmp_path / name, "w", driver="GTiff", count=1,
+                           dtype="float32", width=W, height=H,
+                           crs="EPSG:32618", transform=t, nodata=-9999) as ds:
+            ds.write(arr, 1)
+
+    fps = [
+        [[-9, -9], [-1, -9], [-1, -1], [-9, -1]],     # inside the 12 m block
+        [[11, 11], [19, 11], [19, 19], [11, 19]],     # inside the 4 m block
+        [[-25, 20], [-18, 20], [-18, 27], [-25, 27]], # empty ground -> None
+    ]
+    hs = building_heights_from_dems(tmp_path / "dtm.tif", tmp_path / "dsm.tif", fps)
+    assert abs(hs[0]["height"] - 12.0) < 0.5 and abs(hs[0]["ridge"] - 12.0) < 0.5
+    assert abs(hs[1]["height"] - 4.0) < 0.5
+    assert hs[2] is None

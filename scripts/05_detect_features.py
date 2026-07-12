@@ -254,6 +254,27 @@ def main(
             doc, osm_batch, "osm",
             observed_types={"building", "road", "water"},
             match_dist={"building": cfg.osm_match_dist_m})
+
+        # LiDAR heights: the DSM knows what OSM tags don't. Same footprints,
+        # source "lidar" — per-attribute priority keeps OSM's footprint and
+        # scan's height where present, and lidar outranks tag defaults.
+        osm_fps = [f["footprint"] for f in osm_batch if f.get("type") == "building"]
+        if osm_fps:
+            from automap.geodata import building_heights_from_dems
+            hs = building_heights_from_dems(dtm, dsm, osm_fps)
+            lidar_batch = []
+            for fp, h in zip(osm_fps, hs):
+                if h is None:
+                    continue
+                feat = {"type": "building", "footprint": fp, **h}
+                feat["roof"] = "gable" if h["ridge"] - h["height"] >= 1.5 else "flat"
+                lidar_batch.append(feat)
+            if lidar_batch:
+                doc = worldmodel.fuse(
+                    doc, lidar_batch, "lidar", observed_types={"building"},
+                    match_dist={"building": cfg.osm_match_dist_m})
+            log(f"lidar heights: {len(lidar_batch)}/{len(osm_fps)} footprints measured "
+                f"from DSM-DTM")
     doc = worldmodel.finalize(doc, building_defaults={
         "height": cfg.osm_default_wall, "ridge": cfg.osm_default_ridge})
 

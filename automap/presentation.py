@@ -47,6 +47,39 @@ class VisualIdentity:
     cliff_color: tuple = (0.79, 0.66, 0.48)
     sand_color: tuple = (0.87, 0.78, 0.60)
     seafloor_color: tuple = (0.10, 0.30, 0.36)
+    # --- decay (instance_buildings; all default OFF so existing identities are unchanged) ---
+    ruin_fraction: float = 0.0                  # fraction of buildings collapsed to rubble
+    damage_fraction: float = 0.0                # fraction (of the rest) with broken rooflines
+    weather_variation: float = 0.0              # per-building wall value jitter (0-1, darkens)
+    soot_color: tuple = (0.13, 0.12, 0.11)      # boarded openings / burn marks when decayed
+    rubble_color: tuple = (0.42, 0.38, 0.34)    # collapsed-pile material
+    # --- overgrowth (scatter_overgrowth transformer) ---
+    overgrowth_density: float = 0.0             # clumps per 100 m of road (0 = transformer no-op)
+    weed_colors: tuple = ((0.35, 0.38, 0.18), (0.50, 0.47, 0.24))  # dead-green to straw
+    road_wear: float = 0.0                      # per-road bleach/patch jitter (0-1)
+    # --- atmosphere (emitted as env.json beside the styled glb; applied by the
+    # engine's map_loader — sky, sun, fog, ambient. None = engine defaults) ---
+    environment: dict | None = None
+
+
+def identity_from_dict(doc: dict) -> VisualIdentity:
+    """A visual-identity JSON document -> VisualIdentity.
+
+    The file form of the identity (visual-identity@2.0.0): unknown keys are
+    ignored (schemas may run ahead of this consumer), lists become the tuples
+    the dataclass expects, everything else passes through. Validation against
+    the registry happens at the CLI seam, not here.
+    """
+    import dataclasses
+    kwargs = {}
+    known = {f.name for f in dataclasses.fields(VisualIdentity)}
+    for key, val in doc.items():
+        if key not in known:
+            continue
+        if isinstance(val, list):
+            val = tuple(tuple(v) if isinstance(v, list) else v for v in val)
+        kwargs[key] = val
+    return VisualIdentity(**kwargs)
 
 
 def _flat_material(rgb):
@@ -202,26 +235,37 @@ def _solid(vertices, faces, rgb) -> trimesh.Trimesh:
 
 
 def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
-                         ridge_h: float, roof: str, roof_rgb, identity: VisualIdentity):
+                         ridge_h: float, roof: str, roof_rgb, identity: VisualIdentity,
+                         *, wall_rgb=None, trim_rgb=None, top_offsets=None, skip_roof=False):
     """A stand-in building: wall prism + roof solid, in world coordinates.
 
     corners are 4 ordered (x, z) footprint corners; the body is sunk slightly
     below y0 so slopes leave no gap under the walls.
+
+    Decay hooks (all default to the pristine building): wall_rgb/trim_rgb
+    override the identity colors; top_offsets (4 values) drop individual top
+    corners for a jagged broken parapet; skip_roof leaves the shell open.
     """
     c = np.asarray(corners, float)
     sink = 0.5
     wall_h = max(wall_h, 2.0)
+    wall_rgb = identity.wall_color if wall_rgb is None else wall_rgb
+    trim_rgb = identity.trim_color if trim_rgb is None else trim_rgb
     base = np.column_stack([c[:, 0], np.full(4, y0 - sink), c[:, 1]])
     top = base.copy()
     top[:, 1] = y0 + wall_h
+    if top_offsets is not None:
+        top[:, 1] -= np.clip(np.asarray(top_offsets, float), 0.0, wall_h - 1.0)
     quads = [[i, (i + 1) % 4, 4 + (i + 1) % 4, 4 + i] for i in range(4)] + [[3, 2, 1, 0], [4, 5, 6, 7]]
     body = _solid(np.vstack([base, top]),
                   [t for a, b, d, e in quads for t in ([a, b, d], [a, d, e])],
-                  identity.wall_color)
+                  wall_rgb)
 
     parts = [body]
     ridge_pts = None
-    if roof == "gable" and ridge_h > wall_h + 0.2:
+    if skip_roof:
+        pass
+    elif roof == "gable" and ridge_h > wall_h + 0.2:
         # ridge along the long axis: above the midpoints of the two short edges
         long01 = np.linalg.norm(c[1] - c[0]) >= np.linalg.norm(c[2] - c[1])
         (sa, sb), (sc_, sd) = ((1, 2), (3, 0)) if long01 else ((0, 1), (2, 3))
@@ -253,7 +297,7 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
         chimney = trimesh.creation.box(extents=[0.6, 1.6, 0.6])
         chimney.apply_translation([spot[0], spot[1] + 0.4, spot[2]])
         chimney.visual = trimesh.visual.TextureVisuals(
-            material=_flat_material(identity.trim_color))
+            material=_flat_material(trim_rgb))
         parts.append(chimney)
         # door + window: thin trim-colored boxes proud of the longest wall
         e01, e12 = c[1] - c[0], c[2] - c[1]
@@ -272,8 +316,54 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
             box.apply_transform(rot)
             box.apply_translation([p[0], y_c, p[1]])
             box.visual = trimesh.visual.TextureVisuals(
-                material=_flat_material(identity.trim_color))
+                material=_flat_material(trim_rgb))
             parts.append(box)
+    return parts
+
+
+def rubble_parts(corners: np.ndarray, y0: float, wall_h: float,
+                 identity: VisualIdentity, rng: np.random.Generator):
+    """A collapsed building: a low debris mound + one or two remnant wall slabs.
+
+    Deterministic for a given rng; heights scale with what stood there so a
+    fallen triplex leaves more debris than a fallen shed.
+    """
+    c = np.asarray(corners, float)
+    y_top = min(max(wall_h * 0.25, 0.8), 3.0)
+    parts = []
+    for _ in range(int(rng.integers(5, 9))):
+        # bilinear sample keeps every pile inside the footprint quad
+        u, v = rng.uniform(0.15, 0.85), rng.uniform(0.15, 0.85)
+        p = (c[0] * (1 - u) + c[1] * u) * (1 - v) + (c[3] * (1 - u) + c[2] * u) * v
+        ext = [float(rng.uniform(1.2, 3.5)), float(rng.uniform(0.4, y_top)),
+               float(rng.uniform(1.2, 3.5))]
+        pile = trimesh.creation.box(extents=ext)
+        pile.apply_transform(trimesh.transformations.rotation_matrix(
+            float(rng.uniform(0, np.pi)), [0, 1, 0]))
+        pile.apply_translation([p[0], y0 + ext[1] / 2.0 - 0.15, p[1]])
+        shade = 0.85 + 0.3 * float(rng.random())
+        pile.visual = trimesh.visual.TextureVisuals(material=_flat_material(
+            tuple(min(1.0, ch * shade) for ch in identity.rubble_color)))
+        parts.append(pile)
+    # remnant wall fragments: charred stubs along random footprint edges
+    char = tuple(0.55 * w + 0.45 * s for w, s in zip(identity.wall_color, identity.soot_color))
+    for i in rng.choice(4, size=int(rng.integers(1, 3)), replace=False):
+        a, b = c[i], c[(i + 1) % 4]
+        frac0 = float(rng.uniform(0.0, 0.4))
+        frac1 = frac0 + float(rng.uniform(0.25, 0.5))
+        pa, pb = a + (b - a) * frac0, a + (b - a) * min(frac1, 1.0)
+        h = wall_h * float(rng.uniform(0.25, 0.55))
+        seg = pb - pa
+        length = float(np.linalg.norm(seg))
+        if length < 1.0:
+            continue
+        slab = trimesh.creation.box(extents=[length, h, 0.3])
+        ang = float(np.arctan2(-seg[1], seg[0]))
+        slab.apply_transform(trimesh.transformations.rotation_matrix(ang, [0, 1, 0]))
+        mid = (pa + pb) / 2.0
+        slab.apply_translation([mid[0], y0 + h / 2.0 - 0.15, mid[1]])
+        slab.visual = trimesh.visual.TextureVisuals(material=_flat_material(char))
+        parts.append(slab)
     return parts
 
 
@@ -331,6 +421,41 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
             rgb = identity.roof_palette[int(rng.integers(len(identity.roof_palette)))]
         elif identity.roof_saturation != 1.0:
             rgb = _saturate(rgb, identity.roof_saturation)
+
+        decay_on = (identity.ruin_fraction > 0 or identity.damage_fraction > 0
+                    or identity.weather_variation > 0)
+        if decay_on:
+            # a SEPARATE deterministic stream (offset seed point) so decay
+            # rolls never perturb the roof-palette draw above
+            drng = _instance_rng(c.mean(axis=0)[0] + 17.0, c.mean(axis=0)[1] - 31.0)
+            roll = float(drng.random())
+            fade = float(drng.uniform(0.0, identity.weather_variation))
+            wall = tuple(ch * (1.0 - 0.45 * fade) for ch in identity.wall_color)
+            if roll < identity.ruin_fraction:
+                for part in rubble_parts(c, y0, b["height"], identity, drng):
+                    scene.add_geometry(part)
+                placed += 1
+                continue
+            if roll < identity.ruin_fraction + identity.damage_fraction:
+                offsets = drng.uniform(0.4, max(0.5, b["height"] * 0.45), 4)
+                soot_wall = tuple(0.7 * w + 0.3 * s
+                                  for w, s in zip(wall, identity.soot_color))
+                for part in proxy_building_parts(
+                        c, y0, b["height"], b.get("ridge", b["height"]),
+                        b.get("roof", "flat"), rgb, identity,
+                        wall_rgb=soot_wall, trim_rgb=identity.soot_color,
+                        top_offsets=offsets, skip_roof=True):
+                    scene.add_geometry(part)
+                placed += 1
+                continue
+            for part in proxy_building_parts(
+                    c, y0, b["height"], b.get("ridge", b["height"]),
+                    b.get("roof", "flat"), rgb, identity,
+                    wall_rgb=wall, trim_rgb=identity.soot_color):
+                scene.add_geometry(part)
+            placed += 1
+            continue
+
         for part in proxy_building_parts(
                 c, y0, b["height"], b.get("ridge", b["height"]),
                 b.get("roof", "flat"), rgb, identity):
@@ -384,13 +509,69 @@ def road_ribbon(path: np.ndarray, width: float, ground: trimesh.Trimesh) -> trim
 def instance_roads(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
     placed = 0
     for r in (f for f in features if f.get("type") == "road"):
-        ribbon = road_ribbon(np.asarray(r["path"]), r.get("width", 5.0), ground)
+        path = np.asarray(r["path"])
+        ribbon = road_ribbon(path, r.get("width", 5.0), ground)
         if ribbon is None:
             continue
         color = identity.path_color if r.get("kind") in DIRT_KINDS else identity.road_color
+        if identity.road_wear > 0:
+            # per-road bleach: decades of sun and no resurfacing crews
+            wrng = _instance_rng(path[0][0] + 3.0, path[0][1] + 5.0)
+            lift = float(wrng.uniform(0.0, identity.road_wear))
+            color = tuple(min(1.0, ch + (0.55 - ch) * lift * 0.8) for ch in color)
         ribbon.visual = trimesh.visual.TextureVisuals(material=_flat_material(color))
         scene.add_geometry(ribbon)
         placed += 1
+    return placed
+
+
+def weed_clump_parts(x: float, y: float, z: float, identity: VisualIdentity,
+                     rng: np.random.Generator):
+    """A small vegetation clump: 2-4 squashed spheres in the identity's weed colors."""
+    parts = []
+    for _ in range(int(rng.integers(2, 5))):
+        r = float(rng.uniform(0.35, 1.1))
+        blob = trimesh.creation.icosphere(subdivisions=1, radius=r)
+        blob.apply_scale([1.0, float(rng.uniform(0.35, 0.7)), 1.0])
+        blob.apply_translation([x + float(rng.uniform(-0.8, 0.8)), y + r * 0.25,
+                                z + float(rng.uniform(-0.8, 0.8))])
+        base = identity.weed_colors[int(rng.integers(len(identity.weed_colors)))]
+        shade = 0.85 + 0.3 * float(rng.random())
+        blob.visual = trimesh.visual.TextureVisuals(material=_flat_material(
+            tuple(min(1.0, ch * shade) for ch in base)))
+        parts.append(blob)
+    return parts
+
+
+def scatter_overgrowth(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
+    """Vegetation reclaiming the streets: weed clumps scattered along roads.
+
+    Density is clumps per 100 m of road. Deterministic per station; capped so
+    a dense city cannot explode the scene. No-op at density 0 (the default),
+    so identities that don't ask for overgrowth are untouched.
+    """
+    if identity.overgrowth_density <= 0:
+        return 0
+    step = 100.0 / identity.overgrowth_density
+    placed = 0
+    cap = 3000
+    for r in (f for f in features if f.get("type") == "road"):
+        path = _resample_path(np.asarray(r["path"], float), max(step, 4.0))
+        width = r.get("width", 5.0)
+        for px, pz in path:
+            rng = _instance_rng(px + 11.0, pz - 7.0)
+            if rng.random() > 0.75:   # leave stretches clear so it reads patchy
+                continue
+            ox = float(rng.uniform(-0.6, 0.6)) * width
+            oz = float(rng.uniform(-0.6, 0.6)) * width
+            y = _ground_heights(ground, np.array([[px + ox, pz + oz]]))[0]
+            if np.isnan(y):
+                continue
+            for part in weed_clump_parts(px + ox, float(y), pz + oz, identity, rng):
+                scene.add_geometry(part)
+            placed += 1
+            if placed >= cap:
+                return placed
     return placed
 
 
@@ -482,6 +663,7 @@ TRANSFORMERS = {
     "instance_buildings": instance_buildings,
     "instance_roads": instance_roads,
     "instance_water": instance_water,
+    "scatter_overgrowth": scatter_overgrowth,
 }
 
 

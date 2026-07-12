@@ -41,10 +41,75 @@ func _ready() -> void:
 		add_child(map)
 		var count := _add_trimesh_collision(map)
 		print("[engine] loaded %s (%d mesh collider(s))" % [source, count])
+		_apply_environment(source)
 		_place_player(map)
 	else:
 		_build_procedural_ground()
 		print("[engine] no scene found — procedural ground")
+
+
+## Identity → atmosphere seam: a published scene may carry an env.json beside its
+## glb (written by stage 6 from the visual identity's `environment` block, copied
+## by stage 7). When present it overrides the shell's sky/sun/fog so the LOOK of
+## a place — dusty post-apocalyptic dusk, postcard noon — ships as data with the
+## scene. Absent file = engine defaults; malformed file = warn and keep defaults.
+func _apply_environment(source: String) -> void:
+	var base := source.get_base_dir()
+	var candidates := [base + "/env.json",
+		base + "/" + source.get_file().get_basename() + ".env.json"]
+	var env_path := ""
+	for c in candidates:
+		if FileAccess.file_exists(c):
+			env_path = c
+			break
+	if env_path == "":
+		return
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(env_path))
+	if typeof(parsed) != TYPE_DICTIONARY:
+		push_warning("[engine] %s is not a JSON object — environment kept default" % env_path)
+		return
+	var d: Dictionary = parsed
+
+	var we := get_node_or_null("WorldEnvironment") as WorldEnvironment
+	if we != null:
+		var e := Environment.new()
+		e.background_mode = Environment.BG_SKY
+		var mat := ProceduralSkyMaterial.new()
+		if d.has("sky_top"): mat.sky_top_color = _rgb(d["sky_top"])
+		if d.has("sky_horizon"):
+			mat.sky_horizon_color = _rgb(d["sky_horizon"])
+			mat.ground_horizon_color = _rgb(d["sky_horizon"])
+			mat.ground_bottom_color = _rgb(d["sky_horizon"]).darkened(0.6)
+		var sky := Sky.new()
+		sky.sky_material = mat
+		e.sky = sky
+		e.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+		e.ambient_light_sky_contribution = 1.0
+		if d.has("ambient_energy"): e.ambient_light_energy = float(d["ambient_energy"])
+		e.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+		if d.has("fog_color") and d.has("fog_density"):
+			e.fog_enabled = true
+			e.fog_light_color = _rgb(d["fog_color"])
+			e.fog_density = float(d["fog_density"])
+		if d.has("saturation"):
+			e.adjustment_enabled = true
+			e.adjustment_saturation = float(d["saturation"])
+		we.environment = e
+
+	var sun := get_node_or_null("Sun") as DirectionalLight3D
+	if sun != null:
+		if d.has("sun_color"): sun.light_color = _rgb(d["sun_color"])
+		if d.has("sun_energy"): sun.light_energy = float(d["sun_energy"])
+		if d.has("sun_elevation_deg"):
+			var az := float(d.get("sun_azimuth_deg", 35.0))
+			sun.rotation_degrees = Vector3(-float(d["sun_elevation_deg"]), az, 0.0)
+	print("[engine] environment '%s' applied from %s" % [str(d.get("identity", "?")), env_path])
+
+
+static func _rgb(v: Variant) -> Color:
+	if v is Array and v.size() >= 3:
+		return Color(float(v[0]), float(v[1]), float(v[2]))
+	return Color.MAGENTA  # loud wrong-shape signal, never a crash
 
 
 func _resolve_scene_path() -> String:

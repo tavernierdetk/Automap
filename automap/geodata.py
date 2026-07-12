@@ -33,6 +33,71 @@ def utm_epsg(lon: float, lat: float) -> str:
     return f"EPSG:{(32600 if lat >= 0 else 32700) + zone}"
 
 
+def building_heights_from_dems(
+    dtm_path: str | Path,
+    dsm_path: str | Path,
+    footprints: list,
+    *,
+    wall_pct: float = 50.0,
+    ridge_pct: float = 90.0,
+    min_height: float = 2.5,
+    max_height: float = 150.0,
+    min_cells: int = 12,
+) -> list[dict | None]:
+    """Per-footprint building heights from the DSM−DTM difference.
+
+    The eval's #1 gap: OSM height tags are sparse (Plateau run: 1,492 of
+    1,533 buildings on the 3 m default) while the fetched LiDAR knows the
+    truth. For each footprint (scene-XZ coords, the frame stage 5 uses):
+    rasterize onto the DEM grid, take percentiles of the positive DSM−DTM
+    cells inside — wall height at wall_pct, ridge at ridge_pct (a pitched
+    roof separates them; a flat one doesn't). Returns one
+    {height, ridge} | None per footprint; None (too few cells, implausible
+    value) means "no observation", never a guess.
+    """
+    from rasterio import features as rio_features
+    from affine import Affine
+
+    with rasterio.open(dsm_path) as s, rasterio.open(dtm_path) as t:
+        dsm = np.ma.filled(s.read(1, masked=True).astype(float), np.nan)
+        dtm = np.ma.filled(t.read(1, masked=True).astype(float), np.nan)
+        px = abs(s.transform.a)
+    if dsm.shape != dtm.shape:
+        raise ValueError(f"DSM {dsm.shape} and DTM {dtm.shape} grids differ")
+    H, W = dsm.shape
+    diff = dsm - dtm
+
+    # one rasterize pass: cell -> footprint index + 1 (0 = no building)
+    shapes = []
+    for i, fp in enumerate(footprints):
+        c = np.asarray(fp, float)
+        cols = c[:, 0] / px + (W - 1) / 2.0
+        rows = c[:, 1] / px + (H - 1) / 2.0
+        ring = [(float(cc), float(rr)) for cc, rr in zip(cols, rows)]
+        shapes.append(({"type": "Polygon", "coordinates": [ring + ring[:1]]}, i + 1))
+    idx = rio_features.rasterize(shapes, out_shape=(H, W), transform=Affine.identity(),
+                                 fill=0, dtype="int32")
+
+    out: list[dict | None] = [None] * len(footprints)
+    flat_idx = idx.ravel()
+    flat_diff = diff.ravel()
+    order = np.argsort(flat_idx, kind="stable")
+    sorted_idx = flat_idx[order]
+    starts = np.searchsorted(sorted_idx, np.arange(1, len(footprints) + 1))
+    ends = np.searchsorted(sorted_idx, np.arange(1, len(footprints) + 1), side="right")
+    for i, (a, b) in enumerate(zip(starts, ends)):
+        vals = flat_diff[order[a:b]]
+        vals = vals[np.isfinite(vals) & (vals > 0.5)]
+        if len(vals) < min_cells:
+            continue
+        wall = float(np.percentile(vals, wall_pct))
+        ridge = float(np.percentile(vals, ridge_pct))
+        if not (min_height <= wall <= max_height):
+            continue
+        out[i] = {"height": round(wall, 2), "ridge": round(max(ridge, wall), 2)}
+    return out
+
+
 def geojson_bounds(doc: dict) -> tuple[float, float, float, float]:
     """(west, south, east, north) over every coordinate in a GeoJSON document.
 

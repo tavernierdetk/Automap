@@ -1,0 +1,151 @@
+{
+  "name": "postapo",
+  "transformers": [
+    "style_terrain",
+    "instance_trees",
+    "instance_buildings",
+    "instance_roads",
+    "instance_water",
+    "scatter_overgrowth"
+  ],
+  "tree_kit": "varied",
+  "trunk_color": [
+    0.28,
+    0.23,
+    0.18
+  ],
+  "canopy_color": [
+    0.33,
+    0.34,
+    0.16
+  ],
+  "building_details": true,
+  "wall_color": [
+    0.42,
+    0.31,
+    0.25
+  ],
+  "trim_color": [
+    0.35,
+    0.32,
+    0.28
+  ],
+  "roof_saturation": 0.6,
+  "roof_palette": [
+    [
+      0.38,
+      0.24,
+      0.17
+    ],
+    [
+      0.24,
+      0.22,
+      0.2
+    ],
+    [
+      0.34,
+      0.36,
+      0.32
+    ],
+    [
+      0.3,
+      0.36,
+      0.28
+    ]
+  ],
+  "ruin_fraction": 0.18,
+  "damage_fraction": 0.4,
+  "weather_variation": 0.8,
+  "soot_color": [
+    0.12,
+    0.11,
+    0.1
+  ],
+  "rubble_color": [
+    0.44,
+    0.4,
+    0.35
+  ],
+  "overgrowth_density": 6.0,
+  "weed_colors": [
+    [
+      0.25,
+      0.3,
+      0.12
+    ],
+    [
+      0.38,
+      0.36,
+      0.16
+    ],
+    [
+      0.2,
+      0.26,
+      0.14
+    ]
+  ],
+  "road_wear": 0.8,
+  "road_color": [
+    0.36,
+    0.35,
+    0.33
+  ],
+  "path_color": [
+    0.48,
+    0.44,
+    0.36
+  ],
+  "water_color": [
+    0.22,
+    0.28,
+    0.26
+  ],
+  "grass_color": [
+    0.47,
+    0.42,
+    0.27
+  ],
+  "cliff_color": [
+    0.48,
+    0.44,
+    0.4
+  ],
+  "sand_color": [
+    0.62,
+    0.56,
+    0.44
+  ],
+  "seafloor_color": [
+    0.14,
+    0.2,
+    0.2
+  ],
+  "environment": {
+    "sky_top": [
+      0.38,
+      0.32,
+      0.26
+    ],
+    "sky_horizon": [
+      0.66,
+      0.52,
+      0.36
+    ],
+    "sun_color": [
+      1.0,
+      0.78,
+      0.52
+    ],
+    "sun_energy": 1.3,
+    "sun_elevation_deg": 22,
+    "sun_azimuth_deg": 40,
+    "ambient_energy": 0.7,
+    "fog_color": [
+      0.58,
+      0.48,
+      0.36
+    ],
+    "fog_density": 0.0009,
+    "saturation": 0.88
+  }
+}
