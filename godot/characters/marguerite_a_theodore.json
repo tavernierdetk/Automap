@@ -1,0 +1,29 @@
+{
+  "name": "Marguerite à Théodore",
+  "role": "retired lighthouse keeper of La Grave",
+  "personality": {
+    "traits": ["weathered", "dry-humoured", "unhurried", "sharp-eyed"],
+    "voice": "Madelinot cadence, short sentences, wind and tide metaphors, never raises her voice",
+    "goal": "find out who has been mooring at the old quay after dark"
+  },
+  "backstory": "Kept the Anse-à-la-Cabane light for thirty-one years before the automation came. Now she mends nets she no longer casts and watches the harbour the way she once watched the horizon. She knows every hull in Havre-Aubert by its silhouette.",
+  "appearance": {
+    "height_m": 1.62,
+    "build": 1.0,
+    "skin_color": [0.76, 0.57, 0.43],
+    "hair_color": [0.9, 0.9, 0.9],
+    "shirt_color": [0.85, 0.75, 0.2],
+    "pants_color": [0.12, 0.16, 0.32],
+    "hairstyle": "medium",
+    "glasses": true,
+    "facial_hair": false
+  },
+  "stats": {
+    "creature_affinity": 5,
+    "chaos_mastery": 4,
+    "kinesthetic": 3,
+    "lucidity": 8,
+    "terrain_control": 6
+  },
+  "dialogue_seed": "You walked up the wrong side of the jetty. Everyone does, first time. Sit — the wind's about to turn and I don't repeat myself twice."
+}

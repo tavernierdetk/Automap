@@ -20,6 +20,8 @@ from __future__ import annotations
 
 import base64
 import json
+import re
+import unicodedata
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
@@ -185,6 +187,32 @@ def parse_attributes(raw: dict) -> CharacterAttributes:
         "hairstyle": a.hairstyle,
     }
     return a
+
+
+def slugify(name: str) -> str:
+    """Display name -> file slug ('Marguerite à Théodore' -> 'marguerite_a_theodore')."""
+    ascii_name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    slug = re.sub(r"[^a-z0-9]+", "_", ascii_name.lower()).strip("_")
+    return slug or "character"
+
+
+def appearance_to_attributes(appearance: dict) -> CharacterAttributes:
+    """The character-profile@2.0.0 `appearance` section -> rig attributes.
+
+    v2 nests the 1.0.0 contract unchanged, so this is a straight field lift;
+    schema validation upstream guarantees shape and bounds.
+    """
+    return CharacterAttributes(
+        height_m=float(appearance["height_m"]),
+        build=float(appearance["build"]),
+        skin_color=tuple(appearance["skin_color"]),
+        hair_color=tuple(appearance["hair_color"]),
+        shirt_color=tuple(appearance["shirt_color"]),
+        pants_color=tuple(appearance["pants_color"]),
+        hairstyle=str(appearance["hairstyle"]),
+        glasses=bool(appearance["glasses"]),
+        facial_hair=bool(appearance["facial_hair"]),
+    )
 
 
 def _color_literal(c: Rgb) -> str:

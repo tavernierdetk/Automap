@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dgq8r808wkl62" path="res://engine/map_loader.gd" id="1_engine"]
 [ext_resource type="Script" uid="uid://bq8rkkpq70jjk" path="res://scripts/player_tps.gd" id="3_player"]
 [ext_resource type="PackedScene" uid="uid://dsuqn2c1bvy0x" path="res://scenes/character.tscn" id="4_character"]
-[ext_resource type="Resource" path="res://profiles/generated/images.tres" id="5_profile"]
+[ext_resource type="Resource" path="res://profiles/marguerite_a_theodore.tres" id="5_profile"]
 [ext_resource type="Script" uid="uid://f5gcjhh3tk44" path="res://game/world_director.gd" id="6_world"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_mat"]

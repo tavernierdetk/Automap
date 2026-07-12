@@ -4,7 +4,7 @@ We will be building the overarching structure first, the establishing indiivdual
 
 Before we go into brainstorming mode to establish current possible weak spot, inflection points and architecture design, we need to keep a few things in mind. No current components need to be designed around, we can consider everything done so far as purely exploratory, and if useful we can re-purpose and integrate into our larger design, but it definitely does not have to be so. 
 
-Lets also see if we can take the engine developped for our roman steampuk game andwhat can be re-used or re-tooled here.
+Lets also see if we can take the engine developped for our roman steampuk game (entropy) and what can be re-used or re-tooled here. (codebase is located here: https://github.com/tavernierdetk/EntropySnapShot.git) and the pixel-art asset creator (https://github.com/tavernierdetk/PixelAssetCreator.git): 
 
 Lets look at using google maps/open maps api to associate GPS coordinates provided by the drone to real-life data, and whether a data-source merge engine can be used. 
 
@@ -16,7 +16,7 @@ Getting to a full character creation feature with claude, using auto-generated a
 
 Modular engine, where terrain ingestion to level design is a separate pipeline including styling, with clrearly defined boundaries,  character/asset creation is another one, and game mechanics is a third, all with appropriately designed sub-components. 
 
-Separation of infrasteucture level assets, and scenery/character-level assets. 
+Separation of infrastructure level assets, and scenery/character-level assets. 
 
 Could there be a BIM backbone to the asset creation, using IFC backbone?
 IFC level could be the determining factor of what belongs to which.

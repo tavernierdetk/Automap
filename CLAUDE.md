@@ -74,6 +74,14 @@ clean of it before any commit.
   override with source `bim`. `bim` outranks detectors in the fusion engine,
   so the drop-in survives every re-run. Stage 6 renders the asset (add
   `--restyle` to repaint it in the identity).
+- **Character admission (stage 10)**: `scripts/10_create_character.py
+  --character godot/characters/<slug>.json [--play]` gates a
+  `character-profile@2.0.0` JSON through schema validation + the autosim
+  balance harness (`automap/balance.py`; aim stat totals near 25–27), then
+  projects `godot/profiles/<slug>.tres`; `--play` makes it the player in every
+  published scene (edits the inherited game.tscn shell). The interview flow
+  that fills the JSON is the `/create-character` skill. The JSON is the
+  committed source of truth; never hand-write the `.tres` or skip the gate.
 
 ## Prerequisites (status as of 2026-06-30)
 - ffmpeg ✅ (arm64, homebrew)

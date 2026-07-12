@@ -110,3 +110,28 @@ def test_photo_to_profile_dry_run_writes_nothing(tmp_path):
 
     assert not out.exists()              # dry run: nothing on disk
     assert attrs.hairstyle == "afro"     # but attributes still returned
+
+
+# --- v2 profile helpers (stage 10, the character creator's projection) --------
+
+def test_slugify_flattens_accents_and_punctuation():
+    from automap.character import slugify
+    assert slugify("Marguerite à Théodore") == "marguerite_a_theodore"
+    assert slugify("  --Étienne!! ") == "etienne"
+    assert slugify("漢字") == "character"     # nothing survives -> safe fallback
+
+
+def test_appearance_to_attributes_lifts_the_v2_section():
+    from automap.character import appearance_to_attributes, attributes_to_tres
+    appearance = {
+        "height_m": 1.62, "build": 1.0,
+        "skin_color": [0.76, 0.57, 0.43], "hair_color": [0.9, 0.9, 0.9],
+        "shirt_color": [0.85, 0.75, 0.2], "pants_color": [0.12, 0.16, 0.32],
+        "hairstyle": "medium", "glasses": True, "facial_hair": False,
+    }
+    attrs = appearance_to_attributes(appearance)
+    assert attrs.height_m == 1.62
+    assert attrs.skin_color == (0.76, 0.57, 0.43)
+    body = attributes_to_tres(attrs)          # projects to the same .tres stage A reads
+    assert 'hairstyle = "medium"' in body
+    assert "glasses = true" in body

@@ -58,8 +58,8 @@ flowchart LR
   %% ==================== GENERATIVE ORCHESTRATION ====================
   subgraph GENAI["Generative orchestration"]
     direction TB
-    llm["LLM spec-fillers (Claude)<br/>fills specs, never binaries"]:::partial
-    gate["Admission gates<br/>schema validation · autosim balance"]:::partial
+    llm["LLM spec-fillers (Claude)<br/>fills specs, never binaries<br/>v1 surface: /create-character session"]:::have
+    gate["Admission gates<br/>schema validation · autosim balance<br/>(balance.py: cast duels vs envelope)"]:::have
     llm --> gate
   end
 
@@ -221,6 +221,18 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-12 — v0.9: **character creator v1** (brief §9 step 4, the first
+  LLM-fills-spec flow): a Claude Code session (`/create-character` skill)
+  interviews and writes `character-profile@2.0.0` (new in platform-specs:
+  narrative + appearance + the Entropy five-attribute stat block);
+  `scripts/10_create_character.py` admits it through schema validation + the
+  rebuilt AutoSim pattern (`automap/balance.py` — seeded chaos RNG, short ATB
+  duels vs a self-admitting reference cast, difficulty envelope) and projects
+  the appearance to the rig's `.tres`; `--play` makes it the player via the
+  inherited game.tscn shell. Proven end-to-end on Marguerite à Théodore in
+  lagrave (28-point draft rejected, 26-point revision admitted at 0.42).
+  `llm` and `gate` flip to have. Envelope graduates to the game spec later;
+  NPC placement + dialogue-tree generation are the logged follow-ups.
 - 2026-07-10 — v0.8: **building substitution** — drop an IFC plan in to
   replace a generated building (`scripts/09_replace_building.py`). from_ifc +
   `automap/placement.py` (georeference or footprint-fit) + `ifc.ifc_to_glb`
