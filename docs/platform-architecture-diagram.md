@@ -221,6 +221,17 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-12 — v0.10: **plateau locked (§9 step 5) + populate-the-world
+  slice**: with §9 steps 1–4 done, the next plateau is **D — game-creation
+  studio**, built as thin vertical slices (B-hardening and genserver
+  provisioning stay side threads; C gated behind B). Slice 2 lands the same
+  day: the admitted character becomes an NPC — `godot/scenes/lagrave/game.json`
+  (LLM-fills-spec, validated against game@1.0.0, zero schema changes needed:
+  npcs[].profile and dialogue_variants already existed) places Marguerite on
+  the harbour front with a quest hung on her v2 `personality.goal`; the
+  headless integration test plays her loop to completion on the real terrain
+  (`[lagrave populate]`, ALL PASS). Next narrative step: dialogue-tree
+  *generation* behind the queued dialogue-node schema.
 - 2026-07-12 — v0.9: **character creator v1** (brief §9 step 4, the first
   LLM-fills-spec flow): a Claude Code session (`/create-character` skill)
   interviews and writes `character-profile@2.0.0` (new in platform-specs:

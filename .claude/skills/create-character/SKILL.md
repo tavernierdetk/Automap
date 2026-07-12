@@ -40,6 +40,14 @@ you never write binaries or bypass the gate.**
    (e.g. lagrave) then renders them as the third-person body. To see it:
    `open godot/scenes/lagrave/sf_lagrave.tscn` in Godot, or the project's run
    flow.
+7. **Or place them as an NPC**: append to the scene's
+   `godot/scenes/<name>/game.json` — `npcs[]` entry with their `profile`
+   `.tres`, an anchor, dialogue trees in their voice (open with the
+   `dialogue_seed`), and optionally a quest hung on their `personality.goal`
+   with `dialogue_variants` (turn_in / active / complete). Validate against
+   `game@1.0.0` and extend the lagrave chapter pattern in
+   `godot/tests/test_game_integration.gd` if the scene is test-covered.
+   Marguerite in lagrave is the worked example.
 
 ## Rules
 

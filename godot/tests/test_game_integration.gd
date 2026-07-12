@@ -38,6 +38,7 @@ func _ready() -> void:
 	GameEvents.zone_reached.connect(func(id): _zones_hit.append(id))
 
 	await _test_phare_slice()
+	await _test_lagrave_populate()
 	await _test_procedural_fallback()
 
 	if _fail == 0:
@@ -183,6 +184,85 @@ func _test_phare_slice() -> void:
 	fisher.call("interact")
 	_check(_lines.size() == 1 and "Knew you had it in you" in str(_lines[0].text),
 		"Maren reacts to the completed quest")
+	DialogueManager.advance()
+
+	shell.queue_free()
+	await _physics_frames(2)
+
+
+# --- the populated B-world: an ADMITTED character as NPC (lagrave) --------------
+# The character-creator seam: godot/scenes/lagrave/game.json places Marguerite —
+# a stage-10-admitted CharacterProfile — on the geodata-built scene, with a
+# quest hung on her v2 `goal`. Asserts the profile on the spawned figure IS the
+# admitted .tres, then plays her loop through the same real triggers as phare.
+
+func _test_lagrave_populate() -> void:
+	print("[lagrave populate (admitted character as NPC)]")
+	var shell: Node = (load("res://scenes/lagrave/sf_lagrave.tscn") as PackedScene).instantiate()
+	add_child(shell)
+
+	var npcs := await _await_npcs(shell, 1)
+	_check(npcs.size() == 1 and str(npcs[0].get("display_name")) == "Marguerite à Théodore",
+		"game.json spawns Marguerite (got %d npc(s))" % npcs.size())
+	if npcs.is_empty():
+		shell.queue_free()
+		return
+	var marguerite: Node3D = npcs[0]
+
+	# The figure wears the ADMITTED profile — the stage-10 projection, not a default.
+	var figure: Node = marguerite.get_node("Character")
+	var prof: Resource = figure.get("profile")
+	_check(prof != null and prof.resource_path == "res://profiles/marguerite_a_theodore.tres",
+		"NPC wears the admitted character's .tres")
+	_check(prof != null and str(prof.get("hairstyle")) == "medium" and bool(prof.get("glasses")),
+		"profile traits survive the projection (hairstyle/glasses)")
+
+	var zones := _zones_under(shell.get_node("Map"))
+	_check(zones.size() == 1 and str(zones[0].get("zone_id")) == "quay", "zone 'quay' spawned")
+	var zone: Area3D = zones[0]
+	_check(QuestManager.state_of("old_quay") == "inactive"
+		and QuestManager.title_of("old_quay") == "Who moors at the old quay?",
+		"quest 'old_quay' registered, inactive")
+
+	var player: CharacterBody3D = shell.get_node("Player")
+	await get_tree().physics_frame
+	for actor in [marguerite, zone]:
+		var gap := _surface_gap(actor, [player])
+		_check(gap < 1.0, "%s on terrain surface (gap %.2f m)"
+			% [str(actor.get("display_name")) if actor.get("display_name") else "zone", gap])
+
+	# Accept her quest: intro is two linear nodes, then the choice.
+	_lines.clear(); _finished.clear()
+	marguerite.call("interact")
+	_check(_lines.size() == 1 and "wrong side of the jetty" in str(_lines[0].text),
+		"intro opens in her voice (the dialogue_seed line)")
+	DialogueManager.advance()  # -> who
+	DialogueManager.advance()  # -> ask (choices)
+	_check(_lines.size() == 3 and (_lines[2].choices as Array).size() == 2, "ask node shows 2 choices")
+	DialogueManager.choose(0)  # "I'll go look." -> offer_quest old_quay
+	DialogueManager.advance()  # thanks -> end
+	_check(QuestManager.state_of("old_quay") == "active", "choice activates 'old_quay'")
+
+	# Walk to the quay, then report back through the turn-in variant.
+	_teleport(player, zone.global_position + Vector3(0, 1.0, 0))
+	await _physics_frames(4)
+	_check(_zones_hit.has("quay"), "entering the quay fires zone_reached")
+	_check(_last_objective_for("old_quay").get("text", "") == "Tell Marguerite what you saw",
+		"objective advances to the report-back step")
+
+	_teleport(player, marguerite.global_position + Vector3(1.0, 0.5, 0))
+	await _physics_frames(4)
+	_lines.clear()
+	marguerite.call("interact")
+	_check(_lines.size() == 1 and "read it on your face" in str(_lines[0].text),
+		"turn-in variant plays on report-back")
+	DialogueManager.advance()  # -> read
+	DialogueManager.advance()  # -> end (outcome reported)
+	_check(QuestManager.state_of("old_quay") == "complete", "reporting back completes the quest")
+
+	_lines.clear()
+	marguerite.call("interact")
+	_check(_lines.size() == 1 and "Ovila" in str(_lines[0].text), "post-quest epilogue plays")
 	DialogueManager.advance()
 
 	shell.queue_free()

@@ -82,6 +82,12 @@ clean of it before any commit.
   published scene (edits the inherited game.tscn shell). The interview flow
   that fills the JSON is the `/create-character` skill. The JSON is the
   committed source of truth; never hand-write the `.tres` or skip the gate.
+- **Populate a scene**: admitted characters become NPCs via the scene's
+  `godot/scenes/<name>/game.json` (`npcs[].profile` + `dialogue_variants`;
+  validate against `game@1.0.0`). Worked example: Marguerite's old-quay quest
+  in lagrave, played to completion headless by `test_game_integration.tscn`
+  (`[lagrave populate]`). Platform plateau locked 2026-07-12: **D
+  (game-creation studio) in thin vertical slices** — see the diagram changelog.
 
 ## Prerequisites (status as of 2026-06-30)
 - ffmpeg ✅ (arm64, homebrew)

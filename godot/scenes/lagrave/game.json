@@ -1,0 +1,104 @@
+{
+  "spawn": { "anchor": { "xz_frac": [0.5004, 0.5127] } },
+
+  "npcs": [
+    {
+      "id": "marguerite",
+      "name": "Marguerite à Théodore",
+      "profile": "res://profiles/marguerite_a_theodore.tres",
+      "anchor": { "xz_frac": [0.5201, 0.5275] },
+      "dialogue": "marguerite_intro",
+      "dialogue_variants": [
+        { "when": "turn_in",  "quest": "old_quay", "tree": "marguerite_report"   },
+        { "when": "active",   "quest": "old_quay", "tree": "marguerite_reminder" },
+        { "when": "complete", "quest": "old_quay", "tree": "marguerite_after"    }
+      ]
+    }
+  ],
+
+  "zones": [
+    { "id": "quay", "anchor": { "xz_frac": [0.5242, 0.5588] }, "radius": 9 }
+  ],
+
+  "quests": [
+    {
+      "id": "old_quay",
+      "title": "Who moors at the old quay?",
+      "objectives": [
+        { "type": "reach_zone", "zone": "quay",       "text": "Take a look at the old quay" },
+        { "type": "talk_to",    "npc": "marguerite",  "text": "Tell Marguerite what you saw" }
+      ]
+    }
+  ],
+
+  "dialogue": {
+    "marguerite_intro": {
+      "start": "start",
+      "nodes": {
+        "start": {
+          "speaker": "Marguerite à Théodore",
+          "text": "You walked up the wrong side of the jetty. Everyone does, first time.",
+          "next": "who"
+        },
+        "who": {
+          "speaker": "Marguerite à Théodore",
+          "text": "Marguerite, à Théodore. Thirty-one years keeping the Anse-à-la-Cabane light, so I notice what moves on this water. Lately something moves that shouldn't.",
+          "next": "ask"
+        },
+        "ask": {
+          "speaker": "Marguerite à Théodore",
+          "text": "Somebody's been mooring at the old quay after dark. No lamp, no hull I know. My knees don't do wet planks anymore — go take a look for me?",
+          "choices": [
+            { "text": "I'll go look.", "goto": "thanks", "effects": [ { "offer_quest": "old_quay" } ] },
+            { "text": "Not my business.", "goto": "refuse", "outcome": "declined" }
+          ]
+        },
+        "thanks": {
+          "speaker": "Marguerite à Théodore",
+          "text": "North shore, past the fish shed. Mind the third plank. It lies.",
+          "outcome": "accepted"
+        },
+        "refuse": {
+          "speaker": "Marguerite à Théodore",
+          "text": "Hm. The wind will turn you around eventually. It always does."
+        }
+      }
+    },
+
+    "marguerite_reminder": {
+      "start": "start",
+      "nodes": {
+        "start": {
+          "speaker": "Marguerite à Théodore",
+          "text": "The quay. North shore, past the fish shed. My eyes are good, but they don't bend around corners."
+        }
+      }
+    },
+
+    "marguerite_report": {
+      "start": "start",
+      "nodes": {
+        "start": {
+          "speaker": "Marguerite à Théodore",
+          "text": "So? Fresh rope on the old cleat, and the planks scrubbed where a keel came up. That's what you saw — I can read it on your face.",
+          "next": "read"
+        },
+        "read": {
+          "speaker": "Marguerite à Théodore",
+          "text": "Then it's no ghost, it's somebody with a key to nothing. I'll ask Ovila whose skiff sleeps out. You did fine — for someone who walks up the wrong side of jetties.",
+          "outcome": "reported"
+        }
+      }
+    },
+
+    "marguerite_after": {
+      "start": "start",
+      "nodes": {
+        "start": {
+          "speaker": "Marguerite à Théodore",
+          "text": "Ovila's nephew. Courting the Poirier girl across the baie, if you please. I watched the horizon thirty-one years for that."
+        }
+      }
+    }
+  }
+}
