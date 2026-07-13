@@ -60,6 +60,11 @@ class VisualIdentity:
     # --- atmosphere (emitted as env.json beside the styled glb; applied by the
     # engine's map_loader — sky, sun, fog, ambient. None = engine defaults) ---
     environment: dict | None = None
+    # --- textures (visual-identity@2.1.0 `textures` block; None = flat colors,
+    # the pre-texture path, byte-identical). Keys: facade_style (brick|siding|
+    # concrete), window_tile_m, storey_m, window_states (weights), roof_style
+    # (tin|membrane|shingle), road_texture (bool), variants (int) ---
+    textures: dict | None = None
 
 
 def identity_from_dict(doc: dict) -> VisualIdentity:
@@ -225,6 +230,67 @@ def instance_trees(scene: trimesh.Scene, ground: trimesh.Trimesh, features, iden
     return placed
 
 
+def _textured_material(image, tint=(1.0, 1.0, 1.0)):
+    """Textured PBR material with a QUANTIZED tint.
+
+    The glTF exporter dedups materials by content hash but embeds one image
+    copy per unique material — a continuous per-instance tint therefore
+    duplicates the texture thousands of times (first plateau export: 1,077
+    images). Snapping the factor to 0.05 steps collapses instances into a
+    few dozen shared materials; a 5% tint step is invisible.
+    """
+    q = tuple(round(ch / 0.05) * 0.05 for ch in tint)
+    return trimesh.visual.material.PBRMaterial(
+        baseColorTexture=image,
+        baseColorFactor=[q[0], q[1], q[2], 1.0],
+        metallicFactor=0.0, roughnessFactor=1.0,
+    )
+
+
+def _textured_walls(c: np.ndarray, base_y: np.ndarray, top_y: np.ndarray,
+                    y0: float, image, tint, window_tile_m: float,
+                    storey_m: float) -> trimesh.Trimesh:
+    """The four walls as unwelded quads with storey-repeat UVs.
+
+    u wraps one window bay per window_tile_m of wall length, v one storey tile
+    per storey_m of height — so the measured LiDAR height turns into the right
+    number of window rows with a single shared image. Winding is set per wall
+    against the footprint centroid (unwelded soups can't rely on fix_normals).
+    """
+    centre = c.mean(axis=0)
+    verts, faces, uv = [], [], []
+    for i in range(4):
+        j = (i + 1) % 4
+        a2, b2 = c[i], c[j]
+        length = float(np.linalg.norm(b2 - a2))
+        u1 = max(length / window_tile_m, 0.5)
+        k = len(verts)
+        verts += [[a2[0], base_y[i], a2[1]], [b2[0], base_y[j], b2[1]],
+                  [b2[0], top_y[j], b2[1]], [a2[0], top_y[i], a2[1]]]
+        uv += [[0.0, (base_y[i] - y0) / storey_m], [u1, (base_y[j] - y0) / storey_m],
+               [u1, (top_y[j] - y0) / storey_m], [0.0, (top_y[i] - y0) / storey_m]]
+        # outward check: wall normal (XZ) must point away from the centroid
+        edge = b2 - a2
+        normal2d = np.array([edge[1], -edge[0]])
+        outward = (a2 + b2) / 2.0 - centre
+        if float(np.dot(normal2d, outward)) >= 0:
+            faces += [[k, k + 1, k + 2], [k, k + 2, k + 3]]
+        else:
+            faces += [[k, k + 2, k + 1], [k, k + 3, k + 2]]
+    m = trimesh.Trimesh(vertices=np.asarray(verts, float),
+                        faces=np.asarray(faces, int), process=False)
+    m.visual = trimesh.visual.TextureVisuals(
+        uv=np.asarray(uv, float), material=_textured_material(image, tint))
+    return m
+
+
+def _planar_uv_visual(mesh: trimesh.Trimesh, image, tint, scale_m: float = 4.0) -> None:
+    """Planar XZ UVs (one tile per scale_m) — roofs seen mostly from above."""
+    uv = mesh.vertices[:, [0, 2]] / scale_m
+    mesh.visual = trimesh.visual.TextureVisuals(
+        uv=uv, material=_textured_material(image, tint))
+
+
 def _solid(vertices, faces, rgb) -> trimesh.Trimesh:
     """A closed colored solid; winding repaired via face adjacency."""
     m = trimesh.Trimesh(vertices=np.asarray(vertices, float),
@@ -236,7 +302,9 @@ def _solid(vertices, faces, rgb) -> trimesh.Trimesh:
 
 def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
                          ridge_h: float, roof: str, roof_rgb, identity: VisualIdentity,
-                         *, wall_rgb=None, trim_rgb=None, top_offsets=None, skip_roof=False):
+                         *, wall_rgb=None, trim_rgb=None, top_offsets=None, skip_roof=False,
+                         wall_image=None, roof_image=None, tex_tint=(1.0, 1.0, 1.0),
+                         window_tile_m=3.5, storey_m=3.0):
     """A stand-in building: wall prism + roof solid, in world coordinates.
 
     corners are 4 ordered (x, z) footprint corners; the body is sunk slightly
@@ -245,6 +313,10 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
     Decay hooks (all default to the pristine building): wall_rgb/trim_rgb
     override the identity colors; top_offsets (4 values) drop individual top
     corners for a jagged broken parapet; skip_roof leaves the shell open.
+
+    Texture hooks (visual-identity textures block): wall_image swaps the flat
+    prism for unwelded storey-UV'd wall quads (+ flat lids); roof_image gives
+    roof solids planar UVs. Both None = the flat-color path, unchanged.
     """
     c = np.asarray(corners, float)
     sink = 0.5
@@ -257,11 +329,26 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
     if top_offsets is not None:
         top[:, 1] -= np.clip(np.asarray(top_offsets, float), 0.0, wall_h - 1.0)
     quads = [[i, (i + 1) % 4, 4 + (i + 1) % 4, 4 + i] for i in range(4)] + [[3, 2, 1, 0], [4, 5, 6, 7]]
-    body = _solid(np.vstack([base, top]),
-                  [t for a, b, d, e in quads for t in ([a, b, d], [a, d, e])],
-                  wall_rgb)
+    if wall_image is not None:
+        walls = _textured_walls(c, base[:, 1], top[:, 1], y0, wall_image, tex_tint,
+                                window_tile_m, storey_m)
+        # lids close the shell: floor + (interior-visible when skip_roof) ceiling
+        lids = _solid(np.vstack([base, top]),
+                      [[3, 2, 1], [3, 1, 0], [4, 5, 6], [4, 6, 7]],
+                      tuple(ch * 0.55 for ch in wall_rgb))
+        parts = [walls, lids]
+    else:
+        body = _solid(np.vstack([base, top]),
+                      [t for a, b, d, e in quads for t in ([a, b, d], [a, d, e])],
+                      wall_rgb)
+        parts = [body]
 
-    parts = [body]
+    def _roofed(part):
+        if roof_image is not None:
+            # roof tiles are near-neutral (mean ~0.9): the factor carries color
+            _planar_uv_visual(part, roof_image, tuple(min(1.0, ch / 0.9) for ch in roof_rgb))
+        return part
+
     ridge_pts = None
     if skip_roof:
         pass
@@ -277,15 +364,15 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
         faces = [[sa, sb, 4], [sc_, sd, 5],          # gable end triangles
                  [sb, sc_, 5], [sb, 5, 4], [sd, sa, 4], [sd, 4, 5],  # slopes
                  [3, 2, 1], [3, 1, 0]]               # underside (closes it)
-        parts.append(_solid(v, faces, roof_rgb))
+        parts.append(_roofed(_solid(v, faces, roof_rgb)))
         ridge_pts = (ra, rb)
     else:
         slab = top.copy()
         lid = top.copy()
         lid[:, 1] += 0.2
-        parts.append(_solid(np.vstack([slab, lid]),
-                            [t for a, b, d, e in quads for t in ([a, b, d], [a, d, e])],
-                            roof_rgb))
+        parts.append(_roofed(_solid(np.vstack([slab, lid]),
+                             [t for a, b, d, e in quads for t in ([a, b, d], [a, d, e])],
+                             roof_rgb)))
 
     if identity.building_details:
         # chimney: a small trim-colored box near one end of the ridge (or slab)
@@ -309,7 +396,10 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
         along = (b - a) / max(np.linalg.norm(b - a), 1e-9)
         # rotate the box's local +X onto the wall direction in the XZ plane
         wall_dir = np.arctan2(-along[1], along[0])
-        for frac, w, hgt, y_c in ((0.35, 0.9, 1.9, y0 + 0.95), (0.7, 1.0, 1.0, y0 + wall_h * 0.55)):
+        openings = ((0.35, 0.9, 1.9, y0 + 0.95), (0.7, 1.0, 1.0, y0 + wall_h * 0.55))
+        if wall_image is not None:
+            openings = openings[:1]  # the texture carries the windows; keep the door
+        for frac, w, hgt, y_c in openings:
             p = a + (b - a) * frac + out * 0.06
             box = trimesh.creation.box(extents=[w, hgt, 0.12])
             rot = trimesh.transformations.rotation_matrix(wall_dir, [0, 1, 0])
@@ -352,7 +442,8 @@ def rubble_parts(corners: np.ndarray, y0: float, wall_h: float,
         frac0 = float(rng.uniform(0.0, 0.4))
         frac1 = frac0 + float(rng.uniform(0.25, 0.5))
         pa, pb = a + (b - a) * frac0, a + (b - a) * min(frac1, 1.0)
-        h = wall_h * float(rng.uniform(0.25, 0.55))
+        # capped: a collapsed tower leaves stubs, not a 35 m paper-thin wall
+        h = min(wall_h * float(rng.uniform(0.25, 0.55)), 9.0)
         seg = pb - pa
         length = float(np.linalg.norm(seg))
         if length < 1.0:
@@ -422,6 +513,29 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
         elif identity.roof_saturation != 1.0:
             rgb = _saturate(rgb, identity.roof_saturation)
 
+        # texture selection: its own deterministic stream, so turning textures
+        # on/off never perturbs the roof-palette or decay draws
+        tex = identity.textures
+        tex_kw: dict = {}
+        base_tint = 1.0
+        if tex:
+            from automap import facades
+            trng = _instance_rng(c.mean(axis=0)[0] + 29.0, c.mean(axis=0)[1] - 13.0)
+            variant = int(trng.integers(int(tex.get("variants", 4))))
+            state = facades.pick_window_state(tex.get("window_states", {"dark": 1.0}), trng)
+            base_tint = float(trng.uniform(0.88, 1.08))
+            tex_kw = {
+                "wall_image": facades.wall_tile(
+                    tex.get("facade_style", "brick"), tuple(identity.wall_color),
+                    tuple(identity.trim_color), tuple(identity.soot_color),
+                    state, variant),
+                "roof_image": facades.roof_tile(tex.get("roof_style", "membrane"),
+                                                variant % 2),
+                "tex_tint": (base_tint,) * 3,
+                "window_tile_m": float(tex.get("window_tile_m", 3.5)),
+                "storey_m": float(tex.get("storey_m", 3.0)),
+            }
+
         decay_on = (identity.ruin_fraction > 0 or identity.damage_fraction > 0
                     or identity.weather_variation > 0)
         if decay_on:
@@ -440,25 +554,32 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
                 offsets = drng.uniform(0.4, max(0.5, b["height"] * 0.45), 4)
                 soot_wall = tuple(0.7 * w + 0.3 * s
                                   for w, s in zip(wall, identity.soot_color))
+                if tex_kw:
+                    # grime + soot arrive through the tint over the shared tile
+                    t = base_tint * (1.0 - 0.45 * fade) * 0.72
+                    tex_kw["tex_tint"] = (t, t, t)
                 for part in proxy_building_parts(
                         c, y0, b["height"], b.get("ridge", b["height"]),
                         b.get("roof", "flat"), rgb, identity,
                         wall_rgb=soot_wall, trim_rgb=identity.soot_color,
-                        top_offsets=offsets, skip_roof=True):
+                        top_offsets=offsets, skip_roof=True, **tex_kw):
                     scene.add_geometry(part)
                 placed += 1
                 continue
+            if tex_kw:
+                t = base_tint * (1.0 - 0.45 * fade)
+                tex_kw["tex_tint"] = (t, t, t)
             for part in proxy_building_parts(
                     c, y0, b["height"], b.get("ridge", b["height"]),
                     b.get("roof", "flat"), rgb, identity,
-                    wall_rgb=wall, trim_rgb=identity.soot_color):
+                    wall_rgb=wall, trim_rgb=identity.soot_color, **tex_kw):
                 scene.add_geometry(part)
             placed += 1
             continue
 
         for part in proxy_building_parts(
                 c, y0, b["height"], b.get("ridge", b["height"]),
-                b.get("roof", "flat"), rgb, identity):
+                b.get("roof", "flat"), rgb, identity, **tex_kw):
             scene.add_geometry(part)
         placed += 1
     return placed
@@ -474,12 +595,23 @@ def _resample_path(path: np.ndarray, step: float) -> np.ndarray:
     return np.column_stack([np.interp(t, s, path[:, 0]), np.interp(t, s, path[:, 1])])
 
 
-ROAD_LIFT = 0.35   # ribbon height above terrain (bumpy melt pokes through less)
+# Ribbon height above terrain. Roads are DECORATION (deco_ meshes get no
+# collider — the player walks the terrain through them), so the lift only
+# needs to beat z-fighting, not bumpy ODM melt like the old 0.35 did. If melt
+# poke-through returns on drone scenes, raise per-scene rather than globally.
+ROAD_LIFT = 0.12
 DIRT_KINDS = {"footway", "path", "track", "steps", "bridleway"}
 
 
-def road_ribbon(path: np.ndarray, width: float, ground: trimesh.Trimesh) -> trimesh.Trimesh | None:
-    """A terrain-draped ribbon mesh for one road; None if it misses the terrain."""
+def road_ribbon(path: np.ndarray, width: float, ground: trimesh.Trimesh,
+                uv_length_m: float | None = None) -> trimesh.Trimesh | None:
+    """A terrain-draped ribbon mesh for one road; None if it misses the terrain.
+
+    With uv_length_m, the ribbon carries UVs for the road texture: u spans the
+    width (0 = left kerb, 1 = right), v repeats one tile per uv_length_m of
+    arc length. Set BEFORE the unreferenced-vertex cleanup so the visual's
+    update_vertices masks the uv rows alongside the vertices.
+    """
     pts = _resample_path(np.asarray(path, float), step=2.0)
     if len(pts) < 2:
         return None
@@ -502,25 +634,45 @@ def road_ribbon(path: np.ndarray, width: float, ground: trimesh.Trimesh) -> trim
     if not faces:
         return None
     m = trimesh.Trimesh(vertices=np.nan_to_num(verts), faces=faces, process=False)
+    if uv_length_m:
+        arc = np.concatenate([[0.0], np.cumsum(np.linalg.norm(np.diff(pts, axis=0), axis=1))])
+        v = arc / uv_length_m
+        uv = np.zeros((2 * n, 2))
+        uv[:n, 0], uv[:n, 1] = 0.0, v
+        uv[n:, 0], uv[n:, 1] = 1.0, v
+        m.visual = trimesh.visual.TextureVisuals(uv=uv)
     m.remove_unreferenced_vertices()
     return m
 
 
 def instance_roads(scene: trimesh.Scene, ground: trimesh.Trimesh, features, identity):
+    tex = identity.textures or {}
+    road_tex = bool(tex.get("road_texture"))
     placed = 0
     for r in (f for f in features if f.get("type") == "road"):
         path = np.asarray(r["path"])
-        ribbon = road_ribbon(path, r.get("width", 5.0), ground)
+        ribbon = road_ribbon(path, r.get("width", 5.0), ground,
+                             uv_length_m=6.0 if road_tex else None)
         if ribbon is None:
             continue
-        color = identity.path_color if r.get("kind") in DIRT_KINDS else identity.road_color
+        is_path = r.get("kind") in DIRT_KINDS
+        color = identity.path_color if is_path else identity.road_color
         if identity.road_wear > 0:
             # per-road bleach: decades of sun and no resurfacing crews
             wrng = _instance_rng(path[0][0] + 3.0, path[0][1] + 5.0)
             lift = float(wrng.uniform(0.0, identity.road_wear))
             color = tuple(min(1.0, ch + (0.55 - ch) * lift * 0.8) for ch in color)
-        ribbon.visual = trimesh.visual.TextureVisuals(material=_flat_material(color))
-        scene.add_geometry(ribbon)
+        if road_tex:
+            from automap import facades
+            # tile mean luminance ~0.92; the factor carries color + wear tint
+            tint = tuple(min(1.0, ch / 0.92) for ch in color)
+            ribbon.visual.material = _textured_material(
+                facades.road_tile(0, centerline=not is_path), tint)
+        else:
+            ribbon.visual = trimesh.visual.TextureVisuals(material=_flat_material(color))
+        # deco_ prefix = no collider in the engine: a road is walked THROUGH
+        # (the terrain below carries the player), never jumped onto
+        scene.add_geometry(ribbon, geom_name=f"deco_road_{placed:04d}")
         placed += 1
     return placed
 
@@ -568,7 +720,7 @@ def scatter_overgrowth(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
             if np.isnan(y):
                 continue
             for part in weed_clump_parts(px + ox, float(y), pz + oz, identity, rng):
-                scene.add_geometry(part)
+                scene.add_geometry(part, geom_name=f"deco_weed_{placed:04d}")
             placed += 1
             if placed >= cap:
                 return placed
@@ -595,7 +747,7 @@ def instance_water(scene: trimesh.Scene, ground: trimesh.Trimesh, features, iden
         # wound so the normal faces +Y (up)
         plane = trimesh.Trimesh(vertices=verts, faces=[[0, 2, 1], [0, 3, 2]], process=False)
         plane.visual = trimesh.visual.TextureVisuals(material=_flat_material(identity.water_color))
-        scene.add_geometry(plane)
+        scene.add_geometry(plane, geom_name=f"deco_water_{placed:04d}")
         placed += 1
     return placed
 

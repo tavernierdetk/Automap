@@ -147,5 +147,18 @@
     ],
     "fog_density": 0.0009,
     "saturation": 0.88
+  },
+  "textures": {
+    "facade_style": "brick",
+    "window_tile_m": 3.5,
+    "storey_m": 3.0,
+    "window_states": {
+      "dark": 2,
+      "boarded": 3,
+      "broken": 2
+    },
+    "roof_style": "tin",
+    "road_texture": true,
+    "variants": 6
   }
 }

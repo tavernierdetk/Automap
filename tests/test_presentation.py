@@ -274,3 +274,63 @@ def test_identity_from_dict_loads_the_file_form():
     # unknown keys are ignored, not fatal (schemas may run ahead)
     ident2 = identity_from_dict({"name": "x", "from_the_future": 1})
     assert ident2.name == "x"
+
+
+# --- textures (visual-identity v2.1) + decoration naming -----------------------
+
+TEX = {"facade_style": "brick", "window_states": {"dark": 1},
+       "roof_style": "tin", "road_texture": True, "variants": 3}
+
+
+def test_textured_buildings_carry_uv_and_image():
+    feats = [_bld(0, 0, h=10.5), _bld(20, 0, h=7.0)]
+    s = trimesh.Scene()
+    instance_buildings(s, _flat_ground(80), feats, VisualIdentity(textures=TEX))
+    textured = [g for g in s.geometry.values()
+                if getattr(getattr(g.visual, "material", None), "baseColorTexture", None) is not None]
+    assert len(textured) >= 4                       # walls + roofs for both
+    for g in textured:
+        assert g.visual.uv is not None and len(g.visual.uv) == len(g.vertices)
+    # storey-awareness: the taller building's wall UVs reach a higher v
+    vmaxes = sorted(float(g.visual.uv[:, 1].max()) for g in textured)
+    assert vmaxes[-1] > 2.5                         # ~10.5m / 3m storeys
+
+
+def test_texture_images_are_shared_across_buildings():
+    feats = [_bld(i * 15.0, 0) for i in range(10)]
+    s = trimesh.Scene()
+    instance_buildings(s, _flat_ground(200), feats, VisualIdentity(textures=TEX))
+    images = {id(g.visual.material.baseColorTexture) for g in s.geometry.values()
+              if getattr(getattr(g.visual, "material", None), "baseColorTexture", None) is not None}
+    assert len(images) <= 2 * TEX["variants"]       # pooled, not per-building
+
+
+def test_no_textures_means_no_uv_anywhere():
+    feats = [_bld(0, 0)]
+    s = trimesh.Scene()
+    instance_buildings(s, _flat_ground(), feats, VisualIdentity())
+    for g in s.geometry.values():
+        assert getattr(g.visual, "uv", None) is None or len(g.visual.uv) == 0
+
+
+def test_decoration_meshes_are_named_deco():
+    from automap.presentation import instance_water, scatter_overgrowth
+    feats = [_road(-15, 0, 15, 0),
+             {"type": "water", "outline": [[-10, -10], [10, -10], [10, 10]]}]
+    s = trimesh.Scene()
+    instance_roads(s, _flat_ground(), feats, VisualIdentity(textures=TEX))
+    scatter_overgrowth(s, _flat_ground(), feats, VisualIdentity(overgrowth_density=30.0))
+    instance_water(s, _flat_ground(), feats, VisualIdentity())
+    names = list(s.geometry)
+    assert names and all(n.startswith("deco_") for n in names), names
+    kinds = {n.split("_")[1] for n in names}
+    assert {"road", "weed", "water"} <= kinds
+
+
+def test_textured_road_uv_runs_along_length():
+    from automap.presentation import road_ribbon
+    ribbon = road_ribbon(np.array([[-30.0, 0.0], [30.0, 0.0]]), 6.0, _flat_ground(80),
+                         uv_length_m=6.0)
+    assert ribbon.visual.uv is not None
+    v = ribbon.visual.uv[:, 1]
+    assert v.max() > 8.0                            # 60 m / 6 m per tile

@@ -265,8 +265,43 @@ func _test_lagrave_populate() -> void:
 	_check(_lines.size() == 1 and "Ovila" in str(_lines[0].text), "post-quest epilogue plays")
 	DialogueManager.advance()
 
+	# --- decoration convention: roads/weeds/water get NO colliders ------------
+	# (the road-blocking fix: the terrain below carries the player, so a road
+	# is walked through — there is nothing to jump onto or be stopped by)
+	var deco_meshes: Array = []
+	var deco_with_collider := 0
+	_collect_deco(shell.get_node("Map"), deco_meshes)
+	for m in deco_meshes:
+		for ch in m.get_children():
+			if ch is StaticBody3D:
+				deco_with_collider += 1
+	_check(deco_meshes.size() > 0, "deco_ meshes exist in the published scene (%d)" % deco_meshes.size())
+	_check(deco_with_collider == 0, "no deco_ mesh carries a collider (%d did)" % deco_with_collider)
+
+	var road: MeshInstance3D = null
+	for m in deco_meshes:
+		if str(m.name).begins_with("deco_road"):
+			road = m
+			break
+	if road != null:
+		# a ray dropped through the road must land on the TERRAIN below the
+		# ribbon, proving the ribbon itself stops nothing
+		var raabb: AABB = road.global_transform * road.get_aabb()
+		var over := raabb.get_center() + Vector3(0, 20.0, 0)
+		var hit := get_tree().root.world_3d.direct_space_state.intersect_ray(
+			PhysicsRayQueryParameters3D.create(over, over + Vector3(0, -60, 0)))
+		_check(hit.size() > 0 and hit.position.y < raabb.get_center().y - 0.02,
+			"ray passes through the road and lands on terrain (no road collider)")
+
 	shell.queue_free()
 	await _physics_frames(2)
+
+
+func _collect_deco(node: Node, out: Array) -> void:
+	if node is MeshInstance3D and str(node.name).begins_with("deco_"):
+		out.append(node)
+	for child in node.get_children():
+		_collect_deco(child, out)
 
 
 # --- the procedural fallback on a game.json-less map ---------------------------

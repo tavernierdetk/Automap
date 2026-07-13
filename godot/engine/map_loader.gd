@@ -165,13 +165,16 @@ func _load_map(path: String) -> Node3D:
 	return doc.generate_scene(state)
 
 
-## Moved verbatim from the former world.gd: static trimesh collision for every mesh
-## so the player can walk on the terrain.
+## Static trimesh collision for every OBSTACLE mesh so the player can walk on
+## the terrain. Meshes named `deco_*` by the pipeline (roads, weeds, water) are
+## decoration draped just above the terrain: the terrain below carries the
+## player, so they get NO collider — a road is walked through, never jumped
+## onto — and thousands of weed blobs stop costing physics shapes.
 func _add_trimesh_collision(node: Node) -> int:
 	if node == null:
 		return 0
 	var n := 0
-	if node is MeshInstance3D and node.mesh != null:
+	if node is MeshInstance3D and node.mesh != null and not str(node.name).begins_with("deco_"):
 		node.create_trimesh_collision()  # adds a StaticBody3D + ConcavePolygonShape3D
 		n += 1
 	for child in node.get_children():

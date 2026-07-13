@@ -67,11 +67,18 @@ clean of it before any commit.
   Proven scenes: `lagrave` (madelinot identity), `plateau` (MTL — see
   docs/explorations/mtl-acceptance-run.md and postapo-identity.md).
 - **Identities are files**: stage 6 takes `--identity <name>` (built-ins) or
-  `--identity identities/<file>.json` (validated vs `visual-identity@2.0.0`).
+  `--identity identities/<file>.json` (validated vs `visual-identity@2.1.0`).
   v2 axes: decay (ruin/damage/weathering), overgrowth + road wear, and an
   `environment` block that stage 6 emits as an env.json sidecar, stage 7
   publishes beside the scene, and the engine's map_loader applies at load
-  (sky/sun/fog/saturation). First game identity: `identities/postapo.json`.
+  (sky/sun/fog/saturation). v2.1: the `textures` block bakes procedural
+  textures (`automap/facades.py`) — storey-tile walls (UV repeat turns LiDAR
+  heights into window rows), near-neutral roof/road tiles tinted per
+  instance. First game identity: `identities/postapo.json`.
+- **`deco_` meshes never collide**: roads/weeds/water export with `deco_*`
+  names and map_loader skips their colliders — the terrain carries the
+  player; a road is walked through, never jumped onto. Anything that should
+  block must NOT be named `deco_*`.
 - **IFC projection (stage 8)**: `scripts/08_export_ifc.py --scene <name>`
   writes one georeferenced `.ifc` per building (`automap/ifc.py`; needs
   `pip install -e '.[ifc]'`). `ifc.from_ifc` reads external plan→IFC models

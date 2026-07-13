@@ -221,6 +221,17 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-12 — v0.13: **textured surfaces + passable roads (styling slice 2)**:
+  the `deco_` convention (roads/weeds/water export named, map_loader skips
+  their colliders — a road is walked through, never jumped onto; plateau
+  colliders 17.6 k → 7.5 k; ROAD_LIFT 0.35 → 0.12) and procedural textures
+  (`automap/facades.py` + `visual-identity@2.1.0` `textures` block): walls
+  are tileable storey tiles whose UV repeat turns measured LiDAR heights
+  into window rows, roof/road tiles are near-neutral and tinted per instance
+  via baseColorFactor, window states (boarded/broken for postapo) weight per
+  identity. Rubble remnant stubs capped at 9 m (a collapsed 72 m tower had
+  left a paper-thin skyscraper wafer). The AI tier is the documented next
+  step: a "generated" facade_style routing tile requests to genserver.
 - 2026-07-12 — v0.12: **post-apocalyptic identity — styling capabilities
   slice 1** (first game-driven identity): identities graduate to files
   (`--identity identities/postapo.json`, validated vs new
