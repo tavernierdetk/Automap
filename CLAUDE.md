@@ -74,7 +74,10 @@ clean of it before any commit.
   (sky/sun/fog/saturation). v2.1: the `textures` block bakes procedural
   textures (`automap/facades.py`) — storey-tile walls (UV repeat turns LiDAR
   heights into window rows), near-neutral roof/road tiles tinted per
-  instance. First game identity: `identities/postapo.json`.
+  instance. v2.2: the `crumble` block dials `automap/crumble.py` — the
+  pattern engine (deterministic fBm erosion profiles) behind damaged
+  buildings: **sections crumble, walls are never removed** (hard 1.5 m
+  floor). First game identity: `identities/postapo.json`.
 - **`deco_` meshes never collide**: roads/weeds/water export with `deco_*`
   names and map_loader skips their colliders — the terrain carries the
   player; a road is walked through, never jumped onto. Anything that should

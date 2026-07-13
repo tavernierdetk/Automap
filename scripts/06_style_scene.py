@@ -117,8 +117,8 @@ def main(
         doc = json.loads(Path(identity).read_text())
         try:
             import platform_specs
-            platform_specs.validate(doc, "visual-identity", "2.1.0")
-            log("identity file valid (visual-identity@2.1.0)")
+            platform_specs.validate(doc, "visual-identity", "2.2.0")
+            log("identity file valid (visual-identity@2.2.0)")
         except ImportError:
             log("WARNING: platform-specs not installed - identity file NOT validated")
         ident = identity_from_dict(doc)

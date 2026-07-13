@@ -334,3 +334,57 @@ def test_textured_road_uv_runs_along_length():
     assert ribbon.visual.uv is not None
     v = ribbon.visual.uv[:, 1]
     assert v.max() > 8.0                            # 60 m / 6 m per tile
+
+
+# --- winding + crumble (the missing-walls fix) ----------------------------------
+
+def test_textured_walls_face_outward_for_both_orientations():
+    # regression: a sign slip here culls every wall from outside
+    from automap.presentation import _textured_walls
+    from automap.facades import wall_tile
+    img = wall_tile("brick", (0.4, 0.3, 0.2), (0.9, 0.9, 0.8), (0.1, 0.1, 0.1), "dark", 0)
+    for corners in ([[-5, -5], [5, -5], [5, 5], [-5, 5]],     # CCW
+                    [[-5, 5], [5, 5], [5, -5], [-5, -5]]):    # CW
+        c = np.asarray(corners, float)
+        m = _textured_walls(c, np.zeros(4), np.full(4, 9.0), 0.0, img, (1, 1, 1), 3.5, 3.0)
+        centre = c.mean(axis=0)
+        for f in m.faces:
+            tri = m.vertices[f]
+            n = np.cross(tri[1] - tri[0], tri[2] - tri[0])
+            mid = tri.mean(axis=0)
+            assert np.dot([n[0], n[2]], [mid[0] - centre[0], mid[2] - centre[1]]) >= 0
+
+
+def test_damaged_buildings_keep_all_four_walls():
+    # the crumble contract: sections erode, walls never disappear
+    feats = [_bld(0, 0, w=14.0, d=10.0, h=9.0)]
+    s = trimesh.Scene()
+    instance_buildings(s, _flat_ground(), feats,
+                       VisualIdentity(damage_fraction=1.0, textures=TEX))
+    walls = [g for g in s.geometry.values()
+             if getattr(getattr(g.visual, "material", None), "baseColorTexture", None) is not None]
+    assert walls, "crumbled walls missing entirely"
+    m = walls[0]
+    # every wall midpoint has geometry at least 1.5 m high (the crumble floor)
+    c = np.asarray(feats[0]["footprint"], float)
+    for i in range(4):
+        mid = (c[i] + c[(i + 1) % 4]) / 2.0
+        near = m.vertices[np.linalg.norm(m.vertices[:, [0, 2]] - mid, axis=1) < 3.0]
+        assert len(near) > 0 and near[:, 1].max() >= 1.4, f"wall {i} vanished"
+    # winding still outward on the crumbled strips
+    centre = c.mean(axis=0)
+    for f in m.faces:
+        tri = m.vertices[f]
+        n = np.cross(tri[1] - tri[0], tri[2] - tri[0])
+        mid = tri.mean(axis=0)
+        assert np.dot([n[0], n[2]], [mid[0] - centre[0], mid[2] - centre[1]]) >= -1e-9
+
+
+def test_crumbled_flat_path_needs_no_texture():
+    # decay without a textures block still crumbles (flat colors)
+    feats = [_bld(0, 0, h=8.0)]
+    s = trimesh.Scene()
+    instance_buildings(s, _flat_ground(), feats, VisualIdentity(damage_fraction=1.0))
+    tops = [float(g.vertices[:, 1].max()) for g in s.geometry.values()]
+    assert max(tops) < 8.0                          # eroded below full height
+    assert max(tops) > 1.4                          # but still standing

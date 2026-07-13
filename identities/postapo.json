@@ -160,5 +160,12 @@
     "roof_style": "tin",
     "road_texture": true,
     "variants": 6
+  },
+  "crumble": {
+    "severity": [
+      0.4,
+      0.85
+    ],
+    "segment_m": 1.2
   }
 }

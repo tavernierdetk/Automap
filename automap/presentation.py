@@ -49,8 +49,11 @@ class VisualIdentity:
     seafloor_color: tuple = (0.10, 0.30, 0.36)
     # --- decay (instance_buildings; all default OFF so existing identities are unchanged) ---
     ruin_fraction: float = 0.0                  # fraction of buildings collapsed to rubble
-    damage_fraction: float = 0.0                # fraction (of the rest) with broken rooflines
+    damage_fraction: float = 0.0                # fraction (of the rest) with crumbled walls
     weather_variation: float = 0.0              # per-building wall value jitter (0-1, darkens)
+    # crumble-engine dials for damaged walls (automap.crumble); None = defaults.
+    # Keys: severity [lo, hi], segment_m, breach_chance.
+    crumble: dict | None = None
     soot_color: tuple = (0.13, 0.12, 0.11)      # boarded openings / burn marks when decayed
     rubble_color: tuple = (0.42, 0.38, 0.34)    # collapsed-pile material
     # --- overgrowth (scatter_overgrowth transformer) ---
@@ -269,9 +272,12 @@ def _textured_walls(c: np.ndarray, base_y: np.ndarray, top_y: np.ndarray,
                   [b2[0], top_y[j], b2[1]], [a2[0], top_y[i], a2[1]]]
         uv += [[0.0, (base_y[i] - y0) / storey_m], [u1, (base_y[j] - y0) / storey_m],
                [u1, (top_y[j] - y0) / storey_m], [0.0, (top_y[i] - y0) / storey_m]]
-        # outward check: wall normal (XZ) must point away from the centroid
+        # outward check: wall normal (XZ) must point away from the centroid.
+        # For triangle [a_base, b_base, b_top] the glTF front-face normal is
+        # (-edge.z, edge.x) in the XZ plane — the sign matters: getting it
+        # backwards culls every wall from outside ("missing walls").
         edge = b2 - a2
-        normal2d = np.array([edge[1], -edge[0]])
+        normal2d = np.array([-edge[1], edge[0]])
         outward = (a2 + b2) / 2.0 - centre
         if float(np.dot(normal2d, outward)) >= 0:
             faces += [[k, k + 1, k + 2], [k, k + 2, k + 3]]
@@ -281,6 +287,54 @@ def _textured_walls(c: np.ndarray, base_y: np.ndarray, top_y: np.ndarray,
                         faces=np.asarray(faces, int), process=False)
     m.visual = trimesh.visual.TextureVisuals(
         uv=np.asarray(uv, float), material=_textured_material(image, tint))
+    return m
+
+
+def _crumbled_walls(c: np.ndarray, base_y: np.ndarray, y0: float, profiles,
+                    image, tint, window_tile_m: float, storey_m: float,
+                    flat_rgb) -> trimesh.Trimesh:
+    """Four walls whose top edges follow crumble profiles (automap.crumble).
+
+    Each wall is a strip: columns at the profile's sample positions, bottoms
+    on the (sunk) base line, tops on the eroded profile — crumbled sections,
+    never missing walls. Textured when image is given (same storey-tile UV
+    mapping as _textured_walls), flat-colored otherwise.
+    """
+    centre = c.mean(axis=0)
+    verts, faces, uv = [], [], []
+    for i in range(4):
+        j = (i + 1) % 4
+        a2, b2 = c[i], c[j]
+        length = float(np.linalg.norm(b2 - a2))
+        if length < 1e-6:
+            continue
+        s, tops = profiles[i]
+        frac = np.asarray(s, float) / max(float(s[-1]), 1e-9)
+        edge = b2 - a2
+        normal2d = np.array([-edge[1], edge[0]])
+        outward = (a2 + b2) / 2.0 - centre
+        flip = float(np.dot(normal2d, outward)) < 0
+        k0 = len(verts)
+        for f_, t_ in zip(frac, tops):
+            px, pz = a2 + edge * f_
+            by = base_y[i] * (1.0 - f_) + base_y[j] * f_
+            verts += [[px, by, pz], [px, y0 + float(t_), pz]]
+            uv += [[f_ * length / window_tile_m, (by - y0) / storey_m],
+                   [f_ * length / window_tile_m, float(t_) / storey_m]]
+        for col in range(len(frac) - 1):
+            b0, t0 = k0 + 2 * col, k0 + 2 * col + 1
+            b1, t1 = b0 + 2, t0 + 2
+            if flip:
+                faces += [[b0, t1, b1], [b0, t0, t1]]
+            else:
+                faces += [[b0, b1, t1], [b0, t1, t0]]
+    m = trimesh.Trimesh(vertices=np.asarray(verts, float),
+                        faces=np.asarray(faces, int), process=False)
+    if image is not None:
+        m.visual = trimesh.visual.TextureVisuals(
+            uv=np.asarray(uv, float), material=_textured_material(image, tint))
+    else:
+        m.visual = trimesh.visual.TextureVisuals(material=_flat_material(flat_rgb))
     return m
 
 
@@ -302,17 +356,18 @@ def _solid(vertices, faces, rgb) -> trimesh.Trimesh:
 
 def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
                          ridge_h: float, roof: str, roof_rgb, identity: VisualIdentity,
-                         *, wall_rgb=None, trim_rgb=None, top_offsets=None, skip_roof=False,
-                         wall_image=None, roof_image=None, tex_tint=(1.0, 1.0, 1.0),
-                         window_tile_m=3.5, storey_m=3.0):
+                         *, wall_rgb=None, trim_rgb=None, crumble_profiles=None,
+                         skip_roof=False, wall_image=None, roof_image=None,
+                         tex_tint=(1.0, 1.0, 1.0), window_tile_m=3.5, storey_m=3.0):
     """A stand-in building: wall prism + roof solid, in world coordinates.
 
     corners are 4 ordered (x, z) footprint corners; the body is sunk slightly
     below y0 so slopes leave no gap under the walls.
 
     Decay hooks (all default to the pristine building): wall_rgb/trim_rgb
-    override the identity colors; top_offsets (4 values) drop individual top
-    corners for a jagged broken parapet; skip_roof leaves the shell open.
+    override the identity colors; crumble_profiles (4 × (positions, tops)
+    from automap.crumble) give the walls eroded top edges — crumbled
+    sections, never removed walls; skip_roof leaves the shell open.
 
     Texture hooks (visual-identity textures block): wall_image swaps the flat
     prism for unwelded storey-UV'd wall quads (+ flat lids); roof_image gives
@@ -326,10 +381,19 @@ def proxy_building_parts(corners: np.ndarray, y0: float, wall_h: float,
     base = np.column_stack([c[:, 0], np.full(4, y0 - sink), c[:, 1]])
     top = base.copy()
     top[:, 1] = y0 + wall_h
-    if top_offsets is not None:
-        top[:, 1] -= np.clip(np.asarray(top_offsets, float), 0.0, wall_h - 1.0)
     quads = [[i, (i + 1) % 4, 4 + (i + 1) % 4, 4 + i] for i in range(4)] + [[3, 2, 1, 0], [4, 5, 6, 7]]
-    if wall_image is not None:
+    if crumble_profiles is not None:
+        walls = _crumbled_walls(c, base[:, 1], y0, crumble_profiles, wall_image,
+                                tex_tint, window_tile_m, storey_m, wall_rgb)
+        # a debris floor just above grade (seen through breaches), plus the
+        # bottom lid; no ceiling — the roof collapsed inward
+        floor = base.copy()
+        floor[:, 1] = y0 + 0.35
+        lids = _solid(np.vstack([base, floor]),
+                      [[3, 2, 1], [3, 1, 0], [4, 5, 6], [4, 6, 7]],
+                      tuple(ch * 0.35 for ch in wall_rgb))
+        parts = [walls, lids]
+    elif wall_image is not None:
         walls = _textured_walls(c, base[:, 1], top[:, 1], y0, wall_image, tex_tint,
                                 window_tile_m, storey_m)
         # lids close the shell: floor + (interior-visible when skip_roof) ceiling
@@ -551,7 +615,21 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
                 placed += 1
                 continue
             if roll < identity.ruin_fraction + identity.damage_fraction:
-                offsets = drng.uniform(0.4, max(0.5, b["height"] * 0.45), 4)
+                # damaged = CRUMBLED, not removed: each wall's top edge follows
+                # a crumble-engine profile (ragged parapet, corner bites, at
+                # most one breach) — the walls all keep standing
+                from automap import crumble as crumble_mod
+                cfg = identity.crumble or {}
+                sev_lo, sev_hi = cfg.get("severity", (0.35, 0.85))
+                severity = float(drng.uniform(sev_lo, sev_hi))
+                wall_h = max(float(b["height"]), 2.0)
+                profiles = []
+                for i in range(4):
+                    length = float(np.linalg.norm(c[(i + 1) % 4] - c[i]))
+                    profiles.append(crumble_mod.crumble_profile(
+                        length, wall_h, severity, drng,
+                        segment_m=float(cfg.get("segment_m", 1.2)),
+                        breach_chance=cfg.get("breach_chance")))
                 soot_wall = tuple(0.7 * w + 0.3 * s
                                   for w, s in zip(wall, identity.soot_color))
                 if tex_kw:
@@ -562,7 +640,7 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
                         c, y0, b["height"], b.get("ridge", b["height"]),
                         b.get("roof", "flat"), rgb, identity,
                         wall_rgb=soot_wall, trim_rgb=identity.soot_color,
-                        top_offsets=offsets, skip_roof=True, **tex_kw):
+                        crumble_profiles=profiles, skip_roof=True, **tex_kw):
                     scene.add_geometry(part)
                 placed += 1
                 continue

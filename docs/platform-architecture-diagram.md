@@ -60,6 +60,7 @@ flowchart LR
     direction TB
     llm["LLM spec-fillers (Claude)<br/>fills specs, never binaries<br/>v1 surface: /create-character session"]:::have
     gate["Admission gates<br/>schema validation · autosim balance<br/>(balance.py: cast duels vs envelope)"]:::have
+    crumble["crumble — pattern engine<br/>context→visuals (fBm profiles/masks)<br/>incubating in automap/crumble.py"]:::have
     llm --> gate
   end
 
@@ -147,6 +148,8 @@ flowchart LR
   gate -->|story graphs| narr
 
   vid -.-> styler
+  vid -.->|decay dials| crumble
+  crumble -.->|erosion patterns| styler
   vid -.-> cascade
   vid -.-> ui
   gspec -.-> mech
@@ -221,6 +224,20 @@ flowchart LR
 
 ## Changelog
 
+- 2026-07-13 — v0.14: **crumble engine — decrepit, not dismembered (styling
+  slice 3)**: the "missing walls" playtest mark was BOTH a bug and a concept.
+  Bug: `_textured_walls` wound every wall inward (flipped normal sign) and
+  single-sided materials culled them — fixed + regression-tested both
+  orientations. Concept: wall-removal decay replaced by the **crumble
+  pattern engine** (`automap/crumble.py`, new platform module in the
+  diagram): geometry-free deterministic fBm erosion profiles (ragged
+  parapets, corner bites, ≤1 breach/wall, hard 1.5 m floor — sections
+  crumble, walls never vanish). It renders the identity's decay dials into
+  visuals — the context→visuals link, made a component. Damaged buildings
+  are segmented wall strips following per-wall profiles (textured or flat)
+  over a debris floor; `crumble` dials ship in `visual-identity@2.2.0`
+  (additive); postapo pins severity 0.4–0.85. Earns its repo at the second
+  consumer (terrain erosion / road cracks / coastlines).
 - 2026-07-12 — v0.13: **textured surfaces + passable roads (styling slice 2)**:
   the `deco_` convention (roads/weeds/water export named, map_loader skips
   their colliders — a road is walked through, never jumped onto; plateau
