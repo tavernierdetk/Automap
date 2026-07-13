@@ -21,6 +21,11 @@ const FALLBACK_RES := "res://assets/scene.glb"
 
 @export var map_scene: PackedScene
 
+## Directory the loaded map came from — the seam sidecar consumers (env.json
+## already via _apply_environment, minimap.png via the Minimap module) use to
+## find what the pipeline published beside the scene.
+var loaded_dir := ""
+
 
 func _ready() -> void:
 	var path := _resolve_scene_path()
@@ -35,6 +40,7 @@ func _ready() -> void:
 	elif ResourceLoader.exists(FALLBACK_RES) or FileAccess.file_exists(FALLBACK_RES):
 		map = _load_map(FALLBACK_RES)
 		source = FALLBACK_RES
+	loaded_dir = source.get_base_dir()
 
 	if map != null:
 		map.name = "Map"

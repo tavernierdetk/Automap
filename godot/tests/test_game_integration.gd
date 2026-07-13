@@ -265,6 +265,16 @@ func _test_lagrave_populate() -> void:
 	_check(_lines.size() == 1 and "Ovila" in str(_lines[0].text), "post-quest epilogue plays")
 	DialogueManager.advance()
 
+	# --- minimap module: published map picked up, player tracked --------------
+	var mm := shell.get_node_or_null("Minimap")
+	_check(mm != null and mm.visible, "minimap is visible on a scene that ships one")
+	if mm != null and mm.visible:
+		_check(mm.get("_tex") != null, "minimap loaded the published texture")
+		var uv: Vector2 = mm.call("_world_to_map", player.global_position.x, player.global_position.z)
+		_check(uv.x > 0.0 and uv.y > 0.0
+			and uv.x < float(mm.get("_meta").width) and uv.y < float(mm.get("_meta").height),
+			"player maps inside the minimap bounds (%s)" % uv)
+
 	# --- decoration convention: roads/weeds/water get NO colliders ------------
 	# (the road-blocking fix: the terrain below carries the player, so a road
 	# is walked through — there is nothing to jump onto or be stopped by)

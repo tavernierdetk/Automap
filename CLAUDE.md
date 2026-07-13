@@ -78,6 +78,10 @@ clean of it before any commit.
   pattern engine (deterministic fBm erosion profiles) behind damaged
   buildings: **sections crumble, walls are never removed** (hard 1.5 m
   floor). First game identity: `identities/postapo.json`.
+- **Minimap**: stage 6 renders `minimap.png/json` from the world model in
+  identity colors; stage 7 publishes them beside the scene; the
+  `godot/ui/minimap` module (instanced in game.tscn) picks them up via
+  `map_loader.loaded_dir` and hides itself when absent.
 - **`deco_` meshes never collide**: roads/weeds/water export with `deco_*`
   names and map_loader skips their colliders — the terrain carries the
   player; a road is walked through, never jumped onto. Anything that should

@@ -103,6 +103,15 @@ def publish(root: Path, name: str, do_import: bool = True, on_log=print) -> list
         elif glb == sp.styled_glb and env_dst.exists():
             env_dst.unlink()
             on_log("removed stale env.json (identity has no atmosphere)")
+        # minimap sidecars (world model rendered in identity colors, stage 6)
+        for ext in ("png", "json"):
+            mm_src = glb.parent / f"{glb.stem}.minimap.{ext}"
+            mm_dst = dest / f"minimap.{ext}"
+            if mm_src.exists():
+                shutil.copy2(mm_src, mm_dst)
+                on_log(f"published {mm_src.name} -> res://scenes/{name}/minimap.{ext}")
+            elif glb == sp.styled_glb and mm_dst.exists():
+                mm_dst.unlink()
 
     if not written:
         on_log(f"nothing to publish for {name!r} (no glbs in {sp.mesh_dir})")

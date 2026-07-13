@@ -144,6 +144,14 @@ def main(
         env_sidecar.unlink()  # stale atmosphere from a previous identity must not survive
         log(f"removed stale {env_sidecar.name}")
 
+    if feats:
+        from automap.minimap import write_minimap
+        b = scene.bounds
+        meta = write_minimap(feats, (b[0][0], b[0][2], b[1][0], b[1][2]), ident,
+                             output.parent / f"{output.stem}.minimap.png")
+        log(f"wrote {output.stem}.minimap.png ({meta['width']}x{meta['height']} "
+            f"@ {meta['m_per_px']:.2g} m/px)")
+
 
 if __name__ == "__main__":
     app()

@@ -388,3 +388,30 @@ def test_crumbled_flat_path_needs_no_texture():
     tops = [float(g.vertices[:, 1].max()) for g in s.geometry.values()]
     assert max(tops) < 8.0                          # eroded below full height
     assert max(tops) > 1.4                          # but still standing
+
+
+# --- minimap (world model -> identity-colored map) ------------------------------
+
+def test_minimap_renders_features_in_identity_colors():
+    from automap.minimap import render_minimap
+    feats = [_bld(0, 0, w=10, d=10), _road(-30, 0, 30, 0),
+             {"type": "water", "outline": [[-40, -40], [40, -40], [40, -20], [-40, -20]]}]
+    ident = VisualIdentity()
+    img, meta = render_minimap(feats, (-50, -50, 50, 50), ident, m_per_px=1.0)
+    assert (img.width, img.height) == (100, 100)
+    assert meta["m_per_px"] == 1.0 and meta["origin_x"] == -50
+    px = img.load()
+    def near(a, b): return all(abs(x - y) <= 12 for x, y in zip(a, b))
+    grass = tuple(int(c * 0.9 * 255) for c in ident.grass_color)
+    assert near(px[5, 95], grass)                       # open ground
+    assert near(px[50, 25], tuple(int(c * 255) for c in ident.water_color))
+    assert near(px[20, 50], tuple(int(c * 255) for c in ident.road_color))
+    assert near(px[50, 50], tuple(int(c * 0.8 * 255) for c in ident.wall_color))
+
+
+def test_minimap_caps_resolution_for_huge_scenes(tmp_path):
+    from automap.minimap import MAX_PX, write_minimap
+    meta = write_minimap([], (-3000, -3000, 3000, 3000), VisualIdentity(),
+                         tmp_path / "m.minimap.png", m_per_px=1.0)
+    assert max(meta["width"], meta["height"]) <= MAX_PX
+    assert (tmp_path / "m.minimap.png").exists() and (tmp_path / "m.minimap.json").exists()

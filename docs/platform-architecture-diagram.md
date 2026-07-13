@@ -92,7 +92,7 @@ flowchart LR
     bus["Signal buses (GameEvents)"]:::have
     narr["Narrative runtime<br/>dialogue graph · blackboard · quests · director"]:::partial
     mech["Mechanics modules<br/>combat (envelope/result) · chaos RNG<br/>inventory · save"]:::partial
-    ui["UI kit + identity shader stack"]:::partial
+    ui["UI kit + identity shader stack<br/>minimap module LIVE (world-model fed)"]:::partial
     styler --> publish
   end
 
@@ -223,6 +223,17 @@ flowchart LR
   is created. Locked so far: `platform-specs`, `genserver`.
 
 ## Changelog
+
+- 2026-07-13 — v0.15: **minimap module** (UI kit's first self-contained
+  component): `automap/minimap.py` renders a cartographic map from the world
+  model in identity colors (one more consumer of the features+identity
+  contracts, NOT a screenshot); stage 6/7 publish `minimap.png/json` beside
+  the scene (env.json pattern; `map_loader.loaded_dir` is now the generic
+  sidecar seam). `godot/ui/minimap` instanced in the game shell: north-up
+  player-centered crop, view arrow, objective dot via GameEvents *only if
+  present*, hides itself on scenes without a map. Verified: pixel-exact
+  color tests, integration assertions on lagrave, live capture with the
+  fallback quest's objective dot tracking.
 
 - 2026-07-13 — v0.14: **crumble engine — decrepit, not dismembered (styling
   slice 3)**: the "missing walls" playtest mark was BOTH a bug and a concept.
