@@ -1,0 +1,964 @@
+{
+  "id": "vaporis_fair",
+  "name": "La Foire Vaporum",
+  "kind": "tilemap",
+  "intent": "La Foire Vaporum v5 \u2014 the clean-slate rebuild (brief: levels/vaporis/vaporis_fair/vaporis_fair.brief.md): the library's best on a BUILT flagstone ground \u2014 the grand marquee at the court's heart, the front-facing ferris on its ledged terrace, machines running hot on plinths, curb-edged flowered islands, pennant rhythm, canopy enclosure. First scene of the reorganized vaporis region.",
+  "player": {
+    "pos": [
+      1536,
+      1824
+    ]
+  },
+  "tilemap": {
+    "atlas": "vaporis_fair",
+    "tile_size": 32,
+    "grid_size": [
+      96,
+      64
+    ],
+    "layers": [
+      {
+        "name": "ground",
+        "palette": {
+          "l": "lawn",
+          "f": "flag",
+          "t": "terrace",
+          "S": "stairs",
+          "m": "midway",
+          "w": "water",
+          "h": "hedge",
+          "c": "canopy",
+          "x": "flowers",
+          "b": "bush"
+        },
+        "rows": [
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "ccccclllllllllccccclllllllllccccclllllllllccccclllllllllccccclllllllllccccclllllllllcccccllllccc",
+          "cccllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllccc",
+          "cccllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllccc",
+          "cccllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllfffffflllffflllllllllllllllccc",
+          "ccclllllllllllllllllllllllllllllllllbllllllllllllllllllllllllllllffffffffffffffflllllllllllllccc",
+          "ccclllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllffffftttffttfffffflllllllllllccc",
+          "ccclllllllllllllllllllllffflllllllllllllfffffffffffffffflllllllfffftttttttttttfffflllllllllllccc",
+          "ccclllllllllllllllllllffffffllllllllllllfffffffffffffffflllllllffftttttttttttttffffllllllllllccc",
+          "ccclllllllllblllllllffffffffffllllllllllffffffffffffffffllllllffftttttttttttttttfffllllllllllccc",
+          "ccclllllfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllffffffffffmmmmfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllllllllllllmmmmffffffffffffffffffffffffffffffffffffffffffffftttttttttttttfffllllllllllccc",
+          "ccclllllllllllllllmmmmffffffflllllllllllfffffffffffffffffffffffffffttttttttttttffffllllllllllccc",
+          "ccclllllllllllllllmmmmffffffflllllllllllffffffffffffffffffffffffffftttttttttttfffffllllllllllccc",
+          "ccclllllllllllllllmmmmlllffflllllxxxxxxlffffffffffffffffffffffffffffttSSSSSStffffflllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffllllllllffffftSSSSSSfffffflllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffflllllllllfffffSSSSSSfffflllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffflxxxxxxlllfffffffffffffllllllllllllllccc",
+          "ccclllllllblllllllmmmmllllllllllllllllllfffffffffffffffflllllllllllffffffffffflllllllllllllllccc",
+          "ccclllllllllllllllmmmmlllllllllllxxxxxxlffffffffffffffffllllllllllllfffffffffllllllllllllllllccc",
+          "ccclllllllllllllllmmmmflllllllllllllllllfffffffffffffffflllllllllllllffffffllllllllllllllllllccc",
+          "cccllllllllllllllfmmmmffffllllllllllllllfffffffffffffffflxxxxxxllllllllffllllllllllllllllllllccc",
+          "ccclllllllllllllffmmmmffffffllllllllllllfffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllllffffffmmmmffffffflllllllllllfffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "lllllllllllfffffffmmmmffffffflllllllllllffffffffffffffffllbllllllllllllllllllllllllllllllllllccc",
+          "llllllllllffffffffmmmmfffffffffffffffffffffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "lllllllllfffffffffmmmmfffffffffffffffffffffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "lllllllllfffffffffmmmmfffffffffffffffffffffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllffffffffmmmmfffffffffffffffffffffffffffffffffffffffffffffffllllllllllllllllllllllllccc",
+          "ccclllllllffffffffmmmmffffffflllllllllllfffffffffffffffffffffffffffffllllllllllllllllllllllllccc",
+          "cccllllllllfffffffmmmmffffffflllllllllllfffffffffffffffffffffffffffffllllllllllllllllllllllllccc",
+          "ccclllllllllffffffmmmmffffffflllllxxxxxxffffffffffffffffflllffflllfffllllllllllllllllllllllllccc",
+          "ccclllllllllllffffmmmmffffffllllllllllllffffffffffffffffflllffflllfffllllllllllllllllllllllllccc",
+          "ccclllllllllllllffmmmmffffffllllllllllllfffffffffffffffffffffffffffffllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmlfffllllllllllllllfffffffffffffffffffffffffffffllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffffffffffffffffllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllxxxxxxfffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllblllllffffffffffffffffllllllllhhhhhhlllhhhhhhhlllhhhhhhllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffmmmmmmmllllllllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffmmmmmmmlllllllllllllllhllllllllllllllccc",
+          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmfffffffffffffffmmmmmmmlllllhlllllllllhlllllllllhllllccc",
+          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllhlllllllllhlllllllllhllllccc",
+          "cccllllllllllllllwwlllllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllhlllllllllllllllllllhllllccc",
+          "ccclllllwwwwllllwwwwllllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllllllllllllllllllllllhllllccc",
+          "cccllllwwwwwwwlwwwwwwwllllllllllllllllllffffffffffffffffllllllllllllllllllllllhlllllllllhllllccc",
+          "cccllllwwwwwwwwwwwwwwwwlllllllllllllllllffffffffffffffffllllllllllllhlllllllllhllllllllllllllccc",
+          "cccllllwwwwwwwwwwwwwwwwlllllllllllllllllffffffffffffffffllllllllllllhlllllllllhllllllllllllllccc",
+          "cccllllwwwwwwwwwwwwwwwwlllllllllllllllllffffffffffffffffflllllllllllhlllllllllhlllllllllhllllccc",
+          "ccclllllwwwwwwwwwwwwwwllllllllblllllllllffffffffffffffffflllllllllllhlllllllllllllllllllhllllccc",
+          "cccllllllwwwwwwwwwwwlllllllllllllllllllffffffffffffffffffllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllwwwwwwwwwlllllllllllllllllllllffffffffffffffffflllllllllhhhhhhhhlllhhhhhhhhhhhhllllccc",
+          "cccllllllllllllwwwwlllllllllllllllllllllfffffffffffffffffllllllllllllllllllllllllllllllllllllccc",
+          "cccllllllllllllwwwwlllllllllllllllllllllllfffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "ccccllllllllllccccllllllllllccccllllllllllccffffffffflllccccllllllllllccccllllllllllcccclllllccc",
+          "ccccccccccccccccccccccccccccccccccccccccccccffffffffcccccccccccccccccccccccccccccccccccccccccccc",
+          "ccccccccccccccccccccccccccccccccccccccccccccllllllllcccccccccccccccccccccccccccccccccccccccccccc",
+          "ccccccccccccccccccccccccccccccccccccccccccccllllllllcccccccccccccccccccccccccccccccccccccccccccc"
+        ]
+      }
+    ]
+  },
+  "props": [
+    {
+      "prop": "intact_0",
+      "pos": [
+        1408,
+        1920
+      ]
+    },
+    {
+      "prop": "intact_1",
+      "pos": [
+        1632,
+        1920
+      ]
+    },
+    {
+      "prop": "arch_0",
+      "pos": [
+        1792,
+        1760
+      ]
+    },
+    {
+      "prop": "house_0",
+      "pos": [
+        1216,
+        1792
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1344,
+        1824
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1728,
+        1856
+      ]
+    },
+    {
+      "prop": "sign_0",
+      "pos": [
+        1312,
+        1728
+      ]
+    },
+    {
+      "prop": "marquee_0",
+      "pos": [
+        1536,
+        1088
+      ]
+    },
+    {
+      "prop": "tent_0",
+      "pos": [
+        1216,
+        672
+      ]
+    },
+    {
+      "prop": "booth_0",
+      "pos": [
+        1216,
+        960
+      ]
+    },
+    {
+      "prop": "tent_1",
+      "pos": [
+        1216,
+        1280
+      ]
+    },
+    {
+      "prop": "highstriker_0",
+      "pos": [
+        1216,
+        1504
+      ]
+    },
+    {
+      "prop": "tent_1",
+      "pos": [
+        1824,
+        672
+      ]
+    },
+    {
+      "prop": "booth_1",
+      "pos": [
+        1792,
+        960
+      ]
+    },
+    {
+      "prop": "highstriker_1",
+      "pos": [
+        1792,
+        1568
+      ]
+    },
+    {
+      "prop": "bunting_0",
+      "pos": [
+        1312,
+        768
+      ]
+    },
+    {
+      "prop": "bunting_0",
+      "pos": [
+        1728,
+        832
+      ]
+    },
+    {
+      "prop": "bunting_0",
+      "pos": [
+        1312,
+        1376
+      ]
+    },
+    {
+      "prop": "bunting_0",
+      "pos": [
+        1728,
+        1408
+      ]
+    },
+    {
+      "prop": "crates_0",
+      "pos": [
+        1152,
+        1024
+      ]
+    },
+    {
+      "prop": "barrel_0",
+      "pos": [
+        1856,
+        768
+      ]
+    },
+    {
+      "prop": "crates_1",
+      "pos": [
+        1152,
+        1568
+      ]
+    },
+    {
+      "prop": "barrel_1",
+      "pos": [
+        1856,
+        1632
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        1376,
+        416
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        1664,
+        416
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        1376,
+        896
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        1664,
+        1216
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        1376,
+        1632
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        1664,
+        1696
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        640,
+        416
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        2176,
+        416
+      ]
+    },
+    {
+      "prop": "ferris_0",
+      "pos": [
+        2304,
+        544
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        2112,
+        576
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2016,
+        640
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2592,
+        640
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2304,
+        256
+      ]
+    },
+    {
+      "prop": "kiosk_1",
+      "pos": [
+        2560,
+        800
+      ]
+    },
+    {
+      "prop": "carousel_0",
+      "pos": [
+        768,
+        608
+      ]
+    },
+    {
+      "prop": "kiosk_0",
+      "pos": [
+        960,
+        448
+      ]
+    },
+    {
+      "prop": "marble_0",
+      "pos": [
+        928,
+        608
+      ]
+    },
+    {
+      "prop": "tiered_0",
+      "pos": [
+        640,
+        1088
+      ]
+    },
+    {
+      "prop": "picnic_0",
+      "pos": [
+        448,
+        1024
+      ]
+    },
+    {
+      "prop": "picnic_1",
+      "pos": [
+        832,
+        1152
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        480,
+        960
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        800,
+        960
+      ]
+    },
+    {
+      "prop": "booth_0",
+      "pos": [
+        384,
+        1088
+      ]
+    },
+    {
+      "prop": "barrel_1",
+      "pos": [
+        352,
+        1024
+      ]
+    },
+    {
+      "prop": "pavilion_0",
+      "pos": [
+        960,
+        1632
+      ]
+    },
+    {
+      "prop": "gearstack_0",
+      "pos": [
+        1856,
+        1216
+      ]
+    },
+    {
+      "prop": "boiler_0",
+      "pos": [
+        2048,
+        1216
+      ]
+    },
+    {
+      "prop": "sign_0",
+      "pos": [
+        1952,
+        1280
+      ]
+    },
+    {
+      "prop": "crates_0",
+      "pos": [
+        2144,
+        1248
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1952,
+        1120
+      ]
+    },
+    {
+      "prop": "marble_1",
+      "pos": [
+        320,
+        1600
+      ]
+    },
+    {
+      "prop": "picnic_0",
+      "pos": [
+        704,
+        1664
+      ]
+    },
+    {
+      "prop": "robed_0",
+      "pos": [
+        2304,
+        1536
+      ]
+    },
+    {
+      "prop": "spiral_0",
+      "pos": [
+        2240,
+        1664
+      ]
+    },
+    {
+      "prop": "sphere_0",
+      "pos": [
+        2688,
+        1600
+      ]
+    },
+    {
+      "prop": "sphere_1",
+      "pos": [
+        2432,
+        1728
+      ]
+    },
+    {
+      "prop": "marble_1",
+      "pos": [
+        2624,
+        1472
+      ]
+    },
+    {
+      "prop": "boulder_1",
+      "pos": [
+        1088,
+        352
+      ]
+    },
+    {
+      "prop": "boulder_2",
+      "pos": [
+        1920,
+        1056
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        192,
+        192
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        256,
+        256
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        640,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        704,
+        192
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        1152,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        1216,
+        192
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        1856,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        1920,
+        192
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2720,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        2784,
+        224
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        2912,
+        384
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2880,
+        480
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        2912,
+        832
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        2880,
+        928
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2880,
+        1344
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        2912,
+        1440
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        2816,
+        1856
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2880,
+        1792
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        160,
+        480
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        224,
+        544
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        128,
+        864
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        160,
+        928
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        128,
+        1280
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        192,
+        1344
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        160,
+        1856
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        224,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        512,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        576,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        960,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        1024,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        1856,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        1920,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2432,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        2496,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        320,
+        608
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        384,
+        672
+      ]
+    }
+  ],
+  "spawns": [
+    {
+      "tag": "gate",
+      "pos": [
+        1536,
+        1888
+      ]
+    },
+    {
+      "tag": "court",
+      "pos": [
+        1536,
+        1280
+      ]
+    },
+    {
+      "tag": "wheel",
+      "pos": [
+        2304,
+        704
+      ]
+    },
+    {
+      "tag": "west_stub",
+      "pos": [
+        128,
+        992
+      ]
+    }
+  ],
+  "teleports": [],
+  "npc_slots": [
+    {
+      "tag": "ticket_taker",
+      "pos": [
+        1472,
+        1856
+      ]
+    },
+    {
+      "tag": "prefect",
+      "pos": [
+        1600,
+        1760
+      ]
+    },
+    {
+      "tag": "barker",
+      "pos": [
+        1472,
+        768
+      ]
+    },
+    {
+      "tag": "vendor_1",
+      "pos": [
+        1248,
+        864
+      ]
+    },
+    {
+      "tag": "vendor_2",
+      "pos": [
+        1760,
+        896
+      ]
+    },
+    {
+      "tag": "crowd_1",
+      "pos": [
+        1440,
+        1280
+      ]
+    },
+    {
+      "tag": "crowd_2",
+      "pos": [
+        1600,
+        1408
+      ]
+    },
+    {
+      "tag": "crowd_3",
+      "pos": [
+        1504,
+        640
+      ]
+    },
+    {
+      "tag": "operator",
+      "pos": [
+        2240,
+        608
+      ]
+    },
+    {
+      "tag": "queue_1",
+      "pos": [
+        2304,
+        736
+      ]
+    },
+    {
+      "tag": "queue_2",
+      "pos": [
+        2368,
+        800
+      ]
+    },
+    {
+      "tag": "carousel_keeper",
+      "pos": [
+        864,
+        576
+      ]
+    },
+    {
+      "tag": "child",
+      "pos": [
+        704,
+        672
+      ]
+    },
+    {
+      "tag": "cook",
+      "pos": [
+        512,
+        992
+      ]
+    },
+    {
+      "tag": "professor",
+      "pos": [
+        736,
+        1120
+      ]
+    },
+    {
+      "tag": "mechanicus",
+      "pos": [
+        1952,
+        1184
+      ]
+    },
+    {
+      "tag": "apprentice",
+      "pos": [
+        2016,
+        1312
+      ]
+    },
+    {
+      "tag": "dreamer",
+      "pos": [
+        608,
+        1632
+      ]
+    },
+    {
+      "tag": "gardener",
+      "pos": [
+        2368,
+        1600
+      ]
+    },
+    {
+      "tag": "stroller",
+      "pos": [
+        2688,
+        1728
+      ]
+    }
+  ]
+}

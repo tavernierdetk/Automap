@@ -329,6 +329,228 @@
       "family": "shopsign",
       "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
       "req": "shopsign_general_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_gearstack_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_winch_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "rock",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "rock_boulder_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_apothecary_small_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_garments_small_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_general_small_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_inn_small_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_smith_small_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stump",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stump_log_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stump",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stump_stump_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "rock",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "rock_boulder_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "rock",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "rock_rock_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stump",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "stump_stump_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stump",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "stump_log_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_gearstack_large_r3"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_boiler_large_r3"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_winch_large_r3"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_cart_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "clutter",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "clutter_crates_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "clutter",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "clutter_barrel_medium_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "bench",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "bench_picnic_set_r3"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_sign_medium_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "fountain",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "fountain_tiered_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "rock",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "rock_ore_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_apothecary_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_inn_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_marquee_grand_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_flagpole_pole_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_highstriker_small_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "statue",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "statue_founder_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_garments_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_general_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "ride",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "ride_ferris_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "bench",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "bench_marble_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "column",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "column_intact_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "column",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "column_broken_medium_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "column",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "column_piped_large_r2"
     }
   ]
 }
