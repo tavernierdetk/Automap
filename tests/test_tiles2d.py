@@ -222,3 +222,35 @@ def test_blocking_ledge_transition():
     assert meta["transitions"]["terrace"]["blocks"] is True
     assert "blocks" not in meta["transitions"]["water"]  # only when asked
     assert meta["classes"]["stairs"]["walkable"] is True
+
+
+def test_ledge_faces_are_direction_aware():
+    """Elevation v2: the masonry drop face renders where the terrace sits
+    ABOVE the boundary (mask 3: top corners overlay); the far edge
+    (mask 12: bottom corners overlay) gets only a thin rim."""
+    import copy
+    import numpy as np
+    spec = copy.deepcopy(MINE_SPEC)
+    spec["classes"].append({"name": "terrace", "painter": "flagstone",
+                            "color": [0.6, 0.6, 0.55], "relief": "ledge",
+                            "walkable": True})
+    spec["transitions"].append({"name": "terrace", "base": "earth",
+                                "overlay": "terrace", "blocks": True})
+    _, meta = build_atlas(IDENTITY, spec=spec)
+    img, meta = build_atlas(IDENTITY, spec=spec)
+    arr = np.asarray(img, dtype=float) / 255.0
+    t = meta["transitions"]["terrace"]
+
+    def tile(mask):
+        row, col = t["start_row"] + mask // 4, mask % 4
+        return arr[row * TILE:(row + 1) * TILE, col * TILE:(col + 1) * TILE]
+
+    import numpy as _np
+    erow = meta["classes"]["earth"]["row"]
+    earth_rgb = arr[erow * TILE:(erow + 1) * TILE, :TILE].mean(axis=(0, 1))
+    # the base-side boundary band, measured as departure from plain earth:
+    # mask 3 (terrace ABOVE) carries the masonry face → strong departure;
+    # mask 12 (terrace BELOW) gets only a thin rim → the band stays earthy
+    south_dep = _np.abs(tile(3)[18:26, 4:-4] - earth_rgb).mean()
+    north_dep = _np.abs(tile(12)[6:14, 4:-4] - earth_rgb).mean()
+    assert south_dep > north_dep * 1.6, (south_dep, north_dep)

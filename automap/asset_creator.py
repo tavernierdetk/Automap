@@ -105,12 +105,15 @@ FAMILIES: dict[str, dict] = {
         "style_tokens": {"gen1"},
         "tileset": True,
         "materials": ("stone", "bronze", "verdigris"),
+        # plain marble must never snap into the piped variant's bronze
+        "materials_by_substyle": {"intact": ("stone",),
+                                  "broken": ("stone",)},
         "descriptor": {"blocking": "base",
                        "texture_motifs": "flute shadows, pipe seams, patina drips",
                        "anchor": "plinth",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (32, 96), "medium": (32, 64), "small": (32, 32)},
+        "sizes": {"large": (64, 192), "medium": (64, 128), "small": (32, 64)},
     },
     "statue": {
         "generator": "genlab",
@@ -122,9 +125,12 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {"blocking": "base",
                        "texture_motifs": "toga folds, patina streaks",
                        "anchor": "pedestal",
+                       # dark bronze over pale marble pedestal = albedo
+                       # composition; the centroid check misreads it
+                       "lighting": "ambient",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (64, 96), "medium": (32, 64), "small": (32, 32)},
+        "sizes": {"large": (64, 160), "medium": (64, 128), "small": (32, 64)},
     },
     "brazier": {
         "generator": "genlab",
@@ -137,7 +143,7 @@ FAMILIES: dict[str, dict] = {
                        "texture_motifs": "rivet dots, flame licks", "anchor": "base",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"medium": (32, 64), "small": (32, 32), "large": (64, 64)},
+        "sizes": {"medium": (64, 128), "small": (32, 64), "large": (96, 128)},
         "animation": {"kind": "flame_flicker", "frames": 2,
                       "mutable": ("flame",)},
     },
@@ -153,7 +159,7 @@ FAMILIES: dict[str, dict] = {
                        "anchor": "basin",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (96, 96), "medium": (64, 64), "small": (32, 32)},
+        "sizes": {"large": (128, 128), "medium": (96, 96), "small": (32, 32)},
         "animation": {"kind": "water_spray", "frames": 2,
                       "mutable": ("water",)},
     },
@@ -167,9 +173,12 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {"blocking": "base",
                        "texture_motifs": "rivet lines, pipe seams, gear teeth",
                        "anchor": "footing",
+                       # machines compose bronze bodies on pale stone
+                       # plinths — albedo + AO the centroid check misreads
+                       "lighting": "ambient",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (64, 64), "medium": (32, 64), "small": (32, 32)},
+        "sizes": {"large": (128, 128), "medium": (64, 96), "small": (32, 32)},
         # gears cannot ROTATE in band space — heat shimmer is the honest limit.
         # carts and winches are dead metal wherever they stand — shimmer on
         # them reads as haunting, not machinery (mine_hall finding F6); a
@@ -190,7 +199,7 @@ FAMILIES: dict[str, dict] = {
                        "anchor": "stem",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"medium": (32, 64), "small": (32, 32), "large": (64, 96)},
+        "sizes": {"medium": (64, 96), "small": (32, 64), "large": (96, 128)},
         "animation": {"kind": "foliage_sway", "frames": 2,
                       "mutable": ("foliage", "foliage_dark")},
     },
@@ -206,8 +215,8 @@ FAMILIES: dict[str, dict] = {
                        "anchor": "supports",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (64, 32), "medium": (32, 32), "small": (32, 32),
-                  "set": (64, 64)},
+        "sizes": {"large": (96, 64), "medium": (64, 32), "small": (32, 32),
+                  "set": (128, 96)},
     },
     "support": {
         # the abandoned-mine batch: wood-only structural frames (two posts +
@@ -228,7 +237,7 @@ FAMILIES: dict[str, dict] = {
                            "fills the doorway",),
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (64, 96), "medium": (32, 64), "small": (32, 32)},
+        "sizes": {"large": (128, 192), "medium": (64, 96), "small": (32, 32)},
     },
     "shopsign": {
         # the town's language: hanging trade signs on bracket posts,
@@ -245,12 +254,17 @@ FAMILIES: dict[str, dict] = {
                                          "scrollwork, wood grain",
                        "anchor": "post",
                        "prompt_notes": (
-                           "the sign board carries ONE bold carved trade "
-                           "icon and NO text — the icon must read at a "
+                           "the sign board carries ONE bold trade icon and "
+                           "NO text — the icon is painted in BRIGHT "
+                           "VERDIGRIS-GREEN AND CREAM ENAMEL standing out "
+                           "sharply against the dark wooden board (never "
+                           "wood-on-wood carving), and must read at a "
                            "glance at small size",),
+                       # enamel-contrast icons are albedo BY DOCTRINE
+                       "lighting": "ambient",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (64, 96), "medium": (32, 96), "small": (32, 64)},
+        "sizes": {"large": (64, 128), "medium": (32, 96), "small": (32, 64)},
     },
     "clutter": {
         # the lived-in layer: crates, barrels — the satellites every stall
@@ -267,7 +281,7 @@ FAMILIES: dict[str, dict] = {
                        "anchor": "base",
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (64, 64), "medium": (32, 64), "small": (32, 32)},
+        "sizes": {"large": (96, 96), "medium": (64, 96), "small": (32, 32)},
     },
     "building": {
         # the classic RPG top-down building: facade + cornice + roof,
@@ -323,8 +337,8 @@ FAMILIES: dict[str, dict] = {
                        },
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (160, 224), "medium": (96, 128),
-                  "small": (64, 96)},
+        "sizes": {"large": (288, 384), "medium": (224, 224),
+                  "small": (96, 128)},
     },
     "stall": {
         # the midway system: tents, game booths, the high-striker — striped
@@ -342,11 +356,11 @@ FAMILIES: dict[str, dict] = {
                        "anchor": "posts",
                        # a pennant line's bright/dark is ALBEDO (cream vs
                        # red flags at random), not lighting
-                       "lighting": {"bunting": "ambient"},
+                       "lighting": {"bunting": "ambient", "highstriker": "ambient"},
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (96, 96), "medium": (64, 64), "small": (32, 96),
-                  "grand": (128, 128), "pole": (32, 96)},
+        "sizes": {"large": (192, 192), "medium": (128, 96), "small": (64, 192),
+                  "grand": (256, 256), "pole": (64, 160)},
     },
     "portal": {
         # openings in masonry: gateways, sealed gallery mouths, the pit-head
@@ -380,7 +394,7 @@ FAMILIES: dict[str, dict] = {
                        },
                        "perspective": "three_quarter",
                        "shadow": "dither_ellipse"},
-        "sizes": {"large": (96, 96), "medium": (64, 64), "small": (32, 32)},
+        "sizes": {"large": (160, 160), "medium": (96, 96), "small": (32, 32)},
     },
 }
 

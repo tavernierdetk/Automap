@@ -86,3 +86,25 @@ def test_master_palette_custom_materials():
     n_builtin = len(master_palette({"name": "v"})["materials"])
     assert len(pal["materials"]) == n_builtin + 2
     assert len(palette_colors(pal)) > len(palette_colors(master_palette({"name": "v"})))
+
+
+def test_ground_shadow_follows_the_silhouette():
+    """The shadow agrees with its caster: wide table -> wide low shadow,
+    narrow post -> narrow shadow; anchored at the foot line."""
+    import numpy as np
+    from automap.pixelart import ground_shadow
+    h, w = 64, 64
+    table = np.zeros((h, w), bool)
+    table[30:40, 8:56] = True          # a wide table top
+    table[38:56, 12:16] = True         # legs
+    table[38:56, 48:52] = True
+    sh = ground_shadow(table, 55)
+    ys, xs = np.nonzero(sh)
+    assert xs.max() - xs.min() >= 40    # table-wide, not a blob
+    assert ys.min() >= 46               # squashed low near the foot line
+    post = np.zeros((h, w), bool)
+    post[10:56, 30:34] = True
+    shp = ground_shadow(post, 55)
+    _, xsp = np.nonzero(shp)
+    assert xsp.max() - xsp.min() <= 8   # narrow caster, narrow shadow
+    assert not (sh & table).any()       # never over the subject itself

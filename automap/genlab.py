@@ -138,12 +138,16 @@ SUBJECTS = {
                   "texture",
     },
     "bench": {
-        "marble": "a single low Roman marble bench: a thick stone slab seat "
-                  "on two carved side supports, pale stone, simple and "
-                  "sturdy",
-        "picnic": "a single wooden picnic set: a plank table with two "
-                  "attached bench seats along its sides, weathered wood, "
-                  "sturdy cross legs",
+        "marble": "a single low Roman marble bench SEEN STRAIGHT FROM THE "
+                  "FRONT: the thick stone slab seat is one wide horizontal "
+                  "band resting on two carved supports, a flat frontal "
+                  "composition, pale weathered stone",
+        "picnic": "a single wooden picnic set SEEN STRAIGHT FROM THE "
+                  "FRONT: the table top is one wide horizontal plank band, "
+                  "a long bench fully visible in front of the table, the "
+                  "far bench peeking above the top edge behind it, legs "
+                  "straight down — a flat frontal composition, weathered "
+                  "wood",
     },
     "support": {
         "timber": "a single wooden mine support frame: two thick rough-hewn "
@@ -235,12 +239,16 @@ SUBJECTS = {
 }
 
 PERSPECTIVE_TEXT = {
+    # THE DOCTRINE (2026-07-18): three-quarter top-down ONLY — the
+    # isometric corner views the model drifts to are retired
     "three_quarter": (
-        "three-quarter top-down RPG view (a hybrid between top-down and side "
-        "view): the subject's upper masses are seen slightly from above, "
-        "gently squashed vertically, while its full body is visible down to "
-        "where it stands on the ground — the silhouette must read at a "
-        "glance"),
+        "classic SNES-RPG three-quarter top-down view: the subject is seen "
+        "STRAIGHT FROM THE FRONT and slightly from above — its front face "
+        "is flat and parallel to the picture frame, all vertical edges stay "
+        "perfectly vertical, its ground contact forms ONE horizontal line, "
+        "and top surfaces tilt gently toward the viewer. STRICTLY FORBIDDEN: "
+        "isometric view, corner or 45-degree diagonal angles, showing a "
+        "second side face, rotated bases, vanishing-point perspective"),
     "top_down": "pure top-down (bird's eye) view",
     "side": "straight side view",
 }
@@ -561,7 +569,8 @@ def preview(req_dir: Path, identity: dict, log=print) -> Path | None:
     family = req["family"]
     fam = asset_creator.FAMILIES[family]
     descriptor = asset_qc.resolve_descriptor(fam["descriptor"], req["substyle"])
-    materials = fam.get("materials", ("foliage", "foliage_dark", "wood"))
+    materials = fam.get("materials_by_substyle", {}).get(
+        req["substyle"], fam.get("materials", ("foliage", "foliage_dark", "wood")))
     target = _family_sizes(family)[req["size_class"]]
     incoming = sorted((req_dir / "incoming").glob("*.png"))
     if not incoming:
@@ -581,7 +590,22 @@ def preview(req_dir: Path, identity: dict, log=print) -> Path | None:
         bad = [c for c in checks if not c.ok]
         verdict = "QC PASS" if not bad else \
             "QC FAIL: " + "; ".join(f"{c.name} ({c.detail})" for c in bad)
-        log(f"[genlab] preview {src.name}: {verdict}")
+        # perspective ADVISORY (never a gate): an isometric corner view's
+        # base contour bulges downward at center (diamond base); a
+        # doctrine-compliant front view's base line runs flat
+        subj = (material > 0) & (material < min(
+            i for i, m in names.items() if m.startswith("outline:")))
+        cols = np.nonzero(subj.any(axis=0))[0]
+        hint = ""
+        if len(cols) >= 12:
+            base_y = np.array([np.nonzero(subj[:, c])[0].max() for c in cols])
+            third = len(cols) // 3
+            bulge = base_y[third:-third].mean() - \
+                np.concatenate([base_y[:third], base_y[-third:]]).mean()
+            if bulge > 0.10 * len(cols):
+                hint = (f"  [perspective hint: base bulges {bulge:.0f}px at "
+                        "center — possible ISOMETRIC corner view]")
+        log(f"[genlab] preview {src.name}: {verdict}{hint}")
         ref_t = ref.resize((max(1, int(ref.width * row_h / ref.height)), row_h))
         scale = max(1, row_h // sprite.height)
         spr_t = sprite.resize((sprite.width * scale, sprite.height * scale),
@@ -625,7 +649,8 @@ def ingest(req_dir: Path, game_dir: Path, staging_dir: Path, identity: dict,
     family, substyle = req["family"], req["substyle"]
     fam = asset_creator.FAMILIES[family]
     descriptor = asset_qc.resolve_descriptor(fam["descriptor"], substyle)
-    materials = fam.get("materials", ("foliage", "foliage_dark", "wood"))
+    materials = fam.get("materials_by_substyle", {}).get(
+        substyle, fam.get("materials", ("foliage", "foliage_dark", "wood")))
     target = _family_sizes(family)[req["size_class"]]
     identity_name = str(identity.get("name", "identity"))
 

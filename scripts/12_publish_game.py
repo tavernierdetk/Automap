@@ -113,7 +113,9 @@ def main(
     # (<kind>/<id>/<id>.json, brief beside it) — published content stays
     # flat either way (copied by filename)
     def _json_files(src: Path) -> list[Path]:
-        return sorted(list(src.glob("*.json")) + list(src.glob("*/*.json")))
+        # flat, per-scene foldered, or regionally filed (<region>/<id>/)
+        return sorted(list(src.glob("*.json")) + list(src.glob("*/*.json"))
+                      + list(src.glob("*/*/*.json")))
 
     levels: dict[str, dict] = {}
     for kind in JSON_KINDS:
@@ -125,6 +127,10 @@ def main(
             _validate(kind, f, log)
             if kind == "levels":
                 doc = json.loads(f.read_text())
+                if doc["id"] in levels:
+                    log(f"ERROR: duplicate level id '{doc['id']}' "
+                        f"({f}) — two source files claim it; delete one")
+                    raise typer.Exit(code=1)
                 levels[doc["id"]] = doc
         log(f"{kind}: {len(files)} valid")
     errors = _check_teleport_graph(levels, log)

@@ -265,16 +265,12 @@ def repixelize(img: Image.Image, pal: dict, target: tuple[int, int],
     # ground shadow per the family descriptor (the prompt forbids one in the
     # reference so we never have to key it out)
     if descriptor.get("shadow") == "dither_ellipse":
+        # (value name is historical: the shadow is now SILHOUETTE-projected
+        # — shape-aware, still checker-dithered)
         full = mask | (ring_mat > 0)
-        ys, xs = np.nonzero(full)
+        ys, _ = np.nonzero(full)
         if len(ys):
-            w = mask.shape[1]
-            fx = float((xs.min() + xs.max()) / 2.0)
-            span = (xs.max() - xs.min()) / 2.0
-            sh = trees_px._shadow_ellipse(w=w, h=mask.shape[0], cx=fx,
-                                          cy=min(int(ys.max()), mask.shape[0] - 2),
-                                          rx=span * 0.75, ry=max(span * 0.20, 3))
-            sh &= ~full
+            sh = px.ground_shadow(full, min(int(ys.max()), mask.shape[0] - 2))
             a = np.array(sprite)
             a[sh, :3] = pal["neutrals"][0]
             a[sh, 3] = 255

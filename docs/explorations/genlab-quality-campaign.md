@@ -58,6 +58,10 @@ Dry-run recreation: repixels every reference, runs the full QC gate,
 writes `<req>/preview.png` — reference | recreated sprite (nearest-
 neighbor, on dark ground) per row, QC verdict in the caption. **Stages
 NOTHING** — judge freely, delete weak references, regenerate, re-preview.
+**REJECT corner/isometric views on sight** — the doctrine is
+three-quarter top-down only (front face parallel to the frame, one
+horizontal ground line); the preview log prints a `perspective hint`
+when a base contour bulges like an isometric diamond.
 **What to look for, in order:** (1) silhouette — does the subject still
 read at a glance at sprite scale? (2) material mapping — bronze snapped
 to bronze, not wood; verdigris only where the reference stained; (3)
@@ -277,6 +281,119 @@ court is the proof: raised terrace + grand south stair. Pending polish:
 direction-aware ledge faces (tall south face, thin top rim);
 multi-level stacking. Still blocked on billing: marquee, flagpoles,
 sign-contrast round.
+
+### Round 9 — closing the CT arc (2026-07-18)
+
+- **Elevation v2**: ledge faces direction-aware via the transition
+  field's gradient — tall jointed masonry + foot shadow where the drop
+  faces the camera (gy < 0), thin rim elsewhere. Terraces read as CT
+  terraces now. Debt: multi-level stacking.
+- **Town urban-tightening**: continuous lane frontage at 1-cell gaps
+  (14 houses across two lanes + a west-frontage house closing the
+  square's ring), general goods pulled tight to the apothecary.
+  Bourg-Vaporum reads Truce-dense.
+- **World graph closed**: the lyceum briefed (legacy-scene path) and
+  given fair/town exits — fair ⇄ lyceum ⇄ town ⇄ mine ⇄ atrium, no
+  one-way doors, no vaporis orphan warnings.
+- Billing still walled (probed): marquee, flagpoles, shopsign enamel
+  round remain the queue's head when the cap rises.
+- The CT visual arc is at its resting point; the platform's next module
+  is the StoryDirector (≈50 empty sockets across the vaporis world).
+
+### Round 10 — the showcase: La Grande Exposition Vaporum (2026-07-18)
+
+The best-of scene (vaporis_exposition, 96×64, 106 props, 25 sockets):
+a three-level stepped exposition ground proving the whole stack in one
+frame — the first STACKED terraces (flag→terrace→upper compose as
+blocking ledge pairs, no new engine work needed), twin animated
+fountains + founder on the crown, the wheel on its own raised court,
+machines exhibited ALIVE on plinth lawns, every family placed in
+character, curbs/flowers/canopy grammar throughout, two-way graph.
+Brief-gated end-to-end; concept step skipped (billing wall) with
+composition inherited from the Millennial study by explicit note.
+Reserved on billing: grand marquee + pennant rhythm.
+
+### Round 11 — the FIGURE-SCALE contract (2026-07-18)
+
+The user's call: tents, carousel and especially buildings read far too
+small against the character. Root cause: the player normalizes to 96px
+(CreatureSprites height_target) — over two tiles — while assets were
+sized to 32px-tile intuition (a 26px door under a 96px figure).
+- **Contract established** (memory + FAMILIES + buildings2d): doors ≥
+  the figure; storey 88px; house ≈ 3 figures; tents 192²; carousel
+  224²; ferris 288×384; lanterns/columns/statues 128–192.
+- **Buildings** rescaled procedurally (bay pitch 64px, arched 32×72
+  doors, all trim in proportion) and regenerated.
+- **GenLab families re-ingested from archived references — zero API
+  spend** (the archive IS the recovery mechanism; ~70 sprites restaged).
+- **Player collision fixed**: feet-to-midriff RectangleShape2D (26×36)
+  instead of a full-body r38 circle — the torso may overlap what's
+  behind; only feet bump the world.
+- Findings: low-contrast legacy references (founder, fountain, ore,
+  synthetic boulders) FAIL honestly at bigger targets — the round-2
+  anchored reband won't stretch flat sources into bands; git-restored
+  at old scale pending API regeneration. Retired request dirs
+  (machine r1, 32px signs) must stay retired — the sweep re-ingested
+  them; `incoming_retired/` now marks them. All five scenes re-spaced
+  and rebaked; scale verified with the figure in frame.
+
+### Round 12 — the perspective doctrine + silhouette shadows (2026-07-18)
+
+Three defects, one round (cap raised mid-round — the whole billing
+queue executed):
+- **Perspective doctrine**: three-quarter top-down ONLY.
+  `PERSPECTIVE_TEXT` now forbids isometric/corner/45° views outright; a
+  preview-only `perspective hint` flags diamond-bulging base contours
+  (fired correctly on the old picnic refs, silent on compliant ones).
+  All isometric offenders REGENERATED front-facing: machines ×4 (cart
+  now medium 64×96 — waist-high, sits the mine rail), crates, barrels,
+  picnic (needed the composition baked into the SUBJECT text — the
+  model's picnic-table prior beat the shared perspective block), sign,
+  high-striker. Founder, fountain (twins!), ore regenerated at proper
+  scale; enamel-icon shopsigns landed (scales/garment/mortar READ at
+  play zoom); grand marquee + pennant flagpoles placed in fair + expo.
+- **Silhouette shadows**: `pixelart.ground_shadow` — the caster's own
+  silhouette squashed onto the ground line, checker-dithered. Wired in
+  trees_px + repixel; whole library refreshed (41 keeper sprites
+  re-ingested zero-API + trees/buildings replayed). The picnic table
+  casts a table-wide shadow; bunting two lobes; lanterns thin lines.
+- **Interior doors**: jitter clamped off the facade edges (test-pinned).
+- **light_direction post-mortem**: the up-left centroid check has now
+  mis-culled across five families (plinth composition, albedo icons,
+  pale pedestals). Doctrine settled: `ambient` for machine, statue,
+  shopsign, stall.bunting/highstriker (albedo-composed subjects); the
+  check remains for procedural key-lit painters where it catches real
+  flips. One gen1 tree fell to the refresh (deciduous_14) — copses
+  cycle 3 variants now.
+- All five scenes rebaked; in-scene verification: front-facing machine
+  exhibition, legible trade signs, shape-true shadows everywhere.
+
+### Round 13 — curation, clean slate, fair v5 (2026-07-18)
+
+- **Regional filing**: scenes live at `levels/<region>/<id>/` (vaporis/,
+  originals/); all plumbing layout-aware. A silent shadowing bug
+  surfaced and died: flat + foldered copies of one id had been resolving
+  by sort order since the folder reorg — the publisher now ERRORS on
+  duplicate level ids.
+- **THE LIBRARY**: `13 library` builds `games/entropy/library.md`
+  (families, variants, figure-relative sizes, doctrine notes, atlas
+  vocabularies, filed scenes) + per-family contact sheets — the
+  director's reference before any Asset Creator call.
+- **Clean slate**: all SCD-authored scenes deleted (history in git);
+  E1 fidelity originals kept, refiled under `originals/`; all baked
+  .tscn/.tres wiped (regenerable projections).
+- **Standards regeneration**: marble bench (front-facing via
+  subject-level composition — the picnic lesson generalizes), columns
+  ×3 (with NEW substyle-scoped materials: plain marble no longer snaps
+  into the piped variant's bronze ramp), and the ferris — the wheel
+  plane now PARALLEL to the frame; the last isometric landmark retired.
+  Perspective-hint learning: round bases bulge legitimately (columns,
+  plinths) — the hint stays advisory.
+- **Fair v5**: rebuilt from a fresh brief in the regional home — the
+  marquee at the court's heart, the front-facing wheel on its ledged
+  terrace, machines alive on plinths, everything from the library,
+  20 sockets. The rebuilt region's first scene; the world regrows from
+  here with the lyceum's return next.
 
 ### Round 2 — original plan (for the record)
 1. **Grid-pitch detection + integer downsample**: references arrive as

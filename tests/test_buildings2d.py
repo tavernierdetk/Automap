@@ -51,9 +51,9 @@ def test_prefab_house_anatomy():
     trim = material == by_name["wood"]
     cornice_rows = trim.sum(axis=1) > w * 0.8
     assert cornice_rows.any()
-    # the door: wood pixels straddling meta["door"] at the base
+    # the door: wood pixels straddling meta["door"] above the stoop
     dx, dy = meta["door"]
-    assert trim[dy - 6:dy - 2, dx - 4:dx + 4].any()
+    assert trim[dy - 30:dy - 16, dx - 6:dx + 6].any()
     assert meta["anchor_y"] == int(np.nonzero((material > 0).any(axis=1))[0].max())
 
 
@@ -91,3 +91,14 @@ def test_unknown_substyle_raises():
     import pytest
     with pytest.raises(ValueError, match="unknown building substyle"):
         buildings2d.build_set(PAL, "vaporis", "castle", 1)
+
+
+def test_doors_never_sit_on_the_facade_edge():
+    """A door flush against the building corner reads wrong — jittered
+    variants must keep doors interior."""
+    for sub in ("house", "shop", "inn"):
+        for name, (img, meta) in _built(sub, 4).items():
+            if meta.get("door") is None:
+                continue
+            dx = meta["door"][0]
+            assert 40 <= dx <= img.width - 40, (name, dx, img.width)

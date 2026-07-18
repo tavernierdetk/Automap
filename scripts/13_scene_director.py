@@ -35,7 +35,12 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def _level_path(levels_dir: Path, lid: str, suffix: str) -> Path:
-    """Per-scene folder layout (levels/<id>/<id>.<suffix>), flat fallback."""
+    """Scene file lookup across layouts, most organized first:
+    levels/<region>/<id>/<id>.<suffix> (regional filing), then
+    levels/<id>/<id>.<suffix>, then flat levels/<id>.<suffix>."""
+    hits = sorted(levels_dir.glob(f"*/{lid}/{lid}.{suffix}"))
+    if hits:
+        return hits[0]
     foldered = levels_dir / lid / f"{lid}.{suffix}"
     return foldered if foldered.exists() else levels_dir / f"{lid}.{suffix}"
 
@@ -123,7 +128,8 @@ def catalog(
                 "classes": {c: {k: v for k, v in spec.items() if k != "row"}
                             for c, spec in doc.get("classes", {}).items()}})
     lv_dir = ROOT / "games" / game / "levels"
-    for f in sorted(list(lv_dir.glob("*.json")) + list(lv_dir.glob("*/*.json"))):
+    for f in sorted(list(lv_dir.glob("*.json")) + list(lv_dir.glob("*/*.json"))
+                    + list(lv_dir.glob("*/*/*.json"))):
         doc = json.loads(f.read_text())
         cat["levels"].append({
             "id": doc["id"], "kind": doc.get("kind", "backdrop"),
@@ -166,6 +172,90 @@ def atlas(
     typer.echo(f"[stage 13] atlas '{base}' ({len(meta['classes'])} classes, "
                f"{len(meta['transitions'])} transition pairs) "
                f"-> work/game/{game}/tilesets/ (publish with stage 12 / `bake`)")
+
+
+@app.command()
+def library(
+    game: str = typer.Option("entropy", "--game"),
+    game_dir: Path = typer.Option(Path.home() / "Cowork" / "entropy-remade", "--game-dir"),
+):
+    """Build THE ASSET LIBRARY — the reference the director consults before
+    calling the Asset Creator: games/<game>/library.md (committed; every
+    family, variant, figure-relative size, doctrine notes, atlas
+    vocabularies, filed scenes) + per-family contact sheets under
+    work/game/<game>/library/ for eyeballing."""
+    from PIL import Image
+    from automap.asset_creator import FAMILIES, load_catalog
+    FIGURE = 96.0  # the scale contract's reference height
+    cat = load_catalog(game_dir)
+    props_dir = game_dir / "content" / "props"
+    sheets_dir = ROOT / "work" / "game" / game / "library"
+    sheets_dir.mkdir(parents=True, exist_ok=True)
+
+    fams: dict[str, list] = {}
+    for name, e in sorted(cat.get("props", {}).items()):
+        fams.setdefault(e.get("family", "?"), []).append((name, e))
+
+    lines = [f"# Asset library — {game}", "",
+             "The SceneCreationDirector's reference: what EXISTS before the",
+             "Asset Creator is asked for anything new (`13 library` rebuilds",
+             "this file + the contact sheets in `work/game/%s/library/`)." % game,
+             "Sizes are given in FIGURES (the 96px character — the scale",
+             "contract): a door is ≥1 figure, a house ≈3.", "",
+             "## Families"]
+    for fam in sorted(fams):
+        spec = FAMILIES.get(fam, {})
+        d = spec.get("descriptor", {})
+        notes = []
+        if spec.get("generator"):
+            notes.append(f"generator `{spec['generator']}`")
+        if spec.get("animation"):
+            a = spec["animation"]
+            stat = a.get("static_substyles")
+            notes.append(f"animates `{a['kind']}`"
+                         + (f" (static: {', '.join(stat)})" if stat else ""))
+        if isinstance(d.get("lighting"), str):
+            notes.append(f"lighting `{d['lighting']}`")
+        fp = "rect" if d.get("blocking") == "facade_base" else d.get("blocking", "base")
+        notes.append(f"blocks `{fp}`")
+        lines += [f"", f"### {fam} — {'; '.join(notes)}", "",
+                  "| variant | px | figures (w×h) | frames | style |",
+                  "|---|---|---|---|---|"]
+        thumbs = []
+        for name, e in fams[fam]:
+            w, h = e["size"]
+            lines.append(f"| {name} | {w}×{h} | {w / FIGURE:.1f}×{h / FIGURE:.1f} "
+                         f"| {e.get('frames', 1)} | {e.get('style', '?')} |")
+            p = props_dir / e["file"]
+            if p.exists():
+                thumbs.append(Image.open(p).convert("RGBA"))
+        if thumbs:
+            W = sum(t.width for t in thumbs) + 6 * len(thumbs)
+            H = max(t.height for t in thumbs)
+            sheet = Image.new("RGBA", (W, H), (38, 38, 42, 255))
+            x = 0
+            for t in thumbs:
+                sheet.paste(t, (x, H - t.height), t)
+                x += t.width + 6
+            sheet.save(sheets_dir / f"{fam}.png")
+
+    lines += ["", "## Terrain vocabularies (atlas specs)", ""]
+    for f in sorted((ROOT / "games" / game / "atlases").glob("*.spec.json")):
+        doc = json.loads(f.read_text())
+        classes = ", ".join(c["name"] for c in doc.get("classes", []))
+        lines.append(f"- **{doc.get('name', f.stem)}** (`atlases/{f.name}`): {classes}")
+
+    lines += ["", "## Scenes (regional filing: levels/<region>/<id>/)", ""]
+    lv_dir = ROOT / "games" / game / "levels"
+    for f in sorted(list(lv_dir.glob("*/*/*.json")) + list(lv_dir.glob("*/*.json"))):
+        doc = json.loads(f.read_text())
+        region = f.parent.parent.name if f.parent.parent != lv_dir else "(unfiled)"
+        lines.append(f"- `{region}` / **{doc['id']}** — {doc.get('kind', 'backdrop')}, "
+                     f"{len(doc.get('npc_slots', []))} sockets")
+
+    out = ROOT / "games" / game / "library.md"
+    out.write_text("\n".join(lines) + "\n")
+    typer.echo(f"[stage 13] library -> {out} (+ {len(fams)} contact sheets)")
 
 
 @app.command()

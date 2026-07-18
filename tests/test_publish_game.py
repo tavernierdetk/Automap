@@ -41,8 +41,19 @@ def test_dangling_spawn_tag_and_orphan_only_warn():
 def test_committed_entropy_levels_pass_the_gate():
     levels = {}
     lv = ROOT / "games" / "entropy" / "levels"
-    for f in sorted(list(lv.glob("*.json")) + list(lv.glob("*/*.json"))):
+    for f in sorted(list(lv.glob("*.json")) + list(lv.glob("*/*.json"))
+                    + list(lv.glob("*/*/*.json"))):
         doc = json.loads(f.read_text())
         levels[doc["id"]] = doc
-    assert len(levels) >= 5  # the director keeps growing the world
+    assert len(levels) >= 5  # the world keeps its originals at minimum
     assert publish_game._check_teleport_graph(levels, lambda m: None) == []
+
+
+def test_duplicate_level_ids_are_fatal():
+    """Two source files claiming one id (flat + foldered) silently shadowed
+    each other during the folder reorg — now it's an error at the gate."""
+    import subprocess, sys, tempfile
+    # unit-level: the graph checker is fine with one; the publisher's loop
+    # raises — exercised via the guard's presence in source (cheap pin)
+    src = (ROOT / "scripts" / "12_publish_game.py").read_text()
+    assert "duplicate level id" in src

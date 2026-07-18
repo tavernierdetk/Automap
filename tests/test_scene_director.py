@@ -46,9 +46,11 @@ def test_missing_intent_is_an_error(tmp_path):
 
 
 def test_existing_scenes_are_gated_too():
-    """The committed vaporis scenes must keep passing the gate they inspired."""
+    """Regionally filed originals are briefless legacy scenes — the gate
+    must FIND them through the regional layout and demand their briefs."""
     levels = ROOT / "games" / "entropy" / "levels"
-    assert scene_director._check_briefs(levels, ["vaporis_mine_hall"]) == []
+    errors = scene_director._check_briefs(levels, ["witch_cottage"])
+    assert len(errors) >= 1 and "witch_cottage" in errors[0]
 
 
 def test_foldered_layout_is_found(tmp_path):
@@ -56,6 +58,16 @@ def test_foldered_layout_is_found(tmp_path):
     layout; flat files remain a fallback."""
     d = tmp_path / "hall"
     d.mkdir()
+    (d / "hall.json").write_text(json.dumps({"id": "hall", "intent": "x"}))
+    (d / "hall.brief.md").write_text("# Brief\n\nA place.")
+    assert scene_director._check_briefs(tmp_path, ["hall"]) == []
+    assert scene_director._level_path(tmp_path, "hall", "json") == d / "hall.json"
+
+
+def test_regional_layout_is_found_first(tmp_path):
+    """Regional filing (levels/<region>/<id>/) is the organized layout."""
+    d = tmp_path / "vaporis" / "hall"
+    d.mkdir(parents=True)
     (d / "hall.json").write_text(json.dumps({"id": "hall", "intent": "x"}))
     (d / "hall.brief.md").write_text("# Brief\n\nA place.")
     assert scene_director._check_briefs(tmp_path, ["hall"]) == []

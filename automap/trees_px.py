@@ -92,11 +92,8 @@ def _roots(w, h, cx, top_y, rng, scale=1.0):
     return mask
 
 
-def _shadow_ellipse(w, h, cx, cy, rx, ry) -> np.ndarray:
-    yy, xx = np.mgrid[0:h, 0:w].astype(float)
-    inside = ((xx - cx) / max(rx, 1)) ** 2 + ((yy - cy) / max(ry, 1)) ** 2 < 1.0
-    checker = ((xx.astype(int) + yy.astype(int)) & 1) == 0
-    return inside & checker  # 50% dither: soft read, crisp alpha
+# ground shadows are silhouette-projected (pixelart.ground_shadow) — the
+# fixed ellipse blob is retired (a shadow must agree with its caster)
 
 
 # --- substyle structures ---------------------------------------------------------
@@ -195,8 +192,7 @@ def _render(st: dict, pal: dict, rng, size_px) -> tuple[Image.Image, dict]:
     sil0 = canopy | trunk
     ys_all = np.nonzero(sil0)[0]
     bottom = int(ys_all.max()) if len(ys_all) else int(st.get("base_y", h - 4))
-    shadow = _shadow_ellipse(w, h, cx, min(bottom, h - 2),
-                             base_r * 0.70, max(base_r * 0.18, 3))
+    shadow = px.ground_shadow(sil0, min(bottom, h - 2))
     material[shadow] = MAT_SHADOW
 
     material[trunk] = MAT_TRUNK

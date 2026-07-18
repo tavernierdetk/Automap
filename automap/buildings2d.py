@@ -32,33 +32,36 @@ from automap import pixelart as px
 
 STYLE_TOKEN = "bld1"
 
-# vertical recipe (px)
-_WALL_H = 38          # one storey of wall
-_FOUNDATION_H = 4     # stone base course
-_CORNICE_H = 6
-_ROOF_INSET = 3       # walls sit inset; the roof overhangs to the canvas edge
+# vertical recipe (px) — FIGURE-RELATIVE (the scale contract): the player
+# renders 96px tall (visible body ~73px). A storey clears the figure, a
+# door is taller than the figure, a house reads ~3 figures tall.
+_WALL_H = 88          # one storey of wall (~1.2 figures)
+_FOUNDATION_H = 8     # stone base course
+_CORNICE_H = 10
+_ROOF_INSET = 5       # walls sit inset; the roof overhangs to the canvas edge
+_BAY = 64             # one window bay spans two 32px cells
 
 # the standard basic builds — variant 0 of each substyle is exactly this
 PREFABS: dict[str, dict] = {
-    "house": {"cells_w": 3, "storeys": 1, "roof": "hip", "roof_cells": 2,
+    "house": {"cells_w": 5, "storeys": 1, "roof": "hip", "roof_cells": 4,
               "door": "center", "chimney": True, "shutters": True,
               "wall_material": "plaster", "roof_material": "rooftile",
               "trim_material": "wood"},
-    "kiosk": {"cells_w": 2, "storeys": 1, "roof": "awning", "roof_cells": 1,
+    "kiosk": {"cells_w": 3, "storeys": 1, "roof": "awning", "roof_cells": 2,
               "door": None, "chimney": False,
               "wall_material": "wood", "roof_material": "canvas",
               "trim_material": "wood"},
-    "pavilion": {"cells_w": 5, "storeys": 1, "roof": "awning",
-                 "roof_cells": 2, "door": "center", "chimney": False,
+    "pavilion": {"cells_w": 7, "storeys": 1, "roof": "awning",
+                 "roof_cells": 3, "door": "center", "chimney": False,
                  "wall_material": "plaster", "roof_material": "canvas",
                  "trim_material": "wood"},
     # the town batch: SHOPFRONT read (display window + awning band) and a
     # two-storey inn — the SNES-town grammar (vaporis_town brief)
-    "shop": {"cells_w": 4, "storeys": 1, "roof": "gable", "roof_cells": 2,
-             "door": 2, "chimney": False, "storefront": True,
+    "shop": {"cells_w": 6, "storeys": 1, "roof": "gable", "roof_cells": 4,
+             "door": 4, "chimney": False, "storefront": True,
              "wall_material": "plaster", "roof_material": "rooftile",
              "trim_material": "wood"},
-    "inn": {"cells_w": 5, "storeys": 2, "roof": "hip", "roof_cells": 2,
+    "inn": {"cells_w": 7, "storeys": 2, "roof": "hip", "roof_cells": 4,
             "door": "center", "chimney": True, "shutters": True,
             "dormer": True,
             "wall_material": "plaster", "roof_material": "roofslate",
@@ -97,9 +100,9 @@ def _wall_field(material, band, g, idx, stone_idx, rng) -> None:
     lower[lower == 2] = 3
     band[y0:y1, x0:x0 + 2] = 3            # lit left rim
     # corner quoins: alternating stone blocks up both wall corners
-    qh = 6
+    qh = 12
     for i, qy in enumerate(range(y1 - _FOUNDATION_H - qh, y0 + 2, -qh)):
-        qw = 4 if i % 2 == 0 else 3
+        qw = 7 if i % 2 == 0 else 5
         for qx0 in (x0, x1 - qw):
             material[qy:qy + qh - 1, qx0:qx0 + qw] = stone_idx
             band[qy:qy + qh - 1, qx0:qx0 + qw] = 3 if i % 2 == 0 else 2
@@ -117,16 +120,16 @@ def _timbered(material, band, g, wood_idx, rng) -> None:
     x0, x1 = _ROOF_INSET, g["w"] - _ROOF_INSET
     y0 = g["wall_y"]
     y1 = g["base_y"] + 1 - _FOUNDATION_H
-    for x in range(x0, x1 + 1, 32):          # posts at every bay border
-        bx = int(np.clip(x, x0, x1 - 2))
-        material[y0:y1, bx:bx + 2] = wood_idx
-        band[y0:y1, bx:bx + 2] = 1
+    for x in range(x0, x1 + 1, _BAY):        # posts at every bay border
+        bx = int(np.clip(x, x0, x1 - 3))
+        material[y0:y1, bx:bx + 3] = wood_idx
+        band[y0:y1, bx:bx + 3] = 1
         band[y0:y1, bx:bx + 1] = 2
     for s in range(int(g["storeys"])):        # a rail under each storey
-        ry = y0 + (s + 1) * _WALL_H - 4
+        ry = y0 + (s + 1) * _WALL_H - 6
         if ry < y1:
-            material[ry:ry + 2, x0:x1] = wood_idx
-            band[ry:ry + 2, x0:x1] = 1
+            material[ry:ry + 3, x0:x1] = wood_idx
+            band[ry:ry + 3, x0:x1] = 1
 
 
 def _storefront(material, band, g, door_cell, trim_idx, stone_idx,
@@ -135,45 +138,44 @@ def _storefront(material, band, g, door_cell, trim_idx, stone_idx,
     awning band across the facade under the cornice."""
     y_ground = g["wall_y"] + (g["storeys"] - 1) * _WALL_H
     # display window: spans the bays left of the door
-    wx0 = _ROOF_INSET + 5
-    wx1 = door_cell * 32 - 6
-    if wx1 - wx0 >= 14:
-        wy0, wy1 = y_ground + 8, y_ground + 28
+    wx0 = _ROOF_INSET + 8
+    wx1 = door_cell * 32 - 12
+    if wx1 - wx0 >= 28:
+        wy0, wy1 = y_ground + 18, y_ground + 62
         material[wy0:wy1, wx0:wx1] = trim_idx
         band[wy0:wy1, wx0:wx1] = 3
-        material[wy0 + 2:wy1 - 3, wx0 + 2:wx1 - 2] = stone_idx
-        band[wy0 + 2:wy1 - 3, wx0 + 2:wx1 - 2] = 0
-        band[wy0 + 2, wx0 + 2:wx1 - 2] = 4          # glass glint line
+        material[wy0 + 4:wy1 - 5, wx0 + 4:wx1 - 4] = stone_idx
+        band[wy0 + 4:wy1 - 5, wx0 + 4:wx1 - 4] = 0
+        band[wy0 + 4:wy0 + 6, wx0 + 4:wx1 - 4] = 4  # glass glint line
         mull = (wx0 + wx1) // 2                     # center mullion
-        material[wy0:wy1, mull:mull + 2] = trim_idx
-        band[wy0:wy1, mull:mull + 2] = 3
+        material[wy0:wy1, mull:mull + 3] = trim_idx
+        band[wy0:wy1, mull:mull + 3] = 3
     # awning band across the facade, scalloped
     ax0, ax1 = _ROOF_INSET, g["w"] - _ROOF_INSET
-    ay0 = g["wall_y"] + 1
-    ay1 = ay0 + 7
+    ay0 = g["wall_y"] + 2
+    ay1 = ay0 + 14
     material[ay0:ay1, ax0:ax1] = canvas_idx
-    for x in range(ax0, ax1, 8):
-        band[ay0:ay1, x:x + 4] = 4
-        band[ay0:ay1, x + 4:x + 8] = 1
+    for x in range(ax0, ax1, 16):
+        band[ay0:ay1, x:x + 8] = 4
+        band[ay0:ay1, x + 8:x + 16] = 1
     band[ay1 - 1, ax0:ax1] = 0                      # shadow under the lip
-    for x in range(ax0 + 6, ax1 - 2, 8):            # scallop
-        material[ay1 - 2:ay1, x:x + 2] = 0
-        band[ay1 - 2:ay1, x:x + 2] = 0
+    for x in range(ax0 + 10, ax1 - 4, 16):          # scallop
+        material[ay1 - 3:ay1, x:x + 4] = 0
+        band[ay1 - 3:ay1, x:x + 4] = 0
 
 
-def _window_bay(material, band, g, cell, trim_idx, stone_idx, rng,
+def _window_bay(material, band, g, cx, trim_idx, stone_idx, rng,
                 state: str, wy0_row: int | None = None,
                 shutter_idx: int | None = None) -> None:
-    cx = cell * 32 + 16  # bay centered in its facade cell
-    wy0 = g["wall_y"] + 10 if wy0_row is None else wy0_row
-    wx0 = cx - 6
-    wx1, wy1 = cx + 6, wy0 + 14
+    wy0 = g["wall_y"] + 20 if wy0_row is None else wy0_row
+    wx0 = cx - 10
+    wx1, wy1 = cx + 10, wy0 + 30
     material[wy0:wy1, wx0:wx1] = trim_idx      # frame
     band[wy0:wy1, wx0:wx1] = 3
     band[wy1 - 1, wx0:wx1] = 1                 # sill shadow
     material[wy1, wx0 - 1:wx1 + 1] = stone_idx  # protruding stone sill
     band[wy1, wx0 - 1:wx1 + 1] = 4
-    gx0, gy0, gx1, gy1 = wx0 + 2, wy0 + 2, wx1 - 2, wy1 - 3
+    gx0, gy0, gx1, gy1 = wx0 + 3, wy0 + 3, wx1 - 3, wy1 - 5
     material[gy0:gy1, gx0:gx1] = stone_idx     # glass reads dark neutral
     band[gy0:gy1, gx0:gx1] = 0 if state != "lit" else 3
     if state == "shuttered":
@@ -184,36 +186,36 @@ def _window_bay(material, band, g, cell, trim_idx, stone_idx, rng,
     elif state != "lit":
         band[gy0, gx0] = 4                     # one glint (stone top band)
     if shutter_idx is not None:                 # colored shutters (CT read)
-        for sx0 in (wx0 - 3, wx1):
-            material[wy0:wy1 - 1, sx0:sx0 + 3] = shutter_idx
-            band[wy0:wy1 - 1, sx0:sx0 + 3] = 2
-            band[wy0 + 1:wy1 - 2, sx0 + 1] = 1  # slat groove
-            band[wy0, sx0:sx0 + 3] = 3
+        for sx0 in (wx0 - 6, wx1 + 1):
+            material[wy0:wy1 - 1, sx0:sx0 + 5] = shutter_idx
+            band[wy0:wy1 - 1, sx0:sx0 + 5] = 2
+            band[wy0 + 2:wy1 - 3, sx0 + 2] = 1  # slat groove
+            band[wy0, sx0:sx0 + 5] = 3
 
 
 def _door(material, band, g, cx, trim_idx, stone_idx, rng) -> int:
-    dw, dh = 16, 27
+    dw, dh = 32, 72
     x0, x1 = cx - dw // 2, cx + dw // 2
     y1 = g["base_y"] + 1 - _FOUNDATION_H
     y0 = y1 - dh
     # stone frame around an ARCHED wood door (the CT doorway)
-    material[y0 - 2:y1, x0 - 2:x1 + 2] = stone_idx
-    band[y0 - 2:y1, x0 - 2:x1 + 2] = 3
-    band[y0 - 2, x0 - 2:x1 + 2] = 4              # lit arch crown
+    material[y0 - 4:y1, x0 - 4:x1 + 4] = stone_idx
+    band[y0 - 4:y1, x0 - 4:x1 + 4] = 3
+    band[y0 - 4:y0 - 2, x0 - 4:x1 + 4] = 4       # lit arch crown
     material[y0:y1, x0:x1] = trim_idx
     band[y0:y1, x0:x1] = 1
     for corner in (0, 1):                        # rounded top corners
-        xx = x0 if corner == 0 else x1 - 2
-        material[y0:y0 + 2, xx:xx + 2] = stone_idx
-        band[y0:y0 + 2, xx:xx + 2] = 3
-    for x in range(x0 + 2, x1 - 1, 4):           # plank lines
-        band[y0 + 3:y1, x] = 2
-    band[y0 + 2, x0 + 2:x1 - 2] = 3              # lintel light under arch
-    band[y0 + 8, x0 + 1:x1 - 1] = 0              # crossbar shadow
+        xx = x0 if corner == 0 else x1 - 4
+        material[y0:y0 + 4, xx:xx + 4] = stone_idx
+        band[y0:y0 + 4, xx:xx + 4] = 3
+    for x in range(x0 + 3, x1 - 2, 6):           # plank lines
+        band[y0 + 5:y1, x] = 2
+    band[y0 + 4, x0 + 3:x1 - 3] = 3              # lintel light under arch
+    band[y0 + 24, x0 + 2:x1 - 2] = 0             # crossbar shadow
     # two-step stone stoop, wider than the door
-    material[y1:y1 + _FOUNDATION_H, x0 - 3:x1 + 3] = stone_idx
-    band[y1:y1 + 2, x0 - 3:x1 + 3] = 4
-    band[y1 + 2:y1 + _FOUNDATION_H, x0 - 3:x1 + 3] = 2
+    material[y1:y1 + _FOUNDATION_H, x0 - 6:x1 + 6] = stone_idx
+    band[y1:y1 + 4, x0 - 6:x1 + 6] = 4
+    band[y1 + 4:y1 + _FOUNDATION_H, x0 - 6:x1 + 6] = 2
     return cx
 
 
@@ -299,29 +301,29 @@ def _dormer(material, band, g, roof_idx, wall_idx, trim_idx, stone_idx,
             rng) -> None:
     """A gabled dormer window breaking the front slope (CT skyline)."""
     cx = g["w"] // 2 + int(rng.integers(-g["w"] // 6, g["w"] // 6 + 1))
-    dw, dh = 16, 18
+    dw, dh = 30, 34
     y1 = g["roof_y"] + g["roof_h"] - 4           # sits above the eave
     y0 = max(y1 - dh, g["roof_y"] + 3)
     x0, x1 = cx - dw // 2, cx + dw // 2
-    material[y0 + 4:y1, x0:x1] = wall_idx        # dormer face
-    band[y0 + 4:y1, x0:x1] = 3
-    material[y0 + 7:y1 - 1, x0 + 4:x1 - 4] = stone_idx   # its window
-    band[y0 + 7:y1 - 1, x0 + 4:x1 - 4] = 0
-    band[y0 + 7, x0 + 4] = 4
-    for i in range(4):                            # little gable cap
-        material[y0 + i, x0 + 4 - i:x1 - 4 + i] = roof_idx
-        band[y0 + i, x0 + 4 - i:x1 - 4 + i] = 4 if i == 0 else 2
-    band[y0 + 3, x0 + 1:x1 - 1] = 0               # cap shadow
+    material[y0 + 7:y1, x0:x1] = wall_idx        # dormer face
+    band[y0 + 7:y1, x0:x1] = 3
+    material[y0 + 12:y1 - 2, x0 + 8:x1 - 8] = stone_idx  # its window
+    band[y0 + 12:y1 - 2, x0 + 8:x1 - 8] = 0
+    band[y0 + 12, x0 + 8] = 4
+    for i in range(7):                            # little gable cap
+        material[y0 + i, x0 + 8 - i:x1 - 8 + i] = roof_idx
+        band[y0 + i, x0 + 8 - i:x1 - 8 + i] = 4 if i == 0 else 2
+    band[y0 + 6, x0 + 2:x1 - 2] = 0               # cap shadow
 
 
 def _chimney(material, band, g, stone_idx, rng) -> None:
     cx = g["w"] * 2 // 3
-    y1 = g["roof_y"] + 4
-    y0 = max(g["roof_y"] - 10, 0)
-    material[y0:y1, cx:cx + 8] = stone_idx
-    band[y0:y1, cx:cx + 8] = 2
-    band[y0, cx:cx + 8] = 3                      # cap
-    band[y0:y1, cx + 6:cx + 8] = 1               # shaded side
+    y1 = g["roof_y"] + 8
+    y0 = max(g["roof_y"] - 18, 0)
+    material[y0:y1, cx:cx + 14] = stone_idx
+    band[y0:y1, cx:cx + 14] = 2
+    band[y0:y0 + 2, cx:cx + 14] = 3              # cap
+    band[y0:y1, cx + 11:cx + 14] = 1             # shaded side
 
 
 def _selout(material, band, names) -> None:
@@ -374,23 +376,30 @@ def assemble(pal: dict, params: dict, seed_key: str
     door_px = None
     if door is not None:
         door_cell = len(cells) // 2 if door == "center" else int(door)
+        if len(cells) >= 3:   # a door flush against the corner reads wrong
+            door_cell = int(np.clip(door_cell, 1, len(cells) - 2))
         door_px = [door_cell * 32 + 16, g["base_y"]]
         _door(material, band, g, door_px[0], trim_i, stone_i, rng)
     else:
         door_cell = None
     states = params.get("windows", "auto")
-    storefront_cells = set()
-    if params.get("storefront") and door_cell is not None:
-        storefront_cells = set(range(door_cell))   # display window's bays
+    n_bays = g["w"] // _BAY
+    bay_off = (g["w"] - n_bays * _BAY) // 2 + _BAY // 2
+    door_x = door_px[0] if door_px else None
+    storefront_max = door_cell * 32 \
+        if params.get("storefront") and door_cell is not None else None
     for s in range(g["storeys"]):
-        wy0 = g["wall_y"] + s * _WALL_H + 10
+        wy0 = g["wall_y"] + s * _WALL_H + 20
         ground = s == g["storeys"] - 1
-        for c in cells:
-            if ground and (c == door_cell or c in storefront_cells):
-                continue
-            state = states[c] if isinstance(states, (list, tuple)) else \
+        for b in range(n_bays):
+            bx = bay_off + b * _BAY
+            if ground and door_x is not None and abs(bx - door_x) < 30:
+                continue                       # the door owns this bay
+            if ground and storefront_max is not None and bx < storefront_max:
+                continue                       # the display window's span
+            state = states[b] if isinstance(states, (list, tuple)) else \
                 ("shuttered" if rng.random() < 0.25 else "plain")
-            _window_bay(material, band, g, c, trim_i, stone_i, rng, state,
+            _window_bay(material, band, g, bx, trim_i, stone_i, rng, state,
                         wy0_row=wy0,
                         shutter_idx=by_name.get("canvas")
                         if params.get("shutters") else None)
@@ -425,10 +434,10 @@ def assemble(pal: dict, params: dict, seed_key: str
 def _jitter(prefab: dict, rng) -> dict:
     """Variant params: the prefab's family resemblance, never its clone."""
     p = dict(prefab)
-    p["cells_w"] = int(np.clip(prefab["cells_w"] + rng.integers(-1, 2), 2, 8))
+    p["cells_w"] = int(np.clip(prefab["cells_w"] + rng.integers(-1, 2), 3, 8))
     if prefab.get("door") is not None and p["cells_w"] >= 3:
-        lo = 2 if prefab.get("storefront") else 0   # keep the display bays
-        p["door"] = int(rng.integers(lo, p["cells_w"]))
+        lo = 3 if prefab.get("storefront") else 1   # keep the display bays;
+        p["door"] = int(rng.integers(lo, p["cells_w"] - 1))  # never edge cells
     if prefab.get("chimney") is not None:
         p["chimney"] = bool(rng.random() < 0.5)
     if prefab.get("roof") == "hip" and rng.random() < 0.3:

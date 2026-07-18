@@ -247,6 +247,30 @@ def rim_depth(mask: np.ndarray, dy: int, dx: int, depth: int) -> np.ndarray:
 
 # --- outline -------------------------------------------------------------------
 
+def ground_shadow(subject: np.ndarray, foot_y: int,
+                  squash: float = 0.28) -> np.ndarray:
+    """SHAPE-AWARE ground shadow: the subject's own silhouette squashed
+    vertically onto the ground line, 50% checker-dithered (crisp alpha).
+
+    Replaces the one-blob ellipse: a wide picnic table casts a table-wide
+    low shadow, a round canopy an oval, a twin-posted frame two lobes —
+    the shadow always agrees with the shape that casts it.
+    """
+    h, w = subject.shape
+    out = np.zeros_like(subject, dtype=bool)
+    ys, xs = np.nonzero(subject)
+    if len(ys) == 0:
+        return out
+    foot_y = int(min(foot_y, h - 1))
+    y2 = foot_y - ((foot_y - ys) * squash).astype(int)
+    np.clip(y2, 0, h - 1, out=y2)
+    out[y2, xs] = True
+    out |= np.roll(out, 1, axis=0)          # 1px vertical fill for solidity
+    yy, xx = np.mgrid[0:h, 0:w]
+    checker = ((xx + yy) & 1) == 0
+    return out & checker & ~subject
+
+
 def outer_ring(mask: np.ndarray) -> np.ndarray:
     return dilate(mask) & ~mask
 

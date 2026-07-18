@@ -395,17 +395,23 @@ def _transition_tile(base: np.ndarray, overlay: np.ndarray, mask: int,
         crest = inside & (f >= 0.58) & (f < 0.68)
         out[crest] *= 1.12
     if relief == "ledge":
-        # ELEVATION v1: the overlay is a raised terrace — a masonry drop
-        # face rings it on the base side, deep shadow at its foot, a lit
-        # lip on the terrace edge. The pair usually also sets
+        # ELEVATION v2: the overlay is a raised terrace, and the drop is
+        # DIRECTION-AWARE (the CT read): where the terrace sits ABOVE the
+        # boundary (its drop faces the camera) a tall masonry face with
+        # joints and a foot shadow; everywhere else — sides and the far
+        # edge — only a thin dark rim. The pair usually also sets
         # `blocks: true` so the baker walls the boundary; stairs cells
         # interrupt the pair and become the way up.
-        face = ~inside & (f > 0.26)
+        gy = np.gradient(f, axis=0)          # <0 where the terrace is above
+        south = gy < -0.002
+        face = ~inside & (f > 0.22) & south
         out[face] = overlay[face] * 0.7
         joints = face & (np.arange(TILE)[None, :] % 6 < 1)
         out[joints] *= 0.8
-        foot = ~inside & (f > 0.18) & (f <= 0.26)
+        foot = ~inside & (f > 0.14) & (f <= 0.22) & south
         out[foot] *= 0.62
+        rim = ~inside & (f > 0.42) & ~south   # thin edge on the other sides
+        out[rim] *= 0.7
         lip = inside & (f < 0.62)
         out[lip] *= 1.15
     return out

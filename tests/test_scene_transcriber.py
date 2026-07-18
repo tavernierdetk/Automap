@@ -100,6 +100,6 @@ def test_committed_originals_still_roundtrip():
     uid_map = build_uid_map(ref.parent)
     doc, _ = transcribe(ref / "witch_cottage.tscn", uid_map)
     committed = json.loads(Path(
-        "games/entropy/levels/witch_cottage/witch_cottage.json").read_text())
+        "games/entropy/levels/originals/witch_cottage/witch_cottage.json").read_text())
     assert doc["teleports"] == committed["teleports"]
     assert doc["spawns"] == committed["spawns"]
