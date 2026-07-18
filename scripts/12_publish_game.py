@@ -274,11 +274,15 @@ def main(
     # --- the game-design document (the gspec: rules as data) ---
     design = src_root / "design.json"
     if design.exists():
-        _validate_named = None
         try:
             import platform_specs
-            platform_specs.validate(json.loads(design.read_text()), "game-design", "1.0.0")
-            log("design.json valid (game-design@1.0.0)")
+            gd_versions = sorted(
+                (Path(platform_specs.__file__).parent.parent / "schemas"
+                 / "game-design").glob("*.json"))
+            gd_latest = gd_versions[-1].stem
+            platform_specs.validate(json.loads(design.read_text()),
+                                    "game-design", gd_latest)
+            log(f"design.json valid (game-design@{gd_latest})")
         except ImportError:
             log("WARNING: platform-specs not installed - design.json NOT validated")
         shutil.copy2(design, content / "design.json")

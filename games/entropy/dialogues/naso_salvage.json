@@ -29,6 +29,31 @@
     "sold": {
       "speaker_id": "vendor_naso",
       "text": "Pleasure ruining business with you.",
+      "choices": [
+        {
+          "label": "Browse the salvage",
+          "next_node": "_shop",
+          "effects": [
+            {
+              "type": "shop",
+              "id": "naso_salvage"
+            }
+          ]
+        },
+        {
+          "label": "Move along",
+          "next_node": "_bye"
+        }
+      ]
+    },
+    "_shop": {
+      "speaker_id": "vendor_naso",
+      "text": "Take your time.",
+      "end_session": true
+    },
+    "_bye": {
+      "speaker_id": "vendor_naso",
+      "text": "Another time, then.",
       "end_session": true
     }
   }

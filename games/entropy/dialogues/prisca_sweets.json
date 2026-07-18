@@ -6,6 +6,31 @@
     "say": {
       "speaker_id": "vendor_prisca",
       "text": "Spun sugar! Melts faster than an apprentice's excuse.",
+      "choices": [
+        {
+          "label": "Buy something sweet",
+          "next_node": "_shop",
+          "effects": [
+            {
+              "type": "shop",
+              "id": "prisca_sweets"
+            }
+          ]
+        },
+        {
+          "label": "Move along",
+          "next_node": "_bye"
+        }
+      ]
+    },
+    "_shop": {
+      "speaker_id": "vendor_prisca",
+      "text": "Take your time.",
+      "end_session": true
+    },
+    "_bye": {
+      "speaker_id": "vendor_prisca",
+      "text": "Another time, then.",
       "end_session": true
     }
   }

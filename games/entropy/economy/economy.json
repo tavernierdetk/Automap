@@ -1,0 +1,48 @@
+{
+  "currency": {
+    "id": "brass_token",
+    "name": "Brass Tokens"
+  },
+  "intent": "Opening Day economy \u2014 tokens earned along the arc, spent at the midway stalls.",
+  "price_book": {
+    "spun_sugar": 8,
+    "gear_charm": 30
+  },
+  "shops": [
+    {
+      "id": "naso_salvage",
+      "level": "vaporis_fair",
+      "keeper": "vendor_naso",
+      "inventory": [
+        "gear_charm"
+      ],
+      "buyback_rate": 0.5
+    },
+    {
+      "id": "prisca_sweets",
+      "level": "vaporis_fair",
+      "keeper": "vendor_prisca",
+      "inventory": [
+        "spun_sugar"
+      ],
+      "buyback_rate": 0.5
+    }
+  ],
+  "rewards": [
+    {
+      "source": "b1_porta",
+      "amount": 10,
+      "note": "admission change"
+    },
+    {
+      "source": "b3_valve",
+      "amount": 10,
+      "note": "Brontes pays for the errand"
+    },
+    {
+      "source": "b5_first_turn",
+      "amount": 30,
+      "note": "Druso's quiet gratitude"
+    }
+  ]
+}

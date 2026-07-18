@@ -1,0 +1,15 @@
+{
+  "id": "gear_charm",
+  "name": "Gear Charm",
+  "kind": "accessory",
+  "slot": "charm",
+  "tier": 1,
+  "modifiers": {
+    "kinesthetic": 2
+  },
+  "fiction": "A polished coursework gear on a cord. Naso swears it's lucky.",
+  "tags": [
+    "salvage",
+    "fair"
+  ]
+}

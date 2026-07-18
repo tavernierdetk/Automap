@@ -1,0 +1,16 @@
+{
+  "id": "spun_sugar",
+  "name": "Spun Sugar",
+  "kind": "consumable",
+  "tier": 1,
+  "battle_usable": true,
+  "use": {
+    "effect": "heal",
+    "amount": 15
+  },
+  "fiction": "Prisca's \u2014 melts faster than an apprentice's excuse.",
+  "tags": [
+    "food",
+    "fair"
+  ]
+}
