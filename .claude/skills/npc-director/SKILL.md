@@ -29,23 +29,36 @@ Door: `scripts/15_casting_director.py`.
 1. **Creature doc**: `15 npc create <slug> --name "…" --archetype
    <scholar|artisan|vendor|official|performer|laborer|child>` — stats
    are archetype-flavored, slug-jittered, and land in the admission
-   band (25–27 total); `persona.region` feeds the R-005 gate;
-   `visual.family` is `figure_px` (creature@1.1).
-2. **Figure sprite** (the genlab twin for people — no shadow, no
-   footprint, never in the props catalog):
-   - `15 npc request <slug> --look "who this person is, visually"` —
-     the look is SUBJECT text; write the composition into it for
-     stubborn cases (children: state the shorter proportions).
-   - `15 npc generate <slug>` (gpt-image-1) or drop a PNG into the
-     request's `incoming/`.
-   - `15 npc ingest <slug>` — repixel recreation at 64×96 (96 px figure
-     contract), staged to `work/game/<game>/creatures_px/<slug>/Idle/`
-     and registered in `assets.json` (`"local": true`); stage 12 builds
-     the same manifest it builds for reference people.
-3. **Look at the sprite** before casting it — read the staged PNG;
-   doctrine applies (three-quarter top-down, front-facing, sel-out,
-   palette-member). Regenerate with a sharper look line rather than
-   shipping a mushy figure.
+   band (25–27 total); `persona.region` feeds the R-005 gate
+   (creature@1.1).
+2. **The body — ULPC channel (DEFAULT: composed, fully animated).**
+   `visual.family: "ulpc"`. Author the committed build spec at
+   `games/<game>/casting/builds/<slug>.ulpc.json` (ulpc.build/1.0),
+   then `15 npc compose <slug>` → walk/idle/run in four facings staged
+   + registered with per-anim fps. The bridge contract
+   (docs/explorations/ulpc-casting-integration.md):
+   - categories are DISK layer paths from the vendor's spritesheets/
+     tree (e.g. `torso/clothes/longsleeve/longsleeve/male`), variants
+     are FILE STEMS (`forest_green`, not "forest green");
+   - only `walk` is composed (every layer ships it — native idle/run
+     strips clothing); `Idle_*` = stance frame, `Run_*` = cycle at 10
+     fps, front/back swapped to engine facing — all by the bridge;
+   - layers with `bg/fg` split sheets (braid, bunches hair) don't
+     resolve — pick styles with per-animation dirs (bob, bangsshort,
+     pigtails);
+   - stature: LPC `child`/`teen` body types, never canvas headroom.
+3. **The face — figure_px channel (one-off generated art).** For
+   portraits and look development: `15 npc request/generate/ingest`
+   (gpt-image-1 → figure quantizer at 64×96). Style law: one body
+   family per scene — figure_px bodies never stand beside ULPC bodies;
+   the fair's 16 generated faces are filed as future dialogue
+   portraits (Interface chair, R5).
+4. **Look at it** before casting — `15 library` renders the contact
+   sheet; a bald or undressed compose means a layer silently dropped
+   (check the compose WARNs, swap the layer).
+5. **Behavior**: casting sheet entries take `behavior: "post"|"wander"`
+   (+ `wander_radius` px). Wanderers stroll with facing-correct
+   Walk/Idle animations and stop to talk.
 
 ## Rules
 

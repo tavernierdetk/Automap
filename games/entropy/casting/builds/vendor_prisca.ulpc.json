@@ -1,0 +1,50 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "vendor_prisca",
+    "note": "cheerful sweets vendor \u2014 bandana, full apron"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/female",
+      "variant": "amber"
+    },
+    {
+      "category": "head/heads/human/female",
+      "variant": "amber"
+    },
+    {
+      "category": "hat/cloth/bandana/adult",
+      "variant": "blue"
+    },
+    {
+      "category": "torso/clothes/blouse/female",
+      "variant": "white"
+    },
+    {
+      "category": "torso/aprons/apron_full/female",
+      "variant": "white"
+    },
+    {
+      "category": "legs/skirts/plain/female",
+      "variant": "maroon"
+    },
+    {
+      "category": "feet/shoes/basic/thin",
+      "variant": "brown"
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "student_aulus",
+    "note": "teal-uniformed student \u2014 the background face."
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/teen",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/male",
+      "variant": "light"
+    },
+    {
+      "category": "hair/bangs/adult",
+      "variant": "chestnut"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/teen",
+      "variant": "forest"
+    },
+    {
+      "category": "legs/pants/thin",
+      "variant": "navy"
+    },
+    {
+      "category": "feet/shoes/basic/thin",
+      "variant": "black"
+    }
+  ]
+}

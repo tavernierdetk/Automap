@@ -127,6 +127,10 @@ def check_sheet(game_dir: Path, sheet: dict) -> list[Finding]:
         if dlg and dlg not in dialogues:
             err(who, f"dialogue {dlg!r} has no document in dialogues/")
 
+        beh = str(npc.get("behavior", "post")).strip()
+        if beh not in ("post", "wander"):
+            err(who, f"behavior {beh!r} unknown (post|wander)")
+
     for empty in sorted(sockets - filled):
         warn(empty, "socket uncast (allowed — story may fill it later)")
     return findings

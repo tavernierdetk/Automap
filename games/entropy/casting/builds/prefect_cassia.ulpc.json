@@ -1,0 +1,17 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": { "project": "Universal-LPC-Spritesheet-Character-Generator" },
+  "meta": {
+    "creature": "prefect_cassia",
+    "note": "teal Order robe, dark bun — earnest gate duty. Categories are DISK layer paths, variants are file stems (bridge contract)."
+  },
+  "output": { "mode": "split_by_frame", "zero_pad": 3, "fps": 8 },
+  "animations": ["walk", "idle", "run"],
+  "layers": [
+    { "category": "body/bodies/female", "variant": "light" },
+    { "category": "head/heads/human/female", "variant": "light" },
+    { "category": "hair/bangs_bun/adult", "variant": "black" },
+    { "category": "torso/clothes/robe/female", "variant": "forest_green" },
+    { "category": "feet/shoes/basic/thin", "variant": "brown" }
+  ]
+}

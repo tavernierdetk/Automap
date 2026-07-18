@@ -1,0 +1,46 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "student_livia",
+    "note": "teal-uniformed student \u2014 braid"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/female",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/female",
+      "variant": "light"
+    },
+    {
+      "category": "hair/bob/adult",
+      "variant": "chestnut"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/female",
+      "variant": "teal"
+    },
+    {
+      "category": "legs/skirts/plain/female",
+      "variant": "navy"
+    },
+    {
+      "category": "feet/shoes/basic/thin",
+      "variant": "black"
+    }
+  ]
+}

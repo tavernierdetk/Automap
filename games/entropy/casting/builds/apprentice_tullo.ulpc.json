@@ -1,0 +1,46 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "apprentice_tullo",
+    "note": "nervous teen apprentice \u2014 overalls, carrot hair"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/teen",
+      "variant": "amber"
+    },
+    {
+      "category": "head/heads/human/male",
+      "variant": "amber"
+    },
+    {
+      "category": "hair/bangs/adult",
+      "variant": "carrot"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/teen",
+      "variant": "gray"
+    },
+    {
+      "category": "torso/aprons/overalls/teen",
+      "variant": "brown"
+    },
+    {
+      "category": "feet/shoes/basic/thin",
+      "variant": "brown"
+    }
+  ]
+}

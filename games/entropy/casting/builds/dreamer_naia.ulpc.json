@@ -1,0 +1,46 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "dreamer_naia",
+    "note": "quiet student \u2014 navy and lavender"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/female",
+      "variant": "taupe"
+    },
+    {
+      "category": "head/heads/human/female",
+      "variant": "taupe"
+    },
+    {
+      "category": "hair/bangs/adult",
+      "variant": "black"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/female",
+      "variant": "navy"
+    },
+    {
+      "category": "legs/skirts/plain/female",
+      "variant": "lavender"
+    },
+    {
+      "category": "feet/shoes/basic/thin",
+      "variant": "brown"
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "child_pippa",
+    "note": "small child \u2014 bunches, simple shirt"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/child",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/child",
+      "variant": "light"
+    },
+    {
+      "category": "hair/bangsshort/adult",
+      "variant": "chestnut"
+    },
+    {
+      "category": "torso/clothes/shirt/child",
+      "variant": "white"
+    },
+    {
+      "category": "legs/pants/child",
+      "variant": "darkblue"
+    }
+  ]
+}

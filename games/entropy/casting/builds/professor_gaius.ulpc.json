@@ -1,0 +1,54 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "professor_gaius",
+    "note": "elderly professor \u2014 formal greys, halfmoon glasses"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/male",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/male_elderly",
+      "variant": "light"
+    },
+    {
+      "category": "hair/balding/adult",
+      "variant": "white"
+    },
+    {
+      "category": "beards/beard/medium",
+      "variant": "white"
+    },
+    {
+      "category": "facial/glasses/halfmoon/adult",
+      "variant": "black"
+    },
+    {
+      "category": "torso/clothes/longsleeve/formal/male",
+      "variant": "white"
+    },
+    {
+      "category": "legs/formal/male",
+      "variant": "black"
+    },
+    {
+      "category": "feet/shoes/basic/male",
+      "variant": "black"
+    }
+  ]
+}

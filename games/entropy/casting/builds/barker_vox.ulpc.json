@@ -1,0 +1,54 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "barker_vox",
+    "note": "flamboyant barker \u2014 red vest, top hat"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/male",
+      "variant": "amber"
+    },
+    {
+      "category": "head/heads/human/male",
+      "variant": "amber"
+    },
+    {
+      "category": "hair/parted/adult",
+      "variant": "black"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/male",
+      "variant": "white"
+    },
+    {
+      "category": "torso/clothes/vest/male",
+      "variant": "red"
+    },
+    {
+      "category": "legs/pants/male",
+      "variant": "black"
+    },
+    {
+      "category": "feet/shoes/basic/male",
+      "variant": "black"
+    },
+    {
+      "category": "hat/formal/tophat/adult",
+      "variant": "black"
+    }
+  ]
+}

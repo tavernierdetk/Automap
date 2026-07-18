@@ -254,14 +254,116 @@ def ingest_figure(req_dir: Path, identity: dict, frames_root: Path,
     return out
 
 
+# --- the ULPC channel (docs/explorations/ulpc-casting-integration.md) ------
+# Composed, fully animated people from the LiberatedPixelCup asset base via
+# PixelAssetCreator's sprite-compose. The committed source of truth is the
+# build spec at games/<g>/casting/builds/<slug>.ulpc.json; frames stage like
+# figure frames and publish through the same stage-12 manifest path.
+
+PIXELASSET_ROOT_DEFAULT = Path.home() / "Cowork" / "PixelAssetCreator"
+# the slicer's orientation folders ARE the engine animation contract;
+# per-animation fps by prefix (walk cycle 8, idle breath 4, run 10)
+ULPC_FPS = {"Walk": 8, "Idle": 4, "Run": 10}
+ULPC_DEFAULT_FPS = 8
+
+
+def ulpc_fps_map(anim_dirs: list[str]) -> dict[str, int]:
+    return {d: ULPC_FPS.get(d.split("_")[0], ULPC_DEFAULT_FPS)
+            for d in sorted(anim_dirs)}
+
+
+def engine_face(composer_dir: str) -> str:
+    """Composer facing → engine facing. The composer labels LPC row 0
+    (walking UP, back visible) 'front'; the engine's 'front' faces the
+    camera. Front/back swap; left/right are true."""
+    anim, _, face = composer_dir.partition("_")
+    face = {"front": "back", "back": "front"}.get(face, face)
+    return f"{anim}_{face}" if face else anim
+
+
+def compose_ulpc(game_dir: Path, slug: str, build_path: Path,
+                 frames_root: Path, log=print) -> dict:
+    """Run the bridge CLI, normalize to engine animations, relocate.
+
+    Normalization (docs/explorations/ulpc-casting-integration.md):
+    - only `walk` is COMPOSED — it is the one animation every LPC layer
+      ships, so the character is fully dressed by construction (idle/run
+      sheets are missing for most clothing; composing them natively
+      strips layers → naked NPCs);
+    - `Idle_<face>` is SYNTHESIZED from the walk stance frame (LPC walk
+      column 0), `Run_<face>` from the step cycle (columns 1+, played at
+      run fps);
+    - the composer labels LPC row 0 (walking UP, back visible) "front";
+      the engine's "front" faces the camera — front/back swap here.
+
+    Replaces any previously staged frames for the slug — one body per
+    person.
+    """
+    import os
+    import shutil
+    import subprocess
+    import tempfile
+
+    pixelasset = Path(os.environ.get("PIXELASSET_ROOT",
+                                     PIXELASSET_ROOT_DEFAULT))
+    bridge = Path(__file__).resolve().parent.parent / "tools" / "ulpc_compose.mjs"
+    with tempfile.TemporaryDirectory(prefix=f"ulpc_{slug}_") as tmp:
+        # walk-only compose regardless of the spec's ambitions (see above)
+        build = json.loads(build_path.read_text())
+        build["animations"] = ["walk"]
+        walk_build = Path(tmp) / "build.walk.json"
+        walk_build.write_text(json.dumps(build))
+        # cwd = the PixelAssetCreator checkout: resolveUlpcSheetDefs walks
+        # candidates from process.cwd(); the result goes to a file because
+        # the composer's logger owns stdout
+        result_file = Path(tmp) / "result.json"
+        run = subprocess.run(
+            ["node", str(bridge), str(walk_build), tmp, slug,
+             str(result_file)],
+            cwd=pixelasset, capture_output=True, text=True)
+        if run.returncode != 0 or not result_file.exists():
+            raise RuntimeError(f"ulpc compose failed for {slug}:\n{run.stderr}")
+        result = json.loads(result_file.read_text())
+        frames_src = Path(tmp) / "ulpc_frames"
+        walk_dirs = sorted(p.name for p in frames_src.iterdir()
+                           if p.is_dir() and p.name.startswith("Walk_"))
+        if not walk_dirs:
+            raise RuntimeError(f"ulpc compose produced no walk frames for {slug}")
+
+        dest = frames_root / slug
+        if dest.exists():
+            shutil.rmtree(dest)
+        dest.mkdir(parents=True)
+        for d in walk_dirs:
+            face = engine_face(d).split("_", 1)[1]
+            frames = sorted((frames_src / d).glob("*.png"))
+            stance, cycle = frames[0], (frames[1:] or frames)
+            walk_out = dest / f"Walk_{face}"
+            walk_out.mkdir()
+            for f in frames:
+                shutil.copy2(f, walk_out / f.name)
+            idle_out = dest / f"Idle_{face}"
+            idle_out.mkdir()
+            shutil.copy2(stance, idle_out / f"{slug}_idle_000.png")
+            run_out = dest / f"Run_{face}"
+            run_out.mkdir()
+            for i, f in enumerate(cycle):
+                shutil.copy2(f, run_out / f"{slug}_run_{i:03d}.png")
+        anim_dirs = sorted(p.name for p in dest.iterdir() if p.is_dir())
+    for w in result.get("warnings", []):
+        log(f"[ulpc] {slug}: WARN {w.get('category')}/{w.get('variant')} "
+            f"({w.get('reason')})")
+    return {"animations": anim_dirs, "warnings": result.get("warnings", [])}
+
+
 def register_sprite(game_dir: Path, slug: str, frames_dir: str,
-                    fps: int = 4) -> None:
+                    fps: int | dict = 4) -> None:
     """Add/refresh the local creature_sprites entry in assets.json."""
     assets_path = game_dir / "assets.json"
     spec = json.loads(assets_path.read_text())
     entries = [c for c in spec.get("creature_sprites", [])
                if c.get("slug") != slug]
     entries.append({"slug": slug, "frames_dir": frames_dir,
-                    "fps": fps, "local": True})
+                    "fps": fps, "local": True})  # fps: int, or per-anim dict
     spec["creature_sprites"] = sorted(entries, key=lambda c: c["slug"])
     assets_path.write_text(json.dumps(spec, indent=2) + "\n")

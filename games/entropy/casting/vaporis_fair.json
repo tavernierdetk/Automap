@@ -1,27 +1,119 @@
 {
   "level": "vaporis_fair",
   "region": "vaporis",
-  "intent": "Opening Day cast — arc fair_opening's five speaking posts plus the fair's ambient life; every socket filled.",
+  "intent": "Opening Day cast \u2014 arc fair_opening's five speaking posts plus the fair's ambient life; every socket filled.",
   "npcs": [
-    { "slot": "ticket_taker", "creature": "porter_felix", "dialogue": "felix_tickets" },
-    { "slot": "prefect", "creature": "prefect_cassia", "dialogue": "cassia_gate" },
-    { "slot": "barker", "creature": "barker_vox", "dialogue": "vox_promise" },
-    { "slot": "vendor_1", "creature": "vendor_prisca", "dialogue": "prisca_sweets" },
-    { "slot": "vendor_2", "creature": "vendor_naso", "dialogue": "naso_salvage" },
-    { "slot": "crowd_1", "creature": "student_aulus" },
-    { "slot": "crowd_2", "creature": "student_livia" },
-    { "slot": "crowd_3", "creature": "student_metto", "sprite": "student_aulus" },
-    { "slot": "operator", "creature": "operator_druso", "dialogue": "druso_wheel" },
-    { "slot": "queue_1", "creature": "student_pella", "sprite": "student_livia" },
-    { "slot": "queue_2", "creature": "student_varro", "sprite": "student_aulus" },
-    { "slot": "carousel_keeper", "creature": "keeper_mirella", "dialogue": "mirella_carousel" },
-    { "slot": "child", "creature": "child_pippa", "dialogue": "pippa_carousel" },
-    { "slot": "cook", "creature": "cook_bassa", "dialogue": "bassa_stew" },
-    { "slot": "professor", "creature": "professor_gaius", "dialogue": "gaius_offduty" },
-    { "slot": "mechanicus", "creature": "magister_brontes", "dialogue": "brontes_valve" },
-    { "slot": "apprentice", "creature": "apprentice_tullo", "dialogue": "tullo_grade" },
-    { "slot": "dreamer", "creature": "dreamer_naia", "dialogue": "naia_pond" },
-    { "slot": "gardener", "creature": "gardener_silvo", "dialogue": "silvo_topiary" },
-    { "slot": "stroller", "creature": "stroller_flora", "sprite": "student_livia" }
+    {
+      "slot": "ticket_taker",
+      "creature": "porter_felix",
+      "dialogue": "felix_tickets"
+    },
+    {
+      "slot": "prefect",
+      "creature": "prefect_cassia",
+      "dialogue": "cassia_gate"
+    },
+    {
+      "slot": "barker",
+      "creature": "barker_vox",
+      "dialogue": "vox_promise"
+    },
+    {
+      "slot": "vendor_1",
+      "creature": "vendor_prisca",
+      "dialogue": "prisca_sweets"
+    },
+    {
+      "slot": "vendor_2",
+      "creature": "vendor_naso",
+      "dialogue": "naso_salvage"
+    },
+    {
+      "slot": "crowd_1",
+      "creature": "student_aulus",
+      "behavior": "wander",
+      "wander_radius": 140
+    },
+    {
+      "slot": "crowd_2",
+      "creature": "student_livia",
+      "behavior": "wander",
+      "wander_radius": 140
+    },
+    {
+      "slot": "crowd_3",
+      "creature": "student_metto",
+      "sprite": "student_aulus",
+      "behavior": "wander",
+      "wander_radius": 140
+    },
+    {
+      "slot": "operator",
+      "creature": "operator_druso",
+      "dialogue": "druso_wheel"
+    },
+    {
+      "slot": "queue_1",
+      "creature": "student_pella",
+      "sprite": "student_livia"
+    },
+    {
+      "slot": "queue_2",
+      "creature": "student_varro",
+      "sprite": "student_aulus"
+    },
+    {
+      "slot": "carousel_keeper",
+      "creature": "keeper_mirella",
+      "dialogue": "mirella_carousel"
+    },
+    {
+      "slot": "child",
+      "creature": "child_pippa",
+      "dialogue": "pippa_carousel",
+      "behavior": "wander",
+      "wander_radius": 90
+    },
+    {
+      "slot": "cook",
+      "creature": "cook_bassa",
+      "dialogue": "bassa_stew"
+    },
+    {
+      "slot": "professor",
+      "creature": "professor_gaius",
+      "dialogue": "gaius_offduty",
+      "behavior": "wander",
+      "wander_radius": 70
+    },
+    {
+      "slot": "mechanicus",
+      "creature": "magister_brontes",
+      "dialogue": "brontes_valve"
+    },
+    {
+      "slot": "apprentice",
+      "creature": "apprentice_tullo",
+      "dialogue": "tullo_grade"
+    },
+    {
+      "slot": "dreamer",
+      "creature": "dreamer_naia",
+      "dialogue": "naia_pond"
+    },
+    {
+      "slot": "gardener",
+      "creature": "gardener_silvo",
+      "dialogue": "silvo_topiary",
+      "behavior": "wander",
+      "wander_radius": 80
+    },
+    {
+      "slot": "stroller",
+      "creature": "stroller_flora",
+      "sprite": "student_livia",
+      "behavior": "wander",
+      "wander_radius": 160
+    }
   ]
 }

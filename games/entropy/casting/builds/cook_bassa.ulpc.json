@@ -1,0 +1,50 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "cook_bassa",
+    "note": "stout cook \u2014 bandana, apron, ladle energy"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/female",
+      "variant": "olive"
+    },
+    {
+      "category": "head/heads/human/female",
+      "variant": "olive"
+    },
+    {
+      "category": "hat/cloth/bandana2/adult",
+      "variant": "white"
+    },
+    {
+      "category": "torso/clothes/blouse/female",
+      "variant": "white"
+    },
+    {
+      "category": "torso/aprons/apron/female",
+      "variant": "white"
+    },
+    {
+      "category": "legs/skirts/plain/female",
+      "variant": "brown"
+    },
+    {
+      "category": "feet/shoes/basic/thin",
+      "variant": "black"
+    }
+  ]
+}

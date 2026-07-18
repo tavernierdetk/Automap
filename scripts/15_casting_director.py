@@ -86,8 +86,12 @@ def library(game: str = typer.Option("entropy")) -> None:
              "|---|---|---|---|---|"]
     cells: list[tuple[str, Image.Image]] = []
     for slug, doc in sorted(creatures.items()):
-        frame_dir = frames_root / slug / "Idle"
-        frames = sorted(frame_dir.glob("*.png")) if frame_dir.exists() else []
+        frames: list[Path] = []
+        for anim in ("Idle_front", "Idle"):  # ulpc stages facings; figure_px doesn't
+            frame_dir = frames_root / slug / anim
+            if frame_dir.exists():
+                frames = sorted(frame_dir.glob("*.png"))
+                break
         src = f"staged ×{len(frames)}" if frames else \
             ("reference repo" if not doc.get("persona", {}).get("region")
              else "MISSING")
@@ -178,6 +182,28 @@ def generate(slug: str, count: int = typer.Option(1),
              game: str = typer.Option("entropy")) -> None:
     npc_creator.generate_figure(_latest_request(game, slug), count,
                                 log=typer.echo)
+
+
+@npc_app.command()
+def compose(slug: str, game: str = typer.Option("entropy")) -> None:
+    """ULPC channel: compose the committed build spec into engine-named,
+    fully animated frames + assets.json registration (per-anim fps).
+
+    The build spec lives at games/<g>/casting/builds/<slug>.ulpc.json —
+    committed recipe, staged pixels (docs/explorations/
+    ulpc-casting-integration.md)."""
+    gdir = _game_dir(game)
+    build = casting.casting_dir(gdir) / "builds" / f"{slug}.ulpc.json"
+    if not build.exists():
+        typer.echo(f"no build spec at {build.relative_to(ROOT)}")
+        raise typer.Exit(2)
+    result = npc_creator.compose_ulpc(gdir, slug, build, _frames_root(game),
+                                      log=typer.echo)
+    frames_dir = str((_frames_root(game) / slug).relative_to(ROOT))
+    npc_creator.register_sprite(gdir, slug, frames_dir,
+                                npc_creator.ulpc_fps_map(result["animations"]))
+    typer.echo(f"composed {slug}: {', '.join(result['animations'])} "
+               "(publish to build the manifest)")
 
 
 @npc_app.command()

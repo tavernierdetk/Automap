@@ -1,0 +1,54 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "gardener_silvo",
+    "note": "weathered gardener \u2014 cap, stubble, earth tones"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/male",
+      "variant": "brown"
+    },
+    {
+      "category": "head/heads/human/male",
+      "variant": "brown"
+    },
+    {
+      "category": "hat/cloth/leather_cap/adult",
+      "variant": "brown"
+    },
+    {
+      "category": "beards/beard/5oclock_shadow",
+      "variant": "dark_brown"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/male",
+      "variant": "walnut"
+    },
+    {
+      "category": "torso/aprons/suspenders/male",
+      "variant": "brown"
+    },
+    {
+      "category": "legs/pants/male",
+      "variant": "forest"
+    },
+    {
+      "category": "feet/boots/basic/male",
+      "variant": "brown"
+    }
+  ]
+}

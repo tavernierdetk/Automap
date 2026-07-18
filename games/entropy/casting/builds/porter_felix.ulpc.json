@@ -1,0 +1,46 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "porter_felix",
+    "note": "thin clerk \u2014 white tunic, teal cap energy, ledger age"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/male",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/male_gaunt",
+      "variant": "light"
+    },
+    {
+      "category": "hair/balding/adult",
+      "variant": "gray"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/male",
+      "variant": "white"
+    },
+    {
+      "category": "legs/pants/male",
+      "variant": "charcoal"
+    },
+    {
+      "category": "feet/shoes/basic/male",
+      "variant": "black"
+    }
+  ]
+}

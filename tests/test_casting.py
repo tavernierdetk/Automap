@@ -73,7 +73,9 @@ def test_npc_stats_stay_in_the_admission_band():
 
 
 def test_creature_docs_carry_region_for_the_gate():
+    # vaporis people are generated (ulpc composed bodies, or figure_px
+    # one-offs) — never reference-repo families without a region
     for doc in casting.creature_ids(GAME).values():
         home = doc.get("persona", {})
         if home.get("region") == "vaporis":
-            assert doc["visual"]["family"] == "figure_px"
+            assert doc["visual"]["family"] in ("ulpc", "figure_px")

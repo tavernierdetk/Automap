@@ -191,7 +191,7 @@ def main(
         cdst = content / "creatures"
         cdst.mkdir(parents=True, exist_ok=True)
         for c in spec.get("creature_sprites", []):
-            slug, fps = c["slug"], int(c.get("fps", 8))
+            slug, fps = c["slug"], c.get("fps", 8)  # int, or per-anim dict
             _publish_dir_reset(cdst / slug)  # per-slug: creature JSON docs share this tree
             # generated people live in THIS repo (npc_creator stages them
             # under work/); reference people come from the reference repo
@@ -207,7 +207,9 @@ def main(
                 out.mkdir(parents=True)
                 for fn in frames:
                     shutil.copy2(anim_dir / fn, out / fn)
-                anims[anim_dir.name] = {"fps": fps, "frames": frames}
+                anim_fps = (fps.get(anim_dir.name, 8)
+                            if isinstance(fps, dict) else int(fps))
+                anims[anim_dir.name] = {"fps": anim_fps, "frames": frames}
             # the manifest the runtime actually READS (unlike the original's) —
             # frames listed in play order, fps explicit, loop by convention
             (cdst / slug / "manifest.json").write_text(json.dumps(
