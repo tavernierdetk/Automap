@@ -36,8 +36,9 @@ def test_committed_fair_arc_passes_the_gate():
     doc = story.load_arc(GAME, "fair_opening")
     findings = story.check_arc(GAME, doc)
     assert story.errors(findings) == []
-    # the bronze valve is intent until the Item Director exists (R4)
-    assert any("bronze_valve" in f.message for f in findings)
+    # the R2 item warning is PAID: the valve is a canon item since the
+    # game-shell round (R4) — the arc gates clean, no warnings
+    assert not any("bronze_valve" in f.message for f in findings)
 
 
 def test_unknown_place_is_blocked():
