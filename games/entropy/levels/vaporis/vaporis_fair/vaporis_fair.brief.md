@@ -153,3 +153,11 @@ docs/explorations/game-shell-round.md):**
 - `test_shell_loop` plays the arc's economy end to end headless: PASS.
 - story gate `14 check fair_opening`: CLEAN (the R2 item warnings
   resolved by canon-admitting the valve).
+
+**2026-07-18 — the sparring ring (battle module):**
+- an encounter zone on the machine-show lawn (rect center 2144,1440 —
+  seed 88, alpha+bravo as "coursework constructs on a field test"):
+  step in and the battle system answers. Proven headless in
+  test_shell_loop (fires once, right roster, right seed). Invisible by
+  design for now — a painted ring/rope prop marking it is an Asset
+  Director commission for the next fair pass.

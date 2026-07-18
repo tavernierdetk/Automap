@@ -41,6 +41,12 @@ fidelity.
   an icon asset family + a menu that draws them (Interface polish).
 - Battle sprite layout floats above the backdrop horizon (pre-existing).
 - Encounters/bestiary = the other half of R5, untouched by design.
-- Shop UI/menu screens have no visual snapshot harness yet (function is
-  headless-proven; taste verdicts pending a windowed UI snapshot rig).
+- ~~Shop UI/menu screens have no visual snapshot harness~~ PAID:
+  `tests/menu_snapshot.gd` shoots menu (both focus states) + shop
+  frames windowed. Menu focus model corrected same day: left/right
+  ALWAYS switch tabs; ▼ enters the screen body (character mode);
+  the focused region renders bright with markers, the other dims.
+- The fair carries a battle module: the sparring ring encounter
+  (machine-show lawn, seed 88) — headless-proven; a visible ring prop
+  is an Asset Director commission.
 - Exported builds need import metadata for published PNGs (standing).

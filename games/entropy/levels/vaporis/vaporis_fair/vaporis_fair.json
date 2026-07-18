@@ -960,5 +960,25 @@
         1728
       ]
     }
+  ],
+  "encounters": [
+    {
+      "rect": {
+        "pos": [
+          2144,
+          1440
+        ],
+        "size": [
+          160,
+          96
+        ]
+      },
+      "enemies": [
+        "alpha",
+        "bravo"
+      ],
+      "seed": 88,
+      "intent": "the sparring ring \u2014 Brontes' apprentices field-test coursework constructs; step in and the constructs oblige (the battle module's proving ground)"
+    }
   ]
 }
