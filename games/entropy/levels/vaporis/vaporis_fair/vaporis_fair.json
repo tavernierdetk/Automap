@@ -78,10 +78,10 @@
           "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
           "ccclllllllllllllllmmmmllllllllllllblllllffffffffffffffffllllllllhhhhhhlllhhhhhhhlllhhhhhhllllccc",
           "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffmmmmmmmllllllllllllllllllllllllllllllccc",
-          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffmmmmmmmlllllllllllllllhllllllllllllllccc",
-          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmfffffffffffffffmmmmmmmlllllhlllllllllhlllllllllhllllccc",
-          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllhlllllllllhlllllllllhllllccc",
-          "cccllllllllllllllwwlllllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllhlllllllllllllllllllhllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffmmmmmmmmmmmmllllllllllhllllllllllllllccc",
+          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmfffffffffffffffmmmmmmmmmmmmhlllllllllhlllllllllhllllccc",
+          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmffffffffffffffflllllllmmmmmhlllllllllhlllllllllhllllccc",
+          "cccllllllllllllllwwlllllmmmmmmmmmmmmmmmmmffffffffffffffflllllllmmmmmhlllllllllllllllllllhllllccc",
           "ccclllllwwwwllllwwwwllllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllllllllllllllllllllllhllllccc",
           "cccllllwwwwwwwlwwwwwwwllllllllllllllllllffffffffffffffffllllllllllllllllllllllhlllllllllhllllccc",
           "cccllllwwwwwwwwwwwwwwwwlllllllllllllllllffffffffffffffffllllllllllllhlllllllllhllllllllllllllccc",
@@ -786,6 +786,62 @@
         384,
         672
       ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        2016,
+        1472
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        2176,
+        1472
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        2016,
+        1604
+      ]
+    },
+    {
+      "prop": "flagpole_0",
+      "pos": [
+        2176,
+        1604
+      ]
+    },
+    {
+      "prop": "bunting_0",
+      "pos": [
+        2096,
+        1466
+      ]
+    },
+    {
+      "prop": "sign_0",
+      "pos": [
+        2000,
+        1640
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2056,
+        1620
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2136,
+        1620
+      ]
     }
   ],
   "spawns": [
@@ -965,11 +1021,11 @@
     {
       "rect": {
         "pos": [
-          2144,
-          1440
+          2096,
+          1536
         ],
         "size": [
-          160,
+          128,
           96
         ]
       },
@@ -978,7 +1034,7 @@
         "bravo"
       ],
       "seed": 88,
-      "intent": "the sparring ring \u2014 Brontes' apprentices field-test coursework constructs; step in and the constructs oblige (the battle module's proving ground)"
+      "intent": "the sparring ring \u2014 a packed-dirt ring by the machine show; step onto the dirt and the coursework constructs oblige (re-arms when you step out)"
     }
   ]
 }
