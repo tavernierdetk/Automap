@@ -1,0 +1,16 @@
+{
+  "name": "entropy",
+  "grass_color": [0.36, 0.55, 0.28],
+  "path_color": [0.56, 0.45, 0.31],
+  "water_color": [0.16, 0.36, 0.44],
+  "cliff_color": [0.47, 0.45, 0.43],
+  "canopy_color": [0.22, 0.42, 0.2],
+  "trunk_color": [0.34, 0.26, 0.18],
+  "environment": {
+    "sky_top": [0.35, 0.5, 0.66],
+    "sky_horizon": [0.78, 0.82, 0.74],
+    "sun_color": [1.0, 0.95, 0.82],
+    "sun_energy": 1.1,
+    "saturation": 1.05
+  }
+}

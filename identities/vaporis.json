@@ -1,0 +1,25 @@
+{
+  "name": "vaporis",
+  "grass_color": [0.33, 0.46, 0.30],
+  "path_color": [0.62, 0.38, 0.24],
+  "water_color": [0.22, 0.42, 0.46],
+  "cliff_color": [0.76, 0.73, 0.67],
+  "canopy_color": [0.28, 0.44, 0.26],
+  "trunk_color": [0.32, 0.24, 0.16],
+  "materials": {
+    "bronze": [0.48, 0.31, 0.12],
+    "canvas": {"color": [0.72, 0.24, 0.19], "hue_span": 0.25},
+    "plaster": {"color": [0.8, 0.72, 0.6], "hue_span": 0.4},
+    "rooftile": {"color": [0.58, 0.32, 0.24], "hue_span": 0.35},
+    "roofslate": {"color": [0.38, 0.42, 0.5], "hue_span": 0.3},
+    "verdigris": {"color": [0.33, 0.55, 0.45], "hue_span": 0.3},
+    "flame": {"color": [0.95, 0.55, 0.15], "hue_span": 0.8}
+  },
+  "environment": {
+    "sky_top": [0.55, 0.6, 0.66],
+    "sky_horizon": [0.85, 0.8, 0.72],
+    "sun_color": [1.0, 0.92, 0.78],
+    "sun_energy": 1.0,
+    "saturation": 0.98
+  }
+}
