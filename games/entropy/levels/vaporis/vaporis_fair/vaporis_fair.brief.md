@@ -154,10 +154,16 @@ docs/explorations/game-shell-round.md):**
 - story gate `14 check fair_opening`: CLEAN (the R2 item warnings
   resolved by canon-admitting the valve).
 
-**2026-07-18 — the sparring ring (battle module):**
-- an encounter zone on the machine-show lawn (rect center 2144,1440 —
-  seed 88, alpha+bravo as "coursework constructs on a field test"):
-  step in and the battle system answers. Proven headless in
-  test_shell_loop (fires once, right roster, right seed). Invisible by
-  design for now — a painted ring/rope prop marking it is an Asset
-  Director commission for the next fair pass.
+**2026-07-18 — the sparring ring (battle module), v2 after a real
+playtest failure:**
+- v1 was invisible AND sat on the hedge garden's blocking hedge line —
+  physically unenterable on foot (the teleporting headless test
+  couldn't see it; the human could). The gate lesson: walk-in triggers
+  need a WALKABILITY read, not just a fires-when-teleported read.
+- v2 (rect center 2096,1536, seed 88): open lawn south of the machine
+  show, packed-dirt ring floor, four pennant poles, bunting on the
+  north rope, lanterns + sign at the open south entrance; a HUD prompt
+  halo announces "step onto the dirt to fight!" when near; stepping
+  out re-arms it. Fire + re-arm proven in test_shell_loop.
+- still queued for the Asset Director: a proper rope-ring prop (the
+  dressing is composed from stock).
