@@ -44,37 +44,23 @@ pipeline validates it, the baker projects it.** Never write into the game's
    "midway ≈ a stall every 6 cells", "trees in copses of 2–4"). Concepts
    are REFERENCE ONLY — never traced, never shipped (gitignored under
    `work/game/<game>/concepts/`); the notes are the durable artifact.
-3. **Catalog — audit the register against what exists.**
-   `.venv/bin/python scripts/13_scene_director.py catalog --game <game>`
-   shows backgrounds (+palette mood), creatures, tile atlases (classes +
-   mechanics flags), and the level graph (ids, spawn tags, exits,
-   npc_slots). Diff the brief's register against it: reuse what fits,
-   name every gap.
-4. **Generate the gaps — liberally.** When the brief names a surface or
-   asset the catalog lacks, generating it is the DEFAULT action, not an
-   escalation; never contort an existing class into meaning something else
-   (grass is not moss; a bush is not fungus). Volume is the point —
-   atlases and assets are deterministic, cheap, and deduped by the catalog.
-   - Tile atlas: author the scene's terrain vocabulary as an atlas spec at
-     `games/<game>/atlases/<name>.spec.json` (classes with painter + color +
-     mechanics, transition pairs whose `base` is the scene's floor — see
-     `vaporis_mine.spec.json` for the worked example; painters available:
-     grass, path, water, stone, rock, earth, moss, clump, rail — walls use
-     `rock` + `"relief": "raised"` so the boundary grows a footing shadow;
-     `stone` is the free-standing surface blocker), then
-     `scripts/13_scene_director.py atlas --spec games/<game>/atlases/<f>.spec.json
-     [--mechanics '{"water":{"walkable":true}}']`. Colors may be literal RGB —
-     an underground atlas owes nothing to the surface identity fields.
-     Omit `--spec` (pass `--identity`) for the default surface five.
-   - Props: `13_scene_director.py assets ensure --family <f> --substyle <s>
-     --min-variants N` — the Asset Creator reuses what fits (variety-aware;
-     hand-edited variants count) and generates only the gap as
-     palette-strict pixel art (`13 assets status` to inspect; hand touch-ups
-     survive republish). For an image-model reference instead:
-     `13 assets request` writes `prompt.md` — generate in any cloud image
-     tool, drop PNGs into the request's `incoming/`, then
-     `13 assets ingest` repixelizes through the same QC gate. Leafy trees
-     ship with 2 sway frames automatically; dead trees stay static.
+3. **Hand the Register to the Asset Director.** The brief's Register is
+   a commission, not a to-do list you execute inline: invoke
+   `/asset-director` (or follow `.claude/skills/asset-director/SKILL.md`
+   when running solo) with the register. That chair audits the library
+   (`13 library` — reuse before generate), fills genuine gaps liberally
+   (atlas specs, `13 assets ensure/request/generate`), runs the preview
+   bench, and holds doctrine custody (perspective, figure scale, shadows,
+   lighting exemptions). You get back a filled register: every line
+   mapped to a catalog entry. Quick orientation while writing the brief
+   is still yours: `.venv/bin/python scripts/13_scene_director.py catalog
+   --game <game>` shows atlases, families, and the level graph — use it
+   to write an informed Register, not to bypass the audit.
+4. **Verify the register is filled** before authoring the grid: rerun
+   `13 catalog` and confirm each terrain class and prop the brief names
+   now exists. A missing entry goes back to the Asset Director — never
+   contort an existing class into meaning something else (grass is not
+   moss; a bush is not fungus).
 5. **Fill the level document** at `games/<game>/levels/<id>.json`. Its
    `intent` field summarizes the brief (the gate checks it exists).
    `kind: tilemap` for composable terrain, `backdrop` for a painted scene
