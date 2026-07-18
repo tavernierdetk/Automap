@@ -39,11 +39,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 app = typer.Typer(add_completion=False)
 
-JSON_KINDS = {"levels": "level", "creatures": "creature", "dialogues": "dialogue-script"}
+JSON_KINDS = {"levels": "level", "creatures": "creature",
+              "dialogues": "dialogue-script", "items": "item",
+              "skills": "skill"}
+# kinds published by dedicated gated blocks (not the JSON_KINDS loop)
+GATED_SCHEMAS = {"economy": "economy", "ui": "ui", "casting": None}
 
 
 def _validate(kind: str, path: Path, log) -> None:
-    schema = JSON_KINDS.get(kind)
+    schema = JSON_KINDS.get(kind) or GATED_SCHEMAS.get(kind)
     if schema is None or path.suffix != ".json":
         return
     try:
@@ -163,6 +167,55 @@ def main(
             manifest["artifacts"].setdefault("casting", []).append(
                 {"name": f.name, "sha256_12": _sha12(f)})
         log(f"casting: {len(sheets)} sheet(s) gated + published")
+
+    # --- gated game-shell kinds: items/skills budgets, economy sim,
+    # ui readability (studio-org rows 20, 22-25, 30) ---
+    def _run_gate(label: str, findings) -> None:
+        blocked = False
+        for fd in findings:
+            if fd.severity == "error":
+                log(f"ERROR: {label} [{fd.beat}]: {fd.message}")
+                blocked = True
+            else:
+                log(f"{label} [{fd.beat}]: {fd.message}")
+        if blocked:
+            raise typer.Exit(code=1)
+
+    from automap import economy as economy_mod
+    from automap import items as items_mod
+    from automap import ui_gate as ui_mod
+    if (src_root / "items").exists():
+        _run_gate("items", items_mod.check_items(src_root))
+    if (src_root / "skills").exists():
+        _run_gate("skills", items_mod.check_skills(src_root))
+    for kind, gate in (("economy", economy_mod.check_economy),
+                       ("ui", ui_mod.check_ui)):
+        src = src_root / kind
+        docs = sorted(src.glob("*.json")) if src.exists() else []
+        if not docs:
+            continue
+        for f in docs:
+            _validate(kind, f, log)  # schema warns if absent
+        _run_gate(kind, gate(src_root))
+        dst = content / kind
+        _publish_dir_reset(dst)
+        for f in docs:
+            shutil.copy2(f, dst / f.name)
+            manifest["artifacts"].setdefault(kind, []).append(
+                {"name": f.name, "sha256_12": _sha12(f)})
+        log(f"{kind}: {len(docs)} doc(s) gated + published")
+
+    # --- portraits: staged figure faces -> content/portraits/<slug>.png ---
+    portraits_src = root / "work" / "game" / game / "portraits"
+    portraits = sorted(portraits_src.glob("*.png")) if portraits_src.exists() else []
+    if portraits:
+        dst = content / "portraits"
+        _publish_dir_reset(dst)
+        for p in portraits:
+            shutil.copy2(p, dst / p.name)
+            manifest["artifacts"].setdefault("portraits", []).append(
+                {"name": p.name, "sha256_12": _sha12(p)})
+        log(f"portraits: {len(portraits)} published")
     for kind in JSON_KINDS:
         src = src_root / kind
         if not src.exists():
