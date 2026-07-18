@@ -1,0 +1,28 @@
+{
+  "name": "vaporis_mine",
+  "identity": "identities/vaporis.json",
+  "comment": "The mine speaks mine, not meadow (correction plan S2): packed earth floor, dark wet rock, black-green sump water, moss, rails. Colors are literal — underground light owes nothing to the surface identity's sunlit terrain fields. Transitions all base on earth: the floor is what everything meets.",
+  "classes": [
+    {"name": "earth", "painter": "earth", "color": [0.33, 0.27, 0.21],
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "wall", "painter": "rock", "color": [0.3, 0.3, 0.33],
+     "relief": "raised",
+     "walkable": false, "speed_mod": 1.0, "hazard": false},
+    {"name": "water", "painter": "water", "color": [0.08, 0.2, 0.18],
+     "animation": {"frames": 3},
+     "walkable": false, "speed_mod": 1.0, "hazard": true},
+    {"name": "moss", "painter": "moss", "color": [0.13, 0.23, 0.11],
+     "walkable": true, "speed_mod": 0.9, "hazard": false},
+    {"name": "rail_v", "painter": "rail", "color": [0.4, 0.26, 0.13],
+     "on": "earth", "args": {"orientation": "v"},
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "rail_h", "painter": "rail", "color": [0.4, 0.26, 0.13],
+     "on": "earth", "args": {"orientation": "h"},
+     "walkable": true, "speed_mod": 1.0, "hazard": false}
+  ],
+  "transitions": [
+    {"name": "wall", "base": "earth", "overlay": "wall"},
+    {"name": "water", "base": "earth", "overlay": "water"},
+    {"name": "moss", "base": "earth", "overlay": "moss"}
+  ]
+}

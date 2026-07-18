@@ -1,0 +1,168 @@
+{
+  "name": "vaporis_fair",
+  "identity": "identities/vaporis.json",
+  "comment": "The fairground, v3 after the Millennial Fair (Leene Square) study: the fair floor is BUILT \u2014 dressed flagstone paving as the core surface, lawn as curb-edged islands, flowerbed borders, a solid treetop canopy enclosing everything. Full daylight, festival warmth. v4: elevation \u2014 the wheel court is a RAISED terrace (ledge faces block, stairs cut through), the Leene Square read.",
+  "classes": [
+    {
+      "name": "lawn",
+      "painter": "grass",
+      "color": [
+        0.38,
+        0.46,
+        0.27
+      ],
+      "walkable": true,
+      "speed_mod": 1.0,
+      "hazard": false
+    },
+    {
+      "name": "flag",
+      "painter": "flagstone",
+      "color": [
+        0.6,
+        0.56,
+        0.5
+      ],
+      "relief": "curb",
+      "walkable": true,
+      "speed_mod": 1.15,
+      "hazard": false
+    },
+    {
+      "name": "terrace",
+      "painter": "flagstone",
+      "color": [
+        0.67,
+        0.63,
+        0.56
+      ],
+      "relief": "ledge",
+      "walkable": true,
+      "speed_mod": 1.15,
+      "hazard": false
+    },
+    {
+      "name": "stairs",
+      "painter": "stairs",
+      "color": [
+        0.62,
+        0.58,
+        0.52
+      ],
+      "walkable": true,
+      "speed_mod": 1.0,
+      "hazard": false
+    },
+    {
+      "name": "midway",
+      "painter": "path",
+      "color": [
+        0.58,
+        0.48,
+        0.34
+      ],
+      "walkable": true,
+      "speed_mod": 1.15,
+      "hazard": false
+    },
+    {
+      "name": "water",
+      "painter": "water",
+      "color": [
+        0.18,
+        0.36,
+        0.38
+      ],
+      "animation": {
+        "frames": 3
+      },
+      "walkable": false,
+      "speed_mod": 1.0,
+      "hazard": true
+    },
+    {
+      "name": "hedge",
+      "painter": "hedge",
+      "color": [
+        0.22,
+        0.38,
+        0.2
+      ],
+      "relief": "raised",
+      "walkable": false,
+      "speed_mod": 1.0,
+      "hazard": false
+    },
+    {
+      "name": "canopy",
+      "painter": "canopy",
+      "color": [
+        0.2,
+        0.33,
+        0.16
+      ],
+      "walkable": false,
+      "speed_mod": 1.0,
+      "hazard": false
+    },
+    {
+      "name": "flowers",
+      "painter": "flowers",
+      "color": [
+        0.78,
+        0.28,
+        0.3
+      ],
+      "on": "lawn",
+      "walkable": false,
+      "speed_mod": 1.0,
+      "hazard": false
+    },
+    {
+      "name": "bush",
+      "painter": "clump",
+      "color": [
+        0.24,
+        0.4,
+        0.21
+      ],
+      "on": "lawn",
+      "walkable": false,
+      "speed_mod": 1.0,
+      "hazard": false
+    }
+  ],
+  "transitions": [
+    {
+      "name": "flag",
+      "base": "lawn",
+      "overlay": "flag"
+    },
+    {
+      "name": "terrace",
+      "base": "flag",
+      "overlay": "terrace",
+      "blocks": true
+    },
+    {
+      "name": "midway",
+      "base": "lawn",
+      "overlay": "midway"
+    },
+    {
+      "name": "water",
+      "base": "lawn",
+      "overlay": "water"
+    },
+    {
+      "name": "hedge",
+      "base": "lawn",
+      "overlay": "hedge"
+    },
+    {
+      "name": "canopy",
+      "base": "lawn",
+      "overlay": "canopy"
+    }
+  ]
+}

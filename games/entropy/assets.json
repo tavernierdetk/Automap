@@ -1,0 +1,54 @@
+{
+  "reference_root": "~/Cowork/entropy-integrated",
+  "backgrounds": [
+    "Assets/GenericBGs/witch_cottage.png",
+    "Assets/GenericBGs/magic_forest.png",
+    "Assets/GenericBGs/classroom.png",
+    "Assets/GenericBGs/witch_cottage_inside.png",
+    "Assets/GenericBGs/castle_outside.png",
+    "Assets/BattleTerrain/Forest/BackgroundForest.png",
+    "Assets/BattleTerrain/Field/BackgroundField.png"
+  ],
+  "creature_sprites": [
+    {
+      "slug": "zo",
+      "frames_dir": "Assets/Creatures/zo/ulpc_frames",
+      "fps": 8
+    },
+    {
+      "slug": "lily",
+      "frames_dir": "Assets/Creatures/lily/ulpc_frames",
+      "fps": 8
+    },
+    {
+      "slug": "carmilla",
+      "frames_dir": "Assets/Creatures/carmilla/ulpc_frames",
+      "fps": 8
+    },
+    {
+      "slug": "alpha",
+      "frames_dir": "Assets/Creatures/Alpha/Default/Animations",
+      "fps": 4
+    },
+    {
+      "slug": "bravo",
+      "frames_dir": "Assets/Creatures/Bravo/Default/Animations",
+      "fps": 4
+    },
+    {
+      "slug": "caden",
+      "frames_dir": "Assets/Creatures/Caden/Default/Animations",
+      "fps": 4
+    },
+    {
+      "slug": "isaac",
+      "frames_dir": "Assets/Creatures/Isaac/Default/Animations",
+      "fps": 4
+    },
+    {
+      "slug": "vec",
+      "frames_dir": "Assets/Creatures/Vec/Default/Animations",
+      "fps": 4
+    }
+  ]
+}

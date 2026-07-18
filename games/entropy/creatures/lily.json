@@ -1,0 +1,19 @@
+{
+  "id": "lily",
+  "name": "Lily",
+  "archetype": "princess",
+  "stats": {
+    "creature_affinity": 7,
+    "chaos_mastery": 4,
+    "kinesthetic": 5,
+    "lucidity": 8,
+    "terrain_control": 3
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 10,
+  "visual": {
+    "family": "ulpc"
+  }
+}

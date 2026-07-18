@@ -1,0 +1,333 @@
+{
+  "id": "vaporis_mine_hall",
+  "name": "Puits Vaporum \u2014 Central Hall",
+  "kind": "tilemap",
+  "intent": "The abandoned mine under the Lyceum Vaporum, regenerated 2026-07-17 from its revised brief (vaporis_mine_hall.brief.md): a hall CUT from dark living rock in its own terrain vocabulary (earth/wall/water/moss/rail), one straight cart track stitching the shaft alcove to the entrance, an irregular moss-rimmed sump, a cave-in breaking the wall line, and the Order's hand confined to the founder's shrine. No grass underground; no nave columns.",
+  "player": {
+    "pos": [
+      784,
+      920
+    ]
+  },
+  "tilemap": {
+    "atlas": "vaporis_mine",
+    "tile_size": 32,
+    "grid_size": [
+      48,
+      32
+    ],
+    "layers": [
+      {
+        "name": "ground",
+        "palette": {
+          "e": "earth",
+          "s": "wall",
+          "w": "water",
+          "m": "moss",
+          "r": "rail_v"
+        },
+        "rows": [
+          "ssssssssssssssssssssssssssssssssssssssssssssssss",
+          "ssssssssssssssssssssssssssssssssssssssssssssssss",
+          "ssssssssssssssssssseeeeeeeeeesssssssssssssssssss",
+          "ssssssssssssssssssseeeereeeeesssssssssssssssssss",
+          "ssssssssssssssssssseeeereeeeesssssssssssssssssss",
+          "ssssssssssssssssssseeeereeeeesssssssssssssssssss",
+          "ssssssssssssssssssseeeereeeeesssssssssssssssssss",
+          "sssssssssssseeeeeeeeeeereeeeeeeeeeeeeeeeeessssss",
+          "sssssssssseeeeeeeeeeeeereeeeeeeeeeeeeeeeeeesssss",
+          "sssssssseeeeeeeeeeeeeeereeeeeessseeeeeeeeeesssss",
+          "sseeeeeeeeeeeeeeeeeeeeereeeeeessseeeeeeeeeeeeess",
+          "sseeeeeeeeeeeeeeeeeeeeereeeeeeeeeeeeeeeeeeeeeess",
+          "sseeeeeeeeeeeeeeeeeeeeereeeeeeeeeeeeeeeeeeeeeess",
+          "sseeeeeeeeeeeeeeeeeeeeereeeeeeeeeeeeeeeeeeeeeess",
+          "sseeeeeeeeeeeeeeeeeeeeereeeeeeeeeeeeeeeeeeesssss",
+          "ssssseeeeeeeeeeeeeeeeeereeeeeeeeeeeeeeeeeeesssss",
+          "ssssseeeeeeessseeeeeeeereeeeeeeeeeeeeeeeeeesssss",
+          "ssssseeeeeeessseeeeeeeereeeeeeemeemmmmmmmeesssss",
+          "ssssseeeeeeessseeeeeeeereeeeeeeeemmwwwwwmmesssss",
+          "ssssseeeeeeeeeeeeeeeeeereeeeeememmwwwwwwwmmsssss",
+          "ssssseeeeeeeeeeeeeeeeeereeeeeeeemwwwwwwwwwmsssss",
+          "ssssseeeeeeeeeeeeeeeeeereeeeeeeemwwwwwwwwwmsssss",
+          "ssssseeeeeeeeeeeeeeeeeereeeeeeemmmwwwwwwwwmsssss",
+          "ssssseeeeeeeeeeeeeeeeeereeeeeeeemwwwwwwwwmmsssss",
+          "ssssseeeeeeeeeeeeeeeeeereeeeeeeemmmwwwwwwwmsssss",
+          "sssssseeeeeeeeeeeeeeeeereeeeeeeeemmmwwwwmmssssss",
+          "ssssssssssssssssssssseereeesssssssssssssssssssss",
+          "ssssssssssssssssssssseereeesssssssssssssssssssss",
+          "ssssssssssssssssssssseereeesssssssssssssssssssss",
+          "ssssssssssssssssssssseereeesssssssssssssssssssss",
+          "ssssssssssssssssssssseereeesssssssssssssssssssss",
+          "ssssssssssssssssssssseeeeeesssssssssssssssssssss"
+        ]
+      }
+    ]
+  },
+  "props": [
+    {
+      "prop": "winch_0",
+      "pos": [
+        784,
+        128
+      ]
+    },
+    {
+      "prop": "shaftmouth_0",
+      "pos": [
+        768,
+        176
+      ]
+    },
+    {
+      "prop": "gearstack_0",
+      "pos": [
+        672,
+        168
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        864,
+        200
+      ]
+    },
+    {
+      "prop": "timber_2",
+      "pos": [
+        672,
+        248
+      ]
+    },
+    {
+      "prop": "timber_3",
+      "pos": [
+        896,
+        248
+      ]
+    },
+    {
+      "prop": "broken_0",
+      "pos": [
+        464,
+        728
+      ]
+    },
+    {
+      "prop": "cart_0",
+      "pos": [
+        752,
+        440
+      ]
+    },
+    {
+      "prop": "ore_0",
+      "pos": [
+        784,
+        456
+      ]
+    },
+    {
+      "prop": "ore_1",
+      "pos": [
+        720,
+        504
+      ]
+    },
+    {
+      "prop": "cart_0",
+      "pos": [
+        752,
+        696
+      ]
+    },
+    {
+      "prop": "ore_2",
+      "pos": [
+        784,
+        728
+      ]
+    },
+    {
+      "prop": "boulder_0",
+      "pos": [
+        272,
+        296
+      ]
+    },
+    {
+      "prop": "boulder_2",
+      "pos": [
+        328,
+        280
+      ]
+    },
+    {
+      "prop": "boulder_4",
+      "pos": [
+        304,
+        360
+      ]
+    },
+    {
+      "prop": "ore_1",
+      "pos": [
+        384,
+        344
+      ]
+    },
+    {
+      "prop": "boiler_0",
+      "pos": [
+        1024,
+        584
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1088,
+        568
+      ]
+    },
+    {
+      "prop": "founder_0",
+      "pos": [
+        112,
+        376
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        160,
+        456
+      ]
+    },
+    {
+      "prop": "intact_1",
+      "pos": [
+        208,
+        344
+      ]
+    },
+    {
+      "prop": "timber_3",
+      "pos": [
+        704,
+        840
+      ]
+    },
+    {
+      "prop": "timber_2",
+      "pos": [
+        864,
+        840
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        832,
+        936
+      ]
+    },
+    {
+      "prop": "timber_2",
+      "pos": [
+        1392,
+        408
+      ]
+    },
+    {
+      "prop": "ore_0",
+      "pos": [
+        1440,
+        424
+      ]
+    },
+    {
+      "prop": "bricked_0",
+      "pos": [
+        1424,
+        416
+      ]
+    }
+  ],
+  "spawns": [
+    {
+      "tag": "entrance",
+      "pos": [
+        784,
+        952
+      ]
+    },
+    {
+      "tag": "shaft",
+      "pos": [
+        784,
+        216
+      ]
+    }
+  ],
+  "teleports": [
+    {
+      "target_level": "vaporis_lyceum",
+      "target_spawn_tag": "mine_gate",
+      "rect": {
+        "pos": [
+          672,
+          1000
+        ],
+        "size": [
+          192,
+          24
+        ]
+      }
+    }
+  ],
+  "npc_slots": [
+    {
+      "tag": "foreman",
+      "pos": [
+        736,
+        184
+      ]
+    },
+    {
+      "tag": "engine_keeper",
+      "pos": [
+        976,
+        632
+      ]
+    },
+    {
+      "tag": "prospector",
+      "pos": [
+        848,
+        488
+      ]
+    },
+    {
+      "tag": "shrine_keeper",
+      "pos": [
+        160,
+        408
+      ]
+    },
+    {
+      "tag": "surveyor",
+      "pos": [
+        1424,
+        440
+      ]
+    },
+    {
+      "tag": "drifter",
+      "pos": [
+        752,
+        888
+      ]
+    }
+  ]
+}

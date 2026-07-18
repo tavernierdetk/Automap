@@ -1,0 +1,23 @@
+{
+  "id": "zo",
+  "name": "Zo",
+  "archetype": "trickster",
+  "stats": {
+    "creature_affinity": 10,
+    "chaos_mastery": 10,
+    "kinesthetic": 10,
+    "lucidity": 10,
+    "terrain_control": 10
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 10,
+  "visual": {
+    "family": "ulpc"
+  },
+  "persona": {
+    "faction": "coven",
+    "home": "witch_cottage"
+  }
+}

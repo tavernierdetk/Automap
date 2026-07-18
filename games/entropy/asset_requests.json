@@ -1,0 +1,334 @@
+{
+  "requests": [
+    {
+      "family": "tree",
+      "identity": "identities/entropy.json",
+      "substyle": "deciduous",
+      "min_variants": 6
+    },
+    {
+      "family": "tree",
+      "identity": "identities/entropy.json",
+      "substyle": "pine",
+      "min_variants": 3
+    },
+    {
+      "family": "tree",
+      "identity": "identities/entropy.json",
+      "substyle": "dead",
+      "min_variants": 2
+    },
+    {
+      "generator": "genlab",
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "tree_deciduous_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "rock_boulder_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "rock_rock_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "stump_stump_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "stump_log_large_r1"
+    },
+    {
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "deciduous",
+      "min_variants": 4
+    },
+    {
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "pine",
+      "min_variants": 2
+    },
+    {
+      "generator": "genlab",
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "rock_boulder_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "brazier",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "brazier_standing_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "column",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "column_broken_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "column",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "column_intact_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "column",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "column_piped_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "fountain",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "fountain_tiered_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "statue",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "statue_founder_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "statue",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "statue_robed_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "topiary",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "topiary_sphere_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "topiary",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "topiary_spiral_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "bench",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "bench_marble_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "rock",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "rock_boulder_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "rock",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "rock_ore_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "brazier",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "brazier_lantern_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "support",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "support_timber_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_cart_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_winch_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_gearstack_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "machine",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "machine_boiler_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "portal",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "portal_arch_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "portal",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "portal_bricked_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "portal",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "portal_shaftmouth_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "support",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "support_timber_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "tree",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "tree_deciduous_large_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "ride",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "ride_ferris_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "ride",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "ride_carousel_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_tent_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_booth_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_highstriker_small_r1"
+    },
+    {
+      "family": "building",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "house",
+      "min_variants": 2
+    },
+    {
+      "family": "building",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "kiosk",
+      "min_variants": 2
+    },
+    {
+      "family": "building",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "pavilion",
+      "min_variants": 2
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_bunting_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "stall",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "stall_sign_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "clutter",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "clutter_crates_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "clutter",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "clutter_barrel_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "bench",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "bench_picnic_set_r1"
+    },
+    {
+      "family": "building",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "shop",
+      "min_variants": 4
+    },
+    {
+      "family": "building",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "inn",
+      "min_variants": 2
+    },
+    {
+      "family": "building",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "substyle": "house",
+      "min_variants": 5
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_apothecary_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_garments_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_smith_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_inn_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "shopsign",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
+      "req": "shopsign_general_large_r1"
+    }
+  ]
+}

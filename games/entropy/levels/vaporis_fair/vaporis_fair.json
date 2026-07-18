@@ -1,0 +1,1133 @@
+{
+  "id": "vaporis_fair",
+  "name": "La Foire Vaporum \u2014 School Fair",
+  "kind": "tilemap",
+  "intent": "The Lyceum Vaporum's annual school fair, v2 \u2014 v3 after the Millennial Fair study (brief Composition notes v2): a BUILT flagstone fairground with curb-edged lawn islands, notes): a PATH NETWORK looping every zone, stall clusters with satellites, buildings (ticket office, pavilion, kiosks), lantern rhythm, deep tree-copse perimeter, solid clipped hedges. 96x64, the game's largest map.",
+  "player": {
+    "pos": [
+      1536,
+      1824
+    ]
+  },
+  "tilemap": {
+    "atlas": "vaporis_fair",
+    "tile_size": 32,
+    "grid_size": [
+      96,
+      64
+    ],
+    "layers": [
+      {
+        "name": "ground",
+        "palette": {
+          "l": "lawn",
+          "f": "flag",
+          "t": "terrace",
+          "S": "stairs",
+          "m": "midway",
+          "w": "water",
+          "h": "hedge",
+          "c": "canopy",
+          "x": "flowers",
+          "b": "bush"
+        },
+        "rows": [
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+          "ccccclllllllllccccclllllllllccccclllllllllccccclllllllllccccclllllllllccccclllllllllcccccllllccc",
+          "cccllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllccc",
+          "cccllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllccc",
+          "cccllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllfffffflllffflllllllllllllllccc",
+          "ccclllllllllllllllllllllllllllllllllbllllllllllllllllllllllllllllffffffffffffffflllllllllllllccc",
+          "ccclllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllffffftttffttfffffflllllllllllccc",
+          "ccclllllllllllllllllllllffflllllllllllllfffffffffffffffflllllllfffftttttttttttfffflllllllllllccc",
+          "ccclllllllllllllllllllffffffllllllllllllfffffffffffffffflllllllffftttttttttttttffffllllllllllccc",
+          "ccclllllllllblllllllffffffffffllllllllllffffffffffffffffllllllffftttttttttttttttfffllllllllllccc",
+          "ccclllllfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllffffffffffmmmmfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffllllccc",
+          "ccclllllllllllllllmmmmffffffffffffffffffffffffffffffffffffffffffffftttttttttttttfffllllllllllccc",
+          "ccclllllllllllllllmmmmffffffflllllllllllfffffffffffffffffffffffffffttttttttttttffffllllllllllccc",
+          "ccclllllllllllllllmmmmffffffflllllllllllffffffffffffffffffffffffffftttttttttttfffffllllllllllccc",
+          "ccclllllllllllllllmmmmlllffflllllxxxxxxlffffffffffffffffffffffffffmmmtSSSSSStffffflllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffllllllllffmmmtSSSSSSfffffflllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffflllllllllfmmmfSSSSSSfffflllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffflxxxxxxxllmmmffffffffffllllllllllllllccc",
+          "ccclllllllblllllllmmmmllllllllllllllllllffffffffffffffffllllllllllmmmffffffffflllllllllllllllccc",
+          "ccclllllllllllllllmmmmlllllllllllxxxxxxlffffffffffffffffllllllllllmmmffffffffllllllllllllllllccc",
+          "ccclllllllllllllllmmmmflllllllllllllllllffffffffffffffffllllllllllmmmffffffllllllllllllllllllccc",
+          "cccllllllllllllllfmmmmffffllllllllllllllfffffffffffffffflxxxxxxxllmmmllffllllllllllllllllllllccc",
+          "ccclllllllllllllffmmmmffffffllllllllllllffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "ccclllllllllffffffmmmmffffffflllllllllllffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "lllllllllllfffffffmmmmffffffflllllllllllffffffffffffffffllllllllllmmmlllllllblllllllllllllllllll",
+          "llllllllllffffffffmmmmffffffffffffffffffffffffffffffffffllllllllllmmmlllllllllllllllllllllllllll",
+          "lllllllllfffffffffmmmmffffffffffffffffffffffffffffffffffllblllllllmmmlllllllllllllllllllllllllll",
+          "lllllllllfffffffffmmmmffffffffffffffffffffffffffffffffffllllllllllmmmlllllllllllllllllllllllllll",
+          "ccclllllllffffffffmmmmffffffffffffffffffffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "ccclllllllffffffffmmmmffffffflllllllllllffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "cccllllllllfffffffmmmmffffffflllllllllllffffffffffffffffllllllllllmmmlllllllllllllllllllbllllccc",
+          "ccclllllllllffffffmmmmffffffflllllxxxxxxffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "ccclllllllllllffffmmmmffffffllllllllllllffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "ccclllllllllllllffmmmmffffffllllllllllllffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmlfffllllllllblllllffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffllllllllllmmmllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllxxxxxxffffffffffffffffllllhhhhhhlllhhhhhhhhhlllhhhhhhhhllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllfffffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllblllllllllffffffffffffffffllllllllllllllllllhllllllllllllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffllllllllhlllllllllhlllllllllhllllllllccc",
+          "ccclllllllllllllllmmmmllllllllllllllllllffffffffffffffffllllllllhlllllllllhlllllllllhllllllllccc",
+          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmffffffffffffffflxxxxxxlhlllllllllllllllllllhllllllllccc",
+          "ccclllllllllllllllmmmmllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllhlllllllllllllllllllhllllllllccc",
+          "ccclllllllllllllllllllllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllllllllhlllllllllhllllllllccc",
+          "cccllllllllllllllllwwlllmmmmmmmmmmmmmmmmmfffffffffffffffllllllllllllllllllhlllllllllhllllllllccc",
+          "ccclllllllwwwwllllwwwwllllllllllllllllllfffffffffffffffflxxxxxxmhmmlllllllhllllllllllllllllllccc",
+          "cccllllllwwwwwwwlwwwwwwwllllllllllllllllfffffffffffffffflllllllmhmmlllllllhllllllllllllllllllccc",
+          "cccllllllwwwwwwwwwwwwwwwwlllllllllllllllfffffffffffffffflllllllmhmmlllllllhlllllllllhllllllllccc",
+          "cccllllllwwwwwwwwwwwwwwwwlllllllllllllllffffffffffffffffflllllllhlllllllllhlllllllllhllllllllccc",
+          "cccllllllwwwwwwwwwwwwwwwwlllllllllllllllffffffffffffffffflllllllhlllllllllllllllllllhllllllllccc",
+          "ccclllllllwwwwwwwwwwwwwwlllllllllllllllffffffffffffffffffllllllllllllllllllllllllllllllllllllccc",
+          "cccllllllllwwwwwwwwwwwllllllllllllllllllffffffffffffffffflllllhhhhhhhhlllhhhhhhhhhllhhhhhllllccc",
+          "ccclllllllllwwwwwwwwwlllllllllllllllllllfffffffffffffffffllllllllllllllllllllllllllllllllllllccc",
+          "cccllllllllllllllwwwwlllllllllllllllllllllfffffffffffffflllllllllllllllllllllllllllllllllllllccc",
+          "ccccllllllllllcccwwwwlllllllccccllllllllllccffffffffflllccccllllllllllccccllllllllllcccclllllccc",
+          "ccccccccccccccccccccccccccccccccccccccccccccffffffffcccccccccccccccccccccccccccccccccccccccccccc",
+          "ccccccccccccccccccccccccccccccccccccccccccccllllllllcccccccccccccccccccccccccccccccccccccccccccc",
+          "ccccccccccccccccccccccccccccccccccccccccccccllllllllcccccccccccccccccccccccccccccccccccccccccccc"
+        ]
+      }
+    ]
+  },
+  "props": [
+    {
+      "prop": "house_0",
+      "pos": [
+        1216,
+        1856
+      ]
+    },
+    {
+      "prop": "pavilion_0",
+      "pos": [
+        640,
+        928
+      ]
+    },
+    {
+      "prop": "kiosk_0",
+      "pos": [
+        2112,
+        768
+      ]
+    },
+    {
+      "prop": "kiosk_1",
+      "pos": [
+        896,
+        576
+      ]
+    },
+    {
+      "prop": "ferris_0",
+      "pos": [
+        2304,
+        544
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        2432,
+        384
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2016,
+        640
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2592,
+        640
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2304,
+        256
+      ]
+    },
+    {
+      "prop": "booth_0",
+      "pos": [
+        2048,
+        352
+      ]
+    },
+    {
+      "prop": "highstriker_1",
+      "pos": [
+        2528,
+        768
+      ]
+    },
+    {
+      "prop": "crates_0",
+      "pos": [
+        1984,
+        384
+      ]
+    },
+    {
+      "prop": "carousel_0",
+      "pos": [
+        768,
+        608
+      ]
+    },
+    {
+      "prop": "marble_0",
+      "pos": [
+        928,
+        608
+      ]
+    },
+    {
+      "prop": "sphere_0",
+      "pos": [
+        608,
+        384
+      ]
+    },
+    {
+      "prop": "barrel_0",
+      "pos": [
+        960,
+        480
+      ]
+    },
+    {
+      "prop": "tent_0",
+      "pos": [
+        1344,
+        640
+      ]
+    },
+    {
+      "prop": "booth_0",
+      "pos": [
+        1344,
+        832
+      ]
+    },
+    {
+      "prop": "tent_1",
+      "pos": [
+        1344,
+        1024
+      ]
+    },
+    {
+      "prop": "booth_1",
+      "pos": [
+        1344,
+        1216
+      ]
+    },
+    {
+      "prop": "highstriker_0",
+      "pos": [
+        1344,
+        1408
+      ]
+    },
+    {
+      "prop": "tent_1",
+      "pos": [
+        1696,
+        704
+      ]
+    },
+    {
+      "prop": "booth_0",
+      "pos": [
+        1696,
+        896
+      ]
+    },
+    {
+      "prop": "tent_0",
+      "pos": [
+        1696,
+        1088
+      ]
+    },
+    {
+      "prop": "booth_1",
+      "pos": [
+        1696,
+        1280
+      ]
+    },
+    {
+      "prop": "sign_0",
+      "pos": [
+        1696,
+        1472
+      ]
+    },
+    {
+      "prop": "bunting_0",
+      "pos": [
+        1344,
+        736
+      ]
+    },
+    {
+      "prop": "bunting_1",
+      "pos": [
+        1696,
+        800
+      ]
+    },
+    {
+      "prop": "bunting_0",
+      "pos": [
+        1344,
+        1120
+      ]
+    },
+    {
+      "prop": "bunting_1",
+      "pos": [
+        1696,
+        1376
+      ]
+    },
+    {
+      "prop": "crates_1",
+      "pos": [
+        1280,
+        864
+      ]
+    },
+    {
+      "prop": "barrel_1",
+      "pos": [
+        1760,
+        928
+      ]
+    },
+    {
+      "prop": "crates_0",
+      "pos": [
+        1760,
+        1312
+      ]
+    },
+    {
+      "prop": "barrel_0",
+      "pos": [
+        1280,
+        1248
+      ]
+    },
+    {
+      "prop": "sign_0",
+      "pos": [
+        1408,
+        576
+      ]
+    },
+    {
+      "prop": "booth_1",
+      "pos": [
+        1024,
+        384
+      ]
+    },
+    {
+      "prop": "tent_0",
+      "pos": [
+        1856,
+        384
+      ]
+    },
+    {
+      "prop": "crates_1",
+      "pos": [
+        1920,
+        352
+      ]
+    },
+    {
+      "prop": "intact_0",
+      "pos": [
+        1376,
+        1888
+      ]
+    },
+    {
+      "prop": "intact_1",
+      "pos": [
+        1664,
+        1888
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1408,
+        1952
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1632,
+        1952
+      ]
+    },
+    {
+      "prop": "marble_0",
+      "pos": [
+        1728,
+        1760
+      ]
+    },
+    {
+      "prop": "sign_0",
+      "pos": [
+        1344,
+        1760
+      ]
+    },
+    {
+      "prop": "tiered_0",
+      "pos": [
+        640,
+        1120
+      ]
+    },
+    {
+      "prop": "picnic_0",
+      "pos": [
+        448,
+        1056
+      ]
+    },
+    {
+      "prop": "picnic_1",
+      "pos": [
+        832,
+        1056
+      ]
+    },
+    {
+      "prop": "picnic_0",
+      "pos": [
+        640,
+        1248
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        480,
+        960
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        800,
+        960
+      ]
+    },
+    {
+      "prop": "booth_1",
+      "pos": [
+        384,
+        1088
+      ]
+    },
+    {
+      "prop": "barrel_1",
+      "pos": [
+        352,
+        1024
+      ]
+    },
+    {
+      "prop": "robed_0",
+      "pos": [
+        704,
+        1536
+      ]
+    },
+    {
+      "prop": "marble_0",
+      "pos": [
+        384,
+        1568
+      ]
+    },
+    {
+      "prop": "picnic_1",
+      "pos": [
+        800,
+        1696
+      ]
+    },
+    {
+      "prop": "spiral_0",
+      "pos": [
+        2112,
+        1472
+      ]
+    },
+    {
+      "prop": "sphere_0",
+      "pos": [
+        2496,
+        1600
+      ]
+    },
+    {
+      "prop": "sphere_1",
+      "pos": [
+        2240,
+        1728
+      ]
+    },
+    {
+      "prop": "spiral_0",
+      "pos": [
+        2752,
+        1536
+      ]
+    },
+    {
+      "prop": "robed_1",
+      "pos": [
+        2560,
+        1408
+      ]
+    },
+    {
+      "prop": "founder_0",
+      "pos": [
+        2176,
+        1760
+      ]
+    },
+    {
+      "prop": "marble_0",
+      "pos": [
+        2432,
+        1760
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1376,
+        640
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1664,
+        832
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1376,
+        1024
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1664,
+        1216
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1376,
+        1472
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1664,
+        1664
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        640,
+        416
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        1152,
+        384
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2176,
+        416
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2688,
+        416
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        544,
+        832
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        544,
+        1344
+      ]
+    },
+    {
+      "prop": "lantern_0",
+      "pos": [
+        2144,
+        960
+      ]
+    },
+    {
+      "prop": "arch_0",
+      "pos": [
+        1856,
+        1760
+      ]
+    },
+    {
+      "prop": "boulder_1",
+      "pos": [
+        1088,
+        704
+      ]
+    },
+    {
+      "prop": "boulder_3",
+      "pos": [
+        1856,
+        1152
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        160,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        224,
+        192
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        192,
+        256
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        448,
+        128
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        512,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        960,
+        128
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        1024,
+        192
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        1792,
+        128
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        1856,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        1920,
+        128
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2720,
+        128
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        2784,
+        192
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        2848,
+        160
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        2912,
+        352
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2880,
+        448
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        2912,
+        800
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        2880,
+        896
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        2880,
+        1376
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2912,
+        1472
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        2784,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        2848,
+        1824
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        2720,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        128,
+        416
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        192,
+        480
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        128,
+        832
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        160,
+        896
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        128,
+        1248
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        192,
+        1312
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        160,
+        1856
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        224,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        128,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        480,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        544,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        896,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        960,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        1856,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        1920,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        2400,
+        1888
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        2464,
+        1920
+      ]
+    },
+    {
+      "prop": "deciduous_14",
+      "pos": [
+        1152,
+        288
+      ]
+    },
+    {
+      "prop": "deciduous_11",
+      "pos": [
+        1216,
+        320
+      ]
+    },
+    {
+      "prop": "deciduous_12",
+      "pos": [
+        320,
+        608
+      ]
+    },
+    {
+      "prop": "deciduous_13",
+      "pos": [
+        384,
+        672
+      ]
+    }
+  ],
+  "spawns": [
+    {
+      "tag": "entrance",
+      "pos": [
+        1536,
+        1888
+      ]
+    },
+    {
+      "tag": "west_gate",
+      "pos": [
+        96,
+        992
+      ]
+    },
+    {
+      "tag": "east_gate",
+      "pos": [
+        2944,
+        992
+      ]
+    },
+    {
+      "tag": "wheel",
+      "pos": [
+        2240,
+        736
+      ]
+    }
+  ],
+  "teleports": [
+    {
+      "target_level": "vaporis_lyceum",
+      "target_spawn_tag": "gate",
+      "rect": {
+        "pos": [
+          1408,
+          1984
+        ],
+        "size": [
+          256,
+          40
+        ]
+      }
+    }
+  ],
+  "npc_slots": [
+    {
+      "tag": "ticket_taker",
+      "pos": [
+        1280,
+        1824
+      ]
+    },
+    {
+      "tag": "prefect",
+      "pos": [
+        1600,
+        1760
+      ]
+    },
+    {
+      "tag": "barker",
+      "pos": [
+        1504,
+        768
+      ]
+    },
+    {
+      "tag": "vendor_sweets",
+      "pos": [
+        1376,
+        864
+      ]
+    },
+    {
+      "tag": "vendor_games",
+      "pos": [
+        1664,
+        896
+      ]
+    },
+    {
+      "tag": "crowd_1",
+      "pos": [
+        1472,
+        960
+      ]
+    },
+    {
+      "tag": "crowd_2",
+      "pos": [
+        1568,
+        1152
+      ]
+    },
+    {
+      "tag": "crowd_3",
+      "pos": [
+        1440,
+        1376
+      ]
+    },
+    {
+      "tag": "operator",
+      "pos": [
+        2240,
+        608
+      ]
+    },
+    {
+      "tag": "queue_1",
+      "pos": [
+        2112,
+        672
+      ]
+    },
+    {
+      "tag": "queue_2",
+      "pos": [
+        2048,
+        736
+      ]
+    },
+    {
+      "tag": "carousel_keeper",
+      "pos": [
+        864,
+        576
+      ]
+    },
+    {
+      "tag": "child",
+      "pos": [
+        704,
+        672
+      ]
+    },
+    {
+      "tag": "cook",
+      "pos": [
+        512,
+        992
+      ]
+    },
+    {
+      "tag": "professor_lunching",
+      "pos": [
+        736,
+        1120
+      ]
+    },
+    {
+      "tag": "student_reading",
+      "pos": [
+        384,
+        1536
+      ]
+    },
+    {
+      "tag": "couple",
+      "pos": [
+        864,
+        1632
+      ]
+    },
+    {
+      "tag": "professor_strolling",
+      "pos": [
+        2304,
+        1600
+      ]
+    },
+    {
+      "tag": "gardener",
+      "pos": [
+        2048,
+        1696
+      ]
+    }
+  ]
+}

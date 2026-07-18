@@ -1,0 +1,18 @@
+{
+  "id": "entropy",
+  "intent": "A soft-fantasy 2D RPG: painted storybook places, pixel-art people, chaos-flavored turn combat — the platform's reference game, recreated from specs.",
+  "verbs": ["walk", "run", "talk", "fight"],
+  "combat": {
+    "scheduler": "atb",
+    "gauge_full": 100,
+    "damage": {
+      "atk_stat": "kinesthetic", "atk_mult": 6.0,
+      "def_stat": "kinesthetic", "def_mult": 1.0, "floor": 1.0
+    },
+    "derived": {
+      "hp":  { "base": 0, "per_kinesthetic": 10, "per_terrain_control": 5 },
+      "spd": { "base": 50, "per_kinesthetic": 3 }
+    },
+    "statuses": { "threshold": 50, "purge_rate": 20, "poison_dot": 2 }
+  }
+}

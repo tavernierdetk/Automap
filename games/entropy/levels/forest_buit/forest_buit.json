@@ -1,0 +1,46 @@
+{
+  "id": "forest_buit",
+  "name": "Forest Buit",
+  "spawns": [
+    {
+      "tag": "right",
+      "pos": [
+        1053.0,
+        495.0
+      ]
+    }
+  ],
+  "background": {
+    "file": "magic_forest.png",
+    "pos": [
+      579.0,
+      320.0
+    ],
+    "scale": [
+      1.13477,
+      0.667969
+    ]
+  },
+  "teleports": [
+    {
+      "target_level": "witch_cottage",
+      "rect": {
+        "pos": [
+          1130.0,
+          527.0
+        ],
+        "size": [
+          20.0,
+          258.0
+        ]
+      },
+      "target_spawn_tag": "left"
+    }
+  ],
+  "player": {
+    "pos": [
+      215.0,
+      518.0
+    ]
+  }
+}

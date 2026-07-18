@@ -1,0 +1,23 @@
+{
+  "id": "carmilla",
+  "name": "Carmilla",
+  "archetype": "mage",
+  "stats": {
+    "creature_affinity": 8,
+    "chaos_mastery": 5,
+    "kinesthetic": 4,
+    "lucidity": 9,
+    "terrain_control": 7
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 10,
+  "visual": {
+    "family": "ulpc"
+  },
+  "persona": {
+    "faction": "coven",
+    "home": "witch_cottage"
+  }
+}

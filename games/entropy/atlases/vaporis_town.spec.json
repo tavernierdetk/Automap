@@ -1,0 +1,28 @@
+{
+  "name": "vaporis_town",
+  "identity": "identities/vaporis.json",
+  "comment": "Bourg-Vaporum, the market town (brief: vaporis_town.brief.md): village-green lawn as the base, grey cobble square + main street, packed-dirt side lanes, a duck pond, clipped garden hedges. Late-afternoon market light: warmer, lower than the fair.",
+  "classes": [
+    {"name": "lawn", "painter": "grass", "color": [0.36, 0.44, 0.25],
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "street", "painter": "path", "color": [0.55, 0.52, 0.47],
+     "walkable": true, "speed_mod": 1.15, "hazard": false},
+    {"name": "lane", "painter": "path", "color": [0.52, 0.42, 0.3],
+     "walkable": true, "speed_mod": 1.1, "hazard": false},
+    {"name": "water", "painter": "water", "color": [0.17, 0.34, 0.36],
+     "animation": {"frames": 3},
+     "walkable": false, "speed_mod": 1.0, "hazard": true},
+    {"name": "hedge", "painter": "hedge", "color": [0.21, 0.36, 0.19],
+     "relief": "raised",
+     "walkable": false, "speed_mod": 1.0, "hazard": false},
+    {"name": "bush", "painter": "clump", "color": [0.23, 0.39, 0.2],
+     "on": "lawn",
+     "walkable": false, "speed_mod": 1.0, "hazard": false}
+  ],
+  "transitions": [
+    {"name": "street", "base": "lawn", "overlay": "street"},
+    {"name": "lane", "base": "lawn", "overlay": "lane"},
+    {"name": "water", "base": "lawn", "overlay": "water"},
+    {"name": "hedge", "base": "lawn", "overlay": "hedge"}
+  ]
+}

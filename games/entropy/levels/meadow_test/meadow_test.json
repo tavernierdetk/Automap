@@ -1,0 +1,126 @@
+{
+  "id": "meadow_test",
+  "name": "Meadow (tilemap sample)",
+  "kind": "tilemap",
+  "tilemap": {
+    "atlas": "entropy_terrain",
+    "tile_size": 32,
+    "grid_size": [
+      12,
+      8
+    ],
+    "layers": [
+      {
+        "name": "ground",
+        "palette": {
+          "g": "grass",
+          "p": "path",
+          "w": "water"
+        },
+        "rows": [
+          "gggggggggggg",
+          "gggpppppgggg",
+          "gggpggggpggg",
+          "wwgpggggpggg",
+          "wwgppppppggg",
+          "wwggggggpggg",
+          "ggggggggpggg",
+          "gggggggggggg"
+        ]
+      },
+      {
+        "name": "decor",
+        "palette": {
+          "b": "bush",
+          "s": "stone"
+        },
+        "rows": [
+          "b..........b",
+          "............",
+          ".s..........",
+          "............",
+          "............",
+          "..........s.",
+          "............",
+          "b..........b"
+        ]
+      }
+    ]
+  },
+  "spawns": [
+    {
+      "tag": "default",
+      "pos": [
+        192,
+        128
+      ]
+    },
+    {
+      "tag": "east",
+      "pos": [
+        344,
+        192
+      ]
+    },
+    {
+      "tag": "north",
+      "pos": [
+        192,
+        44
+      ]
+    }
+  ],
+  "teleports": [
+    {
+      "target_level": "witch_cottage",
+      "target_spawn_tag": "right",
+      "rect": {
+        "pos": [
+          368,
+          128
+        ],
+        "size": [
+          32,
+          64
+        ]
+      }
+    },
+    {
+      "target_level": "lakeshore",
+      "target_spawn_tag": "west",
+      "rect": {
+        "pos": [
+          376,
+          208
+        ],
+        "size": [
+          16,
+          64
+        ]
+      }
+    },
+    {
+      "target_level": "forest_glade",
+      "target_spawn_tag": "south",
+      "rect": {
+        "pos": [
+          192,
+          6
+        ],
+        "size": [
+          64,
+          12
+        ]
+      }
+    }
+  ],
+  "npc_slots": [
+    {
+      "tag": "meadow_keeper",
+      "pos": [
+        256,
+        96
+      ]
+    }
+  ]
+}

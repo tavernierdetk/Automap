@@ -1,0 +1,33 @@
+{
+  "id": "carmilla_intro",
+  "intent": "First contact with Carmilla in the witch cottage — the coven's ward-mending hook (fidelity transcription of the original rig).",
+  "start": "intro",
+  "nodes": {
+    "intro": {
+      "speaker_id": "carmilla",
+      "text": "The candles flicker as Carmilla turns toward you.",
+      "advance_hint": "Press Enter to respond",
+      "next": "response"
+    },
+    "response": {
+      "speaker_id": "zo",
+      "text": "Hey Carmilla, the coven said you needed help with the wards.",
+      "choices": [
+        { "label": "Offer assistance", "next_node": "carmilla_reply",
+          "effects": [ { "type": "flag", "key": "offered_ward_help", "value": true },
+                        { "type": "memory", "target": "carmilla", "kind": "helped", "polarity": 1, "intensity": 0.6 } ] },
+        { "label": "Ask about the cottage", "next_node": "carmilla_reply_alt" }
+      ]
+    },
+    "carmilla_reply": {
+      "speaker_id": "carmilla",
+      "text": "The wards are fraying. If you lend me your focus, we can mend them together.",
+      "end_session": true
+    },
+    "carmilla_reply_alt": {
+      "speaker_id": "carmilla",
+      "text": "This cottage shelters secrets, little spark. Mind the sigils on the floorboards.",
+      "end_session": true
+    }
+  }
+}

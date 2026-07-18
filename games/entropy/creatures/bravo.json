@@ -1,0 +1,20 @@
+{
+  "id": "bravo",
+  "name": "Bravo",
+  "archetype": "brute",
+  "stats": {
+    "creature_affinity": 11,
+    "chaos_mastery": 11,
+    "kinesthetic": 13,
+    "lucidity": 10,
+    "terrain_control": 10
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 10,
+  "visual": {
+    "family": "battle",
+    "frames": "Bravo"
+  }
+}

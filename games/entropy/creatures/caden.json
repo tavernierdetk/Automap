@@ -1,0 +1,20 @@
+{
+  "id": "caden",
+  "name": "Caden",
+  "archetype": "fighter",
+  "stats": {
+    "creature_affinity": 11,
+    "chaos_mastery": 11,
+    "kinesthetic": 16,
+    "lucidity": 10,
+    "terrain_control": 13
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 10,
+  "visual": {
+    "family": "battle",
+    "frames": "Caden"
+  }
+}

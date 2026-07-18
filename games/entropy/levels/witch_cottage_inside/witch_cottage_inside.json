@@ -1,0 +1,53 @@
+{
+  "id": "witch_cottage_inside",
+  "name": "Witch Cottage Inside",
+  "spawns": [
+    {
+      "tag": "default",
+      "pos": [
+        171.0,
+        594.0
+      ]
+    },
+    {
+      "tag": "right",
+      "pos": [
+        1053.0,
+        495.0
+      ]
+    }
+  ],
+  "background": {
+    "file": "witch_cottage_inside.png",
+    "pos": [
+      579.0,
+      324.0
+    ],
+    "scale": [
+      0.742188,
+      0.632812
+    ]
+  },
+  "teleports": [
+    {
+      "target_level": "witch_cottage",
+      "rect": {
+        "pos": [
+          17.0,
+          517.0
+        ],
+        "size": [
+          20.0,
+          258.0
+        ]
+      },
+      "target_spawn_tag": "right"
+    }
+  ],
+  "player": {
+    "pos": [
+      385.0,
+      499.0
+    ]
+  }
+}
