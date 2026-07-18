@@ -1,0 +1,12 @@
+{
+  "id": "gaius_offduty",
+  "intent": "Professor Gaius, aggressively off duty.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "professor_gaius",
+      "text": "Today I grade nothing. The stew is a nine, though.",
+      "end_session": true
+    }
+  }
+}

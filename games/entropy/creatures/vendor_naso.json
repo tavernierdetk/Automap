@@ -1,0 +1,24 @@
+{
+  "id": "vendor_naso",
+  "name": "Naso",
+  "archetype": "vendor",
+  "stats": {
+    "lucidity": 6,
+    "creature_affinity": 6,
+    "kinesthetic": 5,
+    "terrain_control": 5,
+    "chaos_mastery": 4
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

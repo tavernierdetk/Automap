@@ -1,0 +1,12 @@
+{
+  "id": "silvo_topiary",
+  "intent": "Silvo defends the topiary.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "gardener_silvo",
+      "text": "One week of fair, eleven months of me fixing what the fair did to my hedges.",
+      "end_session": true
+    }
+  }
+}

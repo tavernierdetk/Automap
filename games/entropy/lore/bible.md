@@ -48,6 +48,18 @@ rides together as coursework.
   fountain's namesake. Retired from casting — she appears in stone and
   story only.
 
+**The fair's people** (admitted 2026-07-18 with the first casting
+sheet): Porter Felix (tickets, counts everything twice), Vox the
+Barker (promises first, checks later), Prisca (sweets) and Naso
+(salvage — parts from last year's coursework) on the midway, Druso the
+wheel operator, Mirella the carousel keeper, Pippa (a child, always
+one token short), Bassa the cook (feeds apprentices on credit),
+Professor Gaius (off duty, grading nothing today), Tullo (Brontes'
+apprentice — the boiler is his graded work), Naia (watches the pond
+instead of the fair), Silvo (keeper of the hedge garden). Background
+students Aulus, Livia, Metto, Pella, Varro and Flora walk the grounds
+uncanonized — names on creature documents only.
+
 ### Rulings (append-only)
 
 - **R-001 (2026-07-18).** Vaporis technology is steam and clockwork

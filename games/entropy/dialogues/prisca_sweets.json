@@ -1,0 +1,12 @@
+{
+  "id": "prisca_sweets",
+  "intent": "Prisca's sweets stall.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "vendor_prisca",
+      "text": "Spun sugar! Melts faster than an apprentice's excuse.",
+      "end_session": true
+    }
+  }
+}

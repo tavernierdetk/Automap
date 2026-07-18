@@ -1,0 +1,24 @@
+{
+  "id": "dreamer_naia",
+  "name": "Naia",
+  "archetype": "scholar",
+  "stats": {
+    "lucidity": 8,
+    "chaos_mastery": 5,
+    "terrain_control": 5,
+    "creature_affinity": 4,
+    "kinesthetic": 4
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

@@ -121,3 +121,23 @@ buildings.
 - sockets: 20 across eight zones.
 - Graph note: the fair is the rebuilt region's first scene — no exits
   yet by design; the lyceum returns later with its own brief.
+
+**2026-07-18 — v5 populated (R3: the casting chain's first deployment):**
+- all 20 sockets cast (`games/entropy/casting/vaporis_fair.json`; 16
+  generated figure sprites + 3 shared student faces; populate gate
+  clean). Zone reads at play zoom:
+- gate: PASS — Cassia mid-gate, Felix at the ticket house with his
+  ledger; both read as posted, not parked.
+- grand court: PASS — Vox mid-shout under his own bunting; Prisca and
+  Naso each AT a stall; crowd students break up the flagstone.
+- wheel terrace: PASS — Druso at the wheel's base, queue students on
+  the grand stair.
+- carousel court: PASS with a note — Pippa reads properly CHILD-short
+  (canvas-headroom stature works); Mirella overlaps the carousel pad by
+  a few px — nudge her slot west a cell on the next grid pass.
+- food court: PASS — Bassa behind the picnic table (reads as serving),
+  Gaius by the fountain doing nothing, correctly.
+- pond/hedge: PASS — Naia and Silvo/stroller give the quiet corners
+  their one person each.
+- dialogue: all five arc posts + nine flavor lines wired (ui_accept in
+  trigger radius); arc flags mirror fair_opening beats.

@@ -1,0 +1,29 @@
+{
+  "id": "druso_wheel",
+  "intent": "b5 \u2014 Druso seats the valve; the first turn at dusk.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "operator_druso",
+      "text": "Valve from Naso, was it? Three-quarter bore\u2026 seats clean. At dusk she turns, and I nod, and NOBODY official hears a word of this.",
+      "choices": [
+        {
+          "label": "\u2026",
+          "next_node": "done",
+          "effects": [
+            {
+              "type": "flag",
+              "key": "wheel_turning",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "done": {
+      "speaker_id": "operator_druso",
+      "text": "\u2026",
+      "end_session": true
+    }
+  }
+}

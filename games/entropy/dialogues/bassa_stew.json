@@ -1,0 +1,12 @@
+{
+  "id": "bassa_stew",
+  "intent": "Bassa feeds apprentices on credit.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "cook_bassa",
+      "text": "Stew's strong enough to stand a spoon in. Apprentices eat on credit; Magisters pay double.",
+      "end_session": true
+    }
+  }
+}

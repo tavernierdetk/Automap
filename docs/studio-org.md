@@ -60,7 +60,7 @@ Handshakes (parallel work meeting at sockets):
 | **Story Director** | seam (R2) | `games/<g>/story/` — arcs, beats, quests, dialogue commissions | `/story-director` (R2) | Lore Keeper canon gate; dialogue-script@ schema | lore bible, cast book |
 | **Lore Keeper** | new (R2) | `games/<g>/lore/` — canon bible (places, names, history, tone) | `/lore-keeper` (R2) | consistency review on canon edits | existing briefs (canon seeds) |
 | **Dialogue Writer** | wearable | dialogue-script@ documents under `story/` | via Story Director | dialogue-script@ schema + canon gate | lore bible, cast book |
-| **Casting Director** | new (R3) | `games/<g>/cast/cast-book.md` — roster of who exists | `/casting-director` (R3) | cast book review vs story needs | character library, lore bible |
+| **Casting Director** | new (R3) | `games/<g>/casting/` — cast-book.md + per-scene sheets | `/casting-director` (R3) | populate gate (slots, creatures, dialogues, R-005 regions) | cast book, lore bible |
 | **PC branch** | built (other lane) | `godot/characters/<slug>.json` → `.tres` | `/create-character` | schema + autosim balance harness | — (consumed via artifacts only) |
 | **NPC Director** | new (R3) | per-scene casting sheet — which archetypes → which npc_slots | `/npc-director` (R3) | slots exist in baked scene; roles covered | cast book, scene brief |
 | **NPC Creator** | partial (R3) | NPC profiles + sprites + stats | via NPC Director | balance gate (same harness); creature@ schema | character library (`13 library` sibling) |
@@ -159,10 +159,17 @@ are marked ★ — they are where quality is actually enforced.
   `/story-director` skills); first arc `fair_opening` (five beats,
   socket-bound to vaporis_fair, gate-clean with the two expected R4
   item warnings).
-- **R3 — Casting chain v1**: cast book; NPC Director casting sheet for
-  the fair's npc_slots; NPC Creator wrapping existing
-  character/creature machinery + a character library; populate doc
-  baked into the fair. Maps become a game.
+- **R3 — Casting chain v1** ✅ (2026-07-18): `games/entropy/casting/`
+  (cast-book.md + the fair's 20-socket sheet); populate gate
+  (`automap/casting.py`, fatal in the publisher — slots, creatures,
+  dialogues, R-005 regions, canon admission); NPC Creator
+  (`automap/npc_creator.py` + `scripts/15_casting_director.py`):
+  creature docs in the 25–27 stat band (creature@1.1: figure_px +
+  persona.region), figure sprites via genlab request → quantize (the
+  figure pipeline keeps the reference's own banding; children get
+  stature via canvas headroom); character library (`15 library`);
+  baker places OverworldNPC per cast slot; 14 dialogues; the fair
+  populated and verdict-passed zone by zone. Maps became a game.
 - **R4 — Items + Economy**: item@ documents, item library, stat-budget
   gate; price book + shop-socket handshake + economy sim. Motivated by
   the town regrowth — a weaponsmith's shop needs wares and prices.

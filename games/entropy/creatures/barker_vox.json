@@ -1,0 +1,24 @@
+{
+  "id": "barker_vox",
+  "name": "Vox the Barker",
+  "archetype": "performer",
+  "stats": {
+    "chaos_mastery": 7,
+    "lucidity": 5,
+    "kinesthetic": 6,
+    "creature_affinity": 5,
+    "terrain_control": 3
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

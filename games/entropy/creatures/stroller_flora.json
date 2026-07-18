@@ -1,0 +1,24 @@
+{
+  "id": "stroller_flora",
+  "name": "Flora",
+  "archetype": "official",
+  "stats": {
+    "lucidity": 6,
+    "terrain_control": 7,
+    "kinesthetic": 4,
+    "creature_affinity": 5,
+    "chaos_mastery": 3
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "vox_promise",
+  "intent": "b2 \u2014 Vox promises the first turn at dusk; the doubt slips out.",
+  "start": "promise",
+  "nodes": {
+    "promise": {
+      "speaker_id": "barker_vox",
+      "text": "DUSK, friends! At dusk the great wheel makes its first turn of the year \u2014 riveted by our own apprentices!",
+      "advance_hint": "Press Enter",
+      "next": "aside"
+    },
+    "aside": {
+      "speaker_id": "barker_vox",
+      "text": "\u2026assuming Magister Brontes stops glaring at that boiler. Not that I said that.",
+      "choices": [
+        {
+          "label": "Ask what's wrong with the boiler",
+          "next_node": "deflect",
+          "effects": [
+            {
+              "type": "flag",
+              "key": "wheel_doubt",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "deflect": {
+      "speaker_id": "barker_vox",
+      "text": "Wrong? NOTHING is wrong. Go ask the machine show \u2014 and tell them Vox sent nobody.",
+      "end_session": true
+    }
+  }
+}

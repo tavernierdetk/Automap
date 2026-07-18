@@ -1,0 +1,24 @@
+{
+  "id": "keeper_mirella",
+  "name": "Mirella",
+  "archetype": "performer",
+  "stats": {
+    "chaos_mastery": 7,
+    "lucidity": 6,
+    "kinesthetic": 6,
+    "creature_affinity": 5,
+    "terrain_control": 2
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

@@ -138,6 +138,31 @@ def main(
         for e in errors:
             log(f"ERROR: {e}")
         raise typer.Exit(code=1)
+
+    # --- casting sheets: the populate gate, then publish (studio-org row 10) ---
+    casting_src = src_root / "casting"
+    sheets = sorted(casting_src.glob("*.json")) if casting_src.exists() else []
+    if sheets:
+        from automap import casting as casting_mod
+        blocked = False
+        for f in sheets:
+            sheet = json.loads(f.read_text())
+            findings = casting_mod.check_sheet(src_root, sheet)
+            for fd in findings:
+                if fd.severity == "error":
+                    log(f"ERROR: casting {f.name} [{fd.beat}]: {fd.message}")
+                    blocked = True
+                else:
+                    log(f"casting {f.name} [{fd.beat}]: {fd.message}")
+        if blocked:
+            raise typer.Exit(code=1)
+        dst = content / "casting"
+        _publish_dir_reset(dst)
+        for f in sheets:
+            shutil.copy2(f, dst / f.name)
+            manifest["artifacts"].setdefault("casting", []).append(
+                {"name": f.name, "sha256_12": _sha12(f)})
+        log(f"casting: {len(sheets)} sheet(s) gated + published")
     for kind in JSON_KINDS:
         src = src_root / kind
         if not src.exists():
@@ -168,7 +193,10 @@ def main(
         for c in spec.get("creature_sprites", []):
             slug, fps = c["slug"], int(c.get("fps", 8))
             _publish_dir_reset(cdst / slug)  # per-slug: creature JSON docs share this tree
-            frames_src = ref / c["frames_dir"]
+            # generated people live in THIS repo (npc_creator stages them
+            # under work/); reference people come from the reference repo
+            frames_src = (root / c["frames_dir"]) if c.get("local") \
+                else ref / c["frames_dir"]
             anims: dict[str, dict] = {}
             for anim_dir in sorted(p for p in frames_src.iterdir() if p.is_dir()):
                 frames = sorted(f.name for f in anim_dir.iterdir()

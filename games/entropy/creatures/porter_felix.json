@@ -1,0 +1,24 @@
+{
+  "id": "porter_felix",
+  "name": "Porter Felix",
+  "archetype": "official",
+  "stats": {
+    "lucidity": 8,
+    "terrain_control": 7,
+    "kinesthetic": 3,
+    "creature_affinity": 4,
+    "chaos_mastery": 3
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

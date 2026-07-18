@@ -1,0 +1,12 @@
+{
+  "id": "felix_tickets",
+  "intent": "Porter Felix at the ticket house.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "porter_felix",
+      "text": "One admission, counted twice. Once for the ledger, once for me.",
+      "end_session": true
+    }
+  }
+}

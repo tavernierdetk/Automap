@@ -1,0 +1,35 @@
+{
+  "id": "brontes_valve",
+  "intent": "b3 \u2014 Brontes admits the seized valve and sends the player to the midway.",
+  "start": "glare",
+  "nodes": {
+    "glare": {
+      "speaker_id": "magister_brontes",
+      "text": "The wheel's feed valve seized overnight. Bronze fatigue. I can't leave my boiler and Tullo here is being GRADED on it.",
+      "advance_hint": "Press Enter",
+      "next": "ask"
+    },
+    "ask": {
+      "speaker_id": "magister_brontes",
+      "text": "Naso on the midway keeps salvage from last year's coursework. A bronze valve, three-quarter bore. Quietly.",
+      "choices": [
+        {
+          "label": "I'll fetch it",
+          "next_node": "grunt",
+          "effects": [
+            {
+              "type": "flag",
+              "key": "valve_needed",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "grunt": {
+      "speaker_id": "magister_brontes",
+      "text": "Hm. Maybe the fair produces one useful thing a year after all.",
+      "end_session": true
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "apprentice_tullo",
+  "name": "Tullo",
+  "archetype": "artisan",
+  "stats": {
+    "kinesthetic": 8,
+    "terrain_control": 5,
+    "lucidity": 5,
+    "creature_affinity": 4,
+    "chaos_mastery": 4
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "naia_pond",
+  "intent": "Naia watches the pond instead of the fair.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "dreamer_naia",
+      "text": "Everyone watches the wheel. But the pond holds the whole fair upside down, and nobody claps for it.",
+      "end_session": true
+    }
+  }
+}

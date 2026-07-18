@@ -1,0 +1,12 @@
+{
+  "id": "pippa_carousel",
+  "intent": "Pippa is one token short, forever.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "child_pippa",
+      "text": "I've got THREE tokens. It's four for a ride. It's ALWAYS four.",
+      "end_session": true
+    }
+  }
+}

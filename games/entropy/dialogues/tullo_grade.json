@@ -1,0 +1,12 @@
+{
+  "id": "tullo_grade",
+  "intent": "Tullo sweats over his graded boiler.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "apprentice_tullo",
+      "text": "The boiler is FINE. The boiler is graded work and it is FINE. Please don't lean on it.",
+      "end_session": true
+    }
+  }
+}

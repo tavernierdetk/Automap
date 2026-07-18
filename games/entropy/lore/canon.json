@@ -1,41 +1,289 @@
 {
   "game": "entropy",
   "version": 1,
-  "note": "The registry the canon gate reads (automap/story.py). bible.md is the prose twin — the two never disagree.",
+  "note": "The registry the canon gate reads (automap/story.py). bible.md is the prose twin \u2014 the two never disagree.",
   "entities": [
-    { "id": "the_order", "kind": "faction", "name": "The Order", "region": "vaporis", "status": "canon",
-      "facts": ["runs the Lyceum Vaporum", "apprentices build the fair rides as coursework"] },
-    { "id": "lyceum_vaporum", "kind": "place", "name": "Lyceum Vaporum", "region": "vaporis", "status": "canon",
-      "facts": ["the school campus; scene to come (docs/explorations/vaporis-lyceum.md)"] },
-    { "id": "foire_vaporum", "kind": "place", "name": "La Foire Vaporum", "region": "vaporis", "status": "canon",
+    {
+      "id": "the_order",
+      "kind": "faction",
+      "name": "The Order",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "runs the Lyceum Vaporum",
+        "apprentices build the fair rides as coursework"
+      ]
+    },
+    {
+      "id": "lyceum_vaporum",
+      "kind": "place",
+      "name": "Lyceum Vaporum",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "the school campus; scene to come (docs/explorations/vaporis-lyceum.md)"
+      ]
+    },
+    {
+      "id": "foire_vaporum",
+      "kind": "place",
+      "name": "La Foire Vaporum",
+      "region": "vaporis",
+      "status": "canon",
       "level": "vaporis_fair",
-      "facts": ["annual fair on the great lawn west of campus; one week a year (R-003)"] },
-    { "id": "great_wheel", "kind": "term", "name": "the great wheel", "region": "vaporis", "status": "canon",
-      "facts": ["the fair's landmark, on the raised NE terrace"] },
-    { "id": "rector_aurelia", "kind": "person", "name": "Rector Aurelia Fumans", "region": "vaporis", "status": "canon",
-      "facts": ["head of the Order; opens the fair each year"] },
-    { "id": "prefect_cassia", "kind": "person", "name": "Prefect Cassia", "region": "vaporis", "status": "canon",
-      "facts": ["senior student on gate duty at the fair; earnest, rulebook-first"] },
-    { "id": "magister_brontes", "kind": "person", "name": "Magister Brontes", "region": "vaporis", "status": "canon",
-      "facts": ["mechanicus of the machine show; gruff, proud of his apprentices"] },
-    { "id": "founder_minerva", "kind": "person", "name": "Minerva Machinatrix", "region": "vaporis", "status": "retired",
-      "facts": ["the Founder; dead — appears in stone and story only (R-004)"] },
-
-    { "id": "carmilla", "kind": "person", "name": "Carmilla", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] },
-    { "id": "isaac", "kind": "person", "name": "Isaac", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] },
-    { "id": "lily", "kind": "person", "name": "Lily", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] },
-    { "id": "alpha", "kind": "person", "name": "Alpha", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] },
-    { "id": "bravo", "kind": "person", "name": "Bravo", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] },
-    { "id": "caden", "kind": "person", "name": "Caden", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] },
-    { "id": "vec", "kind": "person", "name": "Vec", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] },
-    { "id": "zo", "kind": "person", "name": "Zo", "region": "originals", "status": "canon",
-      "facts": ["imported — canon owned upstream (R-005)"] }
+      "facts": [
+        "annual fair on the great lawn west of campus; one week a year (R-003)"
+      ]
+    },
+    {
+      "id": "great_wheel",
+      "kind": "term",
+      "name": "the great wheel",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "the fair's landmark, on the raised NE terrace"
+      ]
+    },
+    {
+      "id": "rector_aurelia",
+      "kind": "person",
+      "name": "Rector Aurelia Fumans",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "head of the Order; opens the fair each year"
+      ]
+    },
+    {
+      "id": "prefect_cassia",
+      "kind": "person",
+      "name": "Prefect Cassia",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "senior student on gate duty at the fair; earnest, rulebook-first"
+      ]
+    },
+    {
+      "id": "magister_brontes",
+      "kind": "person",
+      "name": "Magister Brontes",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "mechanicus of the machine show; gruff, proud of his apprentices"
+      ]
+    },
+    {
+      "id": "founder_minerva",
+      "kind": "person",
+      "name": "Minerva Machinatrix",
+      "region": "vaporis",
+      "status": "retired",
+      "facts": [
+        "the Founder; dead \u2014 appears in stone and story only (R-004)"
+      ]
+    },
+    {
+      "id": "carmilla",
+      "kind": "person",
+      "name": "Carmilla",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "isaac",
+      "kind": "person",
+      "name": "Isaac",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "lily",
+      "kind": "person",
+      "name": "Lily",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "alpha",
+      "kind": "person",
+      "name": "Alpha",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "bravo",
+      "kind": "person",
+      "name": "Bravo",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "caden",
+      "kind": "person",
+      "name": "Caden",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "vec",
+      "kind": "person",
+      "name": "Vec",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "zo",
+      "kind": "person",
+      "name": "Zo",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "imported \u2014 canon owned upstream (R-005)"
+      ]
+    },
+    {
+      "id": "porter_felix",
+      "kind": "person",
+      "name": "Porter Felix",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "ticket house at the fair; counts everything twice"
+      ]
+    },
+    {
+      "id": "barker_vox",
+      "kind": "person",
+      "name": "Vox the Barker",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "voice of the grand court; promises first, checks later"
+      ]
+    },
+    {
+      "id": "vendor_prisca",
+      "kind": "person",
+      "name": "Prisca",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "sweets stall on the midway"
+      ]
+    },
+    {
+      "id": "vendor_naso",
+      "kind": "person",
+      "name": "Naso",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "salvage stall on the midway \u2014 parts from last year's coursework"
+      ]
+    },
+    {
+      "id": "operator_druso",
+      "kind": "person",
+      "name": "Druso",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "wheel operator; nothing turns without his nod"
+      ]
+    },
+    {
+      "id": "keeper_mirella",
+      "kind": "person",
+      "name": "Mirella",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "carousel keeper; sings the ride's count"
+      ]
+    },
+    {
+      "id": "child_pippa",
+      "kind": "person",
+      "name": "Pippa",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "a child at the carousel court, always one token short"
+      ]
+    },
+    {
+      "id": "cook_bassa",
+      "kind": "person",
+      "name": "Bassa",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "food-court cook; feeds apprentices on credit"
+      ]
+    },
+    {
+      "id": "professor_gaius",
+      "kind": "person",
+      "name": "Professor Gaius",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "off-duty at the food court, grading nothing today"
+      ]
+    },
+    {
+      "id": "apprentice_tullo",
+      "kind": "person",
+      "name": "Tullo",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "Brontes' apprentice; the boiler is his graded work"
+      ]
+    },
+    {
+      "id": "dreamer_naia",
+      "kind": "person",
+      "name": "Naia",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "a student who watches the pond instead of the fair"
+      ]
+    },
+    {
+      "id": "gardener_silvo",
+      "kind": "person",
+      "name": "Silvo",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "keeper of the hedge garden and its topiary"
+      ]
+    }
   ]
 }

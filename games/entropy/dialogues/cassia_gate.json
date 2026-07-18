@@ -1,0 +1,35 @@
+{
+  "id": "cassia_gate",
+  "intent": "b1 \u2014 Prefect Cassia admits the player and sets the Order's tone.",
+  "start": "rules",
+  "nodes": {
+    "rules": {
+      "speaker_id": "prefect_cassia",
+      "text": "Welcome to La Foire Vaporum. No unlicensed chaos, no touching the pressure lines, and the lawn islands are for LOOKING at.",
+      "advance_hint": "Press Enter",
+      "next": "admit"
+    },
+    "admit": {
+      "speaker_id": "prefect_cassia",
+      "text": "Rules recited. Enjoy the fair \u2014 the great wheel takes its first turn at dusk.",
+      "choices": [
+        {
+          "label": "Step through the gate",
+          "next_node": "through",
+          "effects": [
+            {
+              "type": "flag",
+              "key": "fair_admitted",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "through": {
+      "speaker_id": "prefect_cassia",
+      "text": "Mind the bunting lines.",
+      "end_session": true
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "naso_salvage",
+  "intent": "b4 \u2014 Naso trades the bronze valve.",
+  "start": "pitch",
+  "nodes": {
+    "pitch": {
+      "speaker_id": "vendor_naso",
+      "text": "Salvage! Honest parts from dishonest grades! \u2026A three-quarter valve? For the WHEEL? Oh, that's worth something.",
+      "advance_hint": "Press Enter",
+      "next": "deal"
+    },
+    "deal": {
+      "speaker_id": "vendor_naso",
+      "text": "Take it. Tell Brontes he owes Naso a favor \u2014 and favors from a Magister compound like pressure.",
+      "choices": [
+        {
+          "label": "Take the valve",
+          "next_node": "sold",
+          "effects": [
+            {
+              "type": "flag",
+              "key": "valve_in_hand",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "sold": {
+      "speaker_id": "vendor_naso",
+      "text": "Pleasure ruining business with you.",
+      "end_session": true
+    }
+  }
+}

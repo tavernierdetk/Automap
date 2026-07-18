@@ -11,24 +11,21 @@
   ],
   "creature_sprites": [
     {
-      "slug": "zo",
-      "frames_dir": "Assets/Creatures/zo/ulpc_frames",
-      "fps": 8
-    },
-    {
-      "slug": "lily",
-      "frames_dir": "Assets/Creatures/lily/ulpc_frames",
-      "fps": 8
-    },
-    {
-      "slug": "carmilla",
-      "frames_dir": "Assets/Creatures/carmilla/ulpc_frames",
-      "fps": 8
-    },
-    {
       "slug": "alpha",
       "frames_dir": "Assets/Creatures/Alpha/Default/Animations",
       "fps": 4
+    },
+    {
+      "slug": "apprentice_tullo",
+      "frames_dir": "work/game/entropy/creatures_px/apprentice_tullo",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "barker_vox",
+      "frames_dir": "work/game/entropy/creatures_px/barker_vox",
+      "fps": 4,
+      "local": true
     },
     {
       "slug": "bravo",
@@ -41,14 +38,113 @@
       "fps": 4
     },
     {
+      "slug": "carmilla",
+      "frames_dir": "Assets/Creatures/carmilla/ulpc_frames",
+      "fps": 8
+    },
+    {
+      "slug": "child_pippa",
+      "frames_dir": "work/game/entropy/creatures_px/child_pippa",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "cook_bassa",
+      "frames_dir": "work/game/entropy/creatures_px/cook_bassa",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "dreamer_naia",
+      "frames_dir": "work/game/entropy/creatures_px/dreamer_naia",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "gardener_silvo",
+      "frames_dir": "work/game/entropy/creatures_px/gardener_silvo",
+      "fps": 4,
+      "local": true
+    },
+    {
       "slug": "isaac",
       "frames_dir": "Assets/Creatures/Isaac/Default/Animations",
       "fps": 4
     },
     {
+      "slug": "keeper_mirella",
+      "frames_dir": "work/game/entropy/creatures_px/keeper_mirella",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "lily",
+      "frames_dir": "Assets/Creatures/lily/ulpc_frames",
+      "fps": 8
+    },
+    {
+      "slug": "magister_brontes",
+      "frames_dir": "work/game/entropy/creatures_px/magister_brontes",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "operator_druso",
+      "frames_dir": "work/game/entropy/creatures_px/operator_druso",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "porter_felix",
+      "frames_dir": "work/game/entropy/creatures_px/porter_felix",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "prefect_cassia",
+      "frames_dir": "work/game/entropy/creatures_px/prefect_cassia",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "professor_gaius",
+      "frames_dir": "work/game/entropy/creatures_px/professor_gaius",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "student_aulus",
+      "frames_dir": "work/game/entropy/creatures_px/student_aulus",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "student_livia",
+      "frames_dir": "work/game/entropy/creatures_px/student_livia",
+      "fps": 4,
+      "local": true
+    },
+    {
       "slug": "vec",
       "frames_dir": "Assets/Creatures/Vec/Default/Animations",
       "fps": 4
+    },
+    {
+      "slug": "vendor_naso",
+      "frames_dir": "work/game/entropy/creatures_px/vendor_naso",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "vendor_prisca",
+      "frames_dir": "work/game/entropy/creatures_px/vendor_prisca",
+      "fps": 4,
+      "local": true
+    },
+    {
+      "slug": "zo",
+      "frames_dir": "Assets/Creatures/zo/ulpc_frames",
+      "fps": 8
     }
   ]
 }

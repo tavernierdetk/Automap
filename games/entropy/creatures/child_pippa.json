@@ -1,0 +1,24 @@
+{
+  "id": "child_pippa",
+  "name": "Pippa",
+  "archetype": "child",
+  "stats": {
+    "creature_affinity": 7,
+    "chaos_mastery": 8,
+    "kinesthetic": 4,
+    "terrain_control": 4,
+    "lucidity": 3
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}

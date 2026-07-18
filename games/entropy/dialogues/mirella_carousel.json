@@ -1,0 +1,12 @@
+{
+  "id": "mirella_carousel",
+  "intent": "Mirella counts the carousel.",
+  "start": "say",
+  "nodes": {
+    "say": {
+      "speaker_id": "keeper_mirella",
+      "text": "Round she goes \u2014 four turns a token, five if you sing along.",
+      "end_session": true
+    }
+  }
+}

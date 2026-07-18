@@ -1,0 +1,24 @@
+{
+  "id": "gardener_silvo",
+  "name": "Silvo",
+  "archetype": "laborer",
+  "stats": {
+    "kinesthetic": 9,
+    "terrain_control": 6,
+    "creature_affinity": 4,
+    "lucidity": 4,
+    "chaos_mastery": 2
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "figure_px"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "foire_vaporum",
+    "region": "vaporis"
+  }
+}
