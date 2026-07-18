@@ -1,0 +1,59 @@
+{
+  "arc": "fair_opening",
+  "title": "Opening Day",
+  "region": "vaporis",
+  "beats": [
+    {
+      "id": "b1_porta",
+      "title": "Through the Porta",
+      "synopsis": "The player enters with the morning crowd. Prefect Cassia checks admissions at the gate and recites the Order's fair rules; the ticket taker waves the player through toward the noise.",
+      "place": "vaporis_fair",
+      "sockets": ["ticket_taker", "prefect"],
+      "cast": ["prefect_cassia", "archetype:ticket_taker"],
+      "requires": [],
+      "grants": ["fair_admitted"]
+    },
+    {
+      "id": "b2_promise",
+      "title": "The Barker's Promise",
+      "synopsis": "In the grand court the barker promises the great wheel's first turn at dusk. A crowd apprentice mutters that the wheel hasn't moved all morning — something seized overnight.",
+      "place": "vaporis_fair",
+      "sockets": ["barker", "crowd_1", "crowd_2"],
+      "cast": ["archetype:barker", "archetype:crowd"],
+      "requires": ["fair_admitted"],
+      "grants": ["wheel_doubt"]
+    },
+    {
+      "id": "b3_valve",
+      "title": "The Seized Valve",
+      "synopsis": "At the machine show, Magister Brontes admits — quietly — that a pressure valve seized. He cannot leave his boiler and his apprentice is too junior to haggle the midway. Someone must fetch a bronze valve from the vendors.",
+      "place": "vaporis_fair",
+      "sockets": ["mechanicus", "apprentice"],
+      "cast": ["magister_brontes", "archetype:apprentice"],
+      "requires": ["wheel_doubt"],
+      "grants": ["valve_needed"],
+      "items": ["bronze_valve"]
+    },
+    {
+      "id": "b4_price",
+      "title": "The Vendor's Price",
+      "synopsis": "The midway vendor has exactly one bronze valve — salvage from last year's coursework — and wants a small favor or fee for it. The trade is made; the valve changes hands.",
+      "place": "vaporis_fair",
+      "sockets": ["vendor_2"],
+      "cast": ["archetype:vendor"],
+      "requires": ["valve_needed"],
+      "grants": ["valve_in_hand"],
+      "items": ["bronze_valve"]
+    },
+    {
+      "id": "b5_first_turn",
+      "title": "The First Turn",
+      "synopsis": "At dusk on the terrace, the operator seats the valve, the queue holds its breath, and the great wheel turns as the Rector's opening word carries from the court below. Nobody official ever hears the wheel was stalled.",
+      "place": "vaporis_fair",
+      "sockets": ["operator", "queue_1", "queue_2"],
+      "cast": ["archetype:operator", "archetype:crowd"],
+      "requires": ["valve_in_hand"],
+      "grants": ["wheel_turning", "fair_opening_done"]
+    }
+  ]
+}

@@ -152,9 +152,13 @@ are marked ★ — they are where quality is actually enforced.
 
 - **R1 — names before machinery** ✅ (2026-07-18): this document; the
   `/asset-director` skill split out of `/create-scene`.
-- **R2 — Lore Keeper + Story Director v1**: seed `games/entropy/lore/`
-  from existing briefs; beat document type + the canon gate; first arc
-  for the fair.
+- **R2 — Lore Keeper + Story Director v1** ✅ (2026-07-18):
+  `games/entropy/lore/` seeded from the briefs (bible.md + canon.json,
+  rulings R-001–R-005); arc/beat document type + the canon gate
+  (`automap/story.py`, `scripts/14_story_director.py`, `/lore-keeper` +
+  `/story-director` skills); first arc `fair_opening` (five beats,
+  socket-bound to vaporis_fair, gate-clean with the two expected R4
+  item warnings).
 - **R3 — Casting chain v1**: cast book; NPC Director casting sheet for
   the fair's npc_slots; NPC Creator wrapping existing
   character/creature machinery + a character library; populate doc
