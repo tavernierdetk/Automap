@@ -1,0 +1,12 @@
+{
+  "id": "founders_locket",
+  "kind": "accessory",
+  "slot": "charm",
+  "tier": 2,
+  "name": "Founder's Locket",
+  "modifiers": {
+    "lucidity": 2,
+    "chaos_mastery": 1
+  },
+  "fiction": "Minerva's profile, worn smooth by thumbs."
+}

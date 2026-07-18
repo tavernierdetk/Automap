@@ -1,0 +1,12 @@
+{
+  "id": "beast_call",
+  "name": "Beast Call",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "creature_affinity",
+    "atk_mult": 6.0,
+    "def_stat": "creature_affinity",
+    "def_mult": 0.8
+  },
+  "fiction": "Something answers. It is not friendly to your enemy."
+}

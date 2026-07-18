@@ -1,0 +1,11 @@
+{
+  "id": "mend",
+  "name": "Mend",
+  "target_mode": "ally",
+  "formula": {
+    "atk_stat": "lucidity",
+    "atk_mult": 3.0,
+    "heal": true
+  },
+  "fiction": "Order, applied gently to a body."
+}

@@ -1,0 +1,11 @@
+{
+  "id": "laurel_charm",
+  "kind": "accessory",
+  "slot": "charm",
+  "tier": 1,
+  "name": "Laurel Charm",
+  "modifiers": {
+    "lucidity": 2
+  },
+  "fiction": "Pressed leaves from the Hortus Arcanus."
+}

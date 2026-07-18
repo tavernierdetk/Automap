@@ -1,0 +1,12 @@
+{
+  "id": "pierce",
+  "name": "Pierce",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "kinesthetic",
+    "atk_mult": 5.0,
+    "def_stat": "kinesthetic",
+    "def_mult": 0.0
+  },
+  "fiction": "Finds the seam in any plating."
+}

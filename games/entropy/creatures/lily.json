@@ -10,7 +10,8 @@
     "terrain_control": 3
   },
   "skills": [
-    "attack"
+    "attack",
+    "ember"
   ],
   "xp_reward": 10,
   "visual": {

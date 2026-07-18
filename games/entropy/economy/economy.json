@@ -6,7 +6,15 @@
   "intent": "Opening Day economy \u2014 tokens earned along the arc, spent at the midway stalls.",
   "price_book": {
     "spun_sugar": 8,
-    "gear_charm": 30
+    "gear_charm": 30,
+    "coursework_spanner": 25,
+    "brass_baton": 30,
+    "pressure_hammer": 60,
+    "laurel_charm": 30,
+    "verdigris_ring": 35,
+    "founders_locket": 70,
+    "bassa_stew": 12,
+    "cooling_draught": 10
   },
   "shops": [
     {
@@ -14,7 +22,12 @@
       "level": "vaporis_fair",
       "keeper": "vendor_naso",
       "inventory": [
-        "gear_charm"
+        "gear_charm",
+        "coursework_spanner",
+        "brass_baton",
+        "verdigris_ring",
+        "pressure_hammer",
+        "founders_locket"
       ],
       "buyback_rate": 0.5
     },
@@ -23,7 +36,9 @@
       "level": "vaporis_fair",
       "keeper": "vendor_prisca",
       "inventory": [
-        "spun_sugar"
+        "spun_sugar",
+        "bassa_stew",
+        "cooling_draught"
       ],
       "buyback_rate": 0.5
     }

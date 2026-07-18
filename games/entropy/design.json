@@ -43,6 +43,18 @@
     "per_level": {
       "kinesthetic": 1,
       "terrain_control": 1
+    },
+    "learnsets": {
+      "zo": {
+        "3": [
+          "pierce"
+        ]
+      },
+      "lily": {
+        "3": [
+          "mend"
+        ]
+      }
     }
   },
   "equipment": {

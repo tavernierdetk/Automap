@@ -170,12 +170,18 @@ are marked ★ — they are where quality is actually enforced.
   stature via canvas headroom); character library (`15 library`);
   baker places OverworldNPC per cast slot; 14 dialogues; the fair
   populated and verdict-passed zone by zone. Maps became a game.
-- **R4 — Items + Economy**: item@ documents, item library, stat-budget
-  gate; price book + shop-socket handshake + economy sim. Motivated by
-  the town regrowth — a weaponsmith's shop needs wares and prices.
-- **R5 — Encounters + Interface**: bestiary on the creature machinery,
-  encounter tables + difficulty gate; menu specs + UI theme + the
-  readability gate (shop and inventory screens close the R4 loop).
+- **R4 — Items + Economy** ✅ (2026-07-18, the game-shell round —
+  docs/explorations/game-shell-round.md): item@/skill@/economy@ schemas,
+  `games/entropy/{items,skills,economy}/` + systems.md rulers,
+  stat-budget + economy-sim gates fatal in the publisher, brass tokens
+  live at two fair stalls with cast keepers, the bronze valve closes
+  the fair_opening arc warning-free.
+- **R5 — Encounters + Interface**: **Interface half ✅** same round —
+  ui@ schema + readability gate, vaporis-themed menus (pause stack:
+  items/equipment/status/save), HUD, dialogue portraits (the figure_px
+  faces), save slots, data-driven battle skills/items. **Encounters
+  half pending**: bestiary on the creature machinery, encounter tables
+  + difficulty gate.
 - **R6 — Chairs of record**: Game/World/Systems/QA formalized (charter,
   world map, systems rulers doc, playtest scripts); Audio stays a seam
   until a pipeline exists. Formalize only once ≥2 arcs/regions exist —

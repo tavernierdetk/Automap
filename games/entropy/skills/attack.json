@@ -1,0 +1,13 @@
+{
+  "id": "attack",
+  "name": "Attack",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "kinesthetic",
+    "atk_mult": 6.0,
+    "def_stat": "kinesthetic",
+    "def_mult": 1.0,
+    "floor": 1.0
+  },
+  "fiction": "The oldest argument."
+}

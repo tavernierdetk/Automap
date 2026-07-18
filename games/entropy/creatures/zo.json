@@ -10,7 +10,8 @@
     "terrain_control": 10
   },
   "skills": [
-    "attack"
+    "attack",
+    "heavy_strike"
   ],
   "xp_reward": 10,
   "visual": {

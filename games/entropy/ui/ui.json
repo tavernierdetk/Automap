@@ -1,0 +1,41 @@
+{
+  "intent": "Vaporis interface \u2014 parchment text on slate-teal panels, bronze accents; the UI wears the scene's identity.",
+  "theme": {
+    "font_size": {
+      "default": 16,
+      "title": 22,
+      "small": 12
+    },
+    "colors": {
+      "text": "#e8e0d0",
+      "accent": "#c99a5e",
+      "panel_bg": "#232a2c",
+      "panel_border": "#547a6a",
+      "hp": "#7fae6a",
+      "hp_low": "#c05a4a",
+      "gauge": "#6a8fae",
+      "disabled": "#6f6a60"
+    },
+    "panel": {
+      "border_width": 2,
+      "corner_radius": 4,
+      "content_margin": 12
+    }
+  },
+  "menus": {
+    "pause_tabs": [
+      "items",
+      "equipment",
+      "status",
+      "save",
+      "quit"
+    ],
+    "title": {
+      "heading": "E N T R O P Y"
+    }
+  },
+  "hud": {
+    "party_strip": true,
+    "interaction_prompt": true
+  }
+}

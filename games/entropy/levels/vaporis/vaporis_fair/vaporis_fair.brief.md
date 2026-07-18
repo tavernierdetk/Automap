@@ -141,3 +141,15 @@ buildings.
   their one person each.
 - dialogue: all five arc posts + nine flavor lines wired (ui_accept in
   trigger radius); arc flags mirror fair_opening beats.
+
+**2026-07-18 — the game shell (R4 + R5-interface;
+docs/explorations/game-shell-round.md):**
+- the fair is now a GAME: brass tokens earned along the arc, Naso's
+  salvage and Prisca's sweets are real shops (browse via dialogue),
+  the bronze valve is a real key item (given at the stall, consumed at
+  the wheel, +30 tokens gratitude), pause menus with items/equipment/
+  status/save, dialogue boxes themed vaporis with the figure_px
+  portraits, battle with data skills + consumables.
+- `test_shell_loop` plays the arc's economy end to end headless: PASS.
+- story gate `14 check fair_opening`: CLEAN (the R2 item warnings
+  resolved by canon-admitting the valve).

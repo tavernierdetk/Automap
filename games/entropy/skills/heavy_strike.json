@@ -1,0 +1,17 @@
+{
+  "id": "heavy_strike",
+  "name": "Heavy Strike",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "kinesthetic",
+    "atk_mult": 7.5,
+    "def_stat": "kinesthetic",
+    "def_mult": 1.0,
+    "floor": 2.0
+  },
+  "cost": {
+    "resource": "hp",
+    "amount": 3
+  },
+  "fiction": "Put your back into it and your ribs behind it."
+}

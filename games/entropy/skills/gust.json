@@ -1,0 +1,12 @@
+{
+  "id": "gust",
+  "name": "Gust",
+  "target_mode": "all_enemies",
+  "formula": {
+    "atk_stat": "terrain_control",
+    "atk_mult": 3.5,
+    "def_stat": "terrain_control",
+    "def_mult": 0.5
+  },
+  "fiction": "The ground exhales at everyone."
+}

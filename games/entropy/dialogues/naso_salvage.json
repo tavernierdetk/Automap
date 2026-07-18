@@ -21,6 +21,11 @@
               "type": "flag",
               "key": "valve_in_hand",
               "value": true
+            },
+            {
+              "type": "item",
+              "id": "bronze_valve",
+              "count": 1
             }
           ]
         }

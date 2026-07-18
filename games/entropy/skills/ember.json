@@ -1,0 +1,17 @@
+{
+  "id": "ember",
+  "name": "Ember",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "chaos_mastery",
+    "atk_mult": 5.0,
+    "def_stat": "lucidity",
+    "def_mult": 0.5,
+    "floor": 1.0
+  },
+  "status": {
+    "id": "poison",
+    "amount": 30
+  },
+  "fiction": "A pinch of unlicensed chaos, smouldering."
+}

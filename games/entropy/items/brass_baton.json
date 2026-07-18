@@ -1,0 +1,12 @@
+{
+  "id": "brass_baton",
+  "kind": "weapon",
+  "slot": "weapon",
+  "tier": 1,
+  "name": "Brass Baton",
+  "modifiers": {
+    "kinesthetic": 1,
+    "terrain_control": 1
+  },
+  "fiction": "A prefect's parade baton. Mostly ceremonial. Mostly."
+}

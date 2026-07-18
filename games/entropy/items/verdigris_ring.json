@@ -1,0 +1,12 @@
+{
+  "id": "verdigris_ring",
+  "kind": "accessory",
+  "slot": "charm",
+  "tier": 1,
+  "name": "Verdigris Ring",
+  "modifiers": {
+    "chaos_mastery": 1,
+    "creature_affinity": 1
+  },
+  "fiction": "Went green the day it was cast. The maker calls it patina."
+}

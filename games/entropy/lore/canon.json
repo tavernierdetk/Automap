@@ -284,6 +284,16 @@
       "facts": [
         "keeper of the hedge garden and its topiary"
       ]
+    },
+    {
+      "id": "bronze_valve",
+      "kind": "item",
+      "name": "the bronze valve",
+      "region": "vaporis",
+      "status": "canon",
+      "facts": [
+        "three-quarter bore; the wheel's first turn depends on it (arc fair_opening)"
+      ]
     }
   ]
 }

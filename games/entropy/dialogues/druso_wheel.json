@@ -15,6 +15,15 @@
               "type": "flag",
               "key": "wheel_turning",
               "value": true
+            },
+            {
+              "type": "item",
+              "id": "bronze_valve",
+              "count": -1
+            },
+            {
+              "type": "gold",
+              "amount": 30
             }
           ]
         }

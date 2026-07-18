@@ -1,0 +1,12 @@
+{
+  "id": "cooling_draught",
+  "kind": "consumable",
+  "tier": 1,
+  "battle_usable": true,
+  "name": "Cooling Draught",
+  "use": {
+    "effect": "cure_status",
+    "status_id": "poison"
+  },
+  "fiction": "Condensed from the aqueduct on a cold morning."
+}

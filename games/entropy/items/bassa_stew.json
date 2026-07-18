@@ -1,0 +1,12 @@
+{
+  "id": "bassa_stew",
+  "kind": "consumable",
+  "tier": 1,
+  "battle_usable": true,
+  "name": "Bassa's Stew",
+  "use": {
+    "effect": "heal",
+    "amount": 40
+  },
+  "fiction": "Strong enough to stand a spoon in."
+}
