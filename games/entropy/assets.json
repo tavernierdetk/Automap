@@ -60,8 +60,22 @@
     },
     {
       "slug": "caden",
-      "frames_dir": "Assets/Creatures/Caden/Default/Animations",
-      "fps": 4
+      "frames_dir": "work/game/entropy/creatures_px/caden",
+      "fps": {
+        "Idle_back": 4,
+        "Idle_front": 4,
+        "Idle_left": 4,
+        "Idle_right": 4,
+        "Run_back": 10,
+        "Run_front": 10,
+        "Run_left": 10,
+        "Run_right": 10,
+        "Walk_back": 8,
+        "Walk_front": 8,
+        "Walk_left": 8,
+        "Walk_right": 8
+      },
+      "local": true
     },
     {
       "slug": "carmilla",
@@ -146,8 +160,22 @@
     },
     {
       "slug": "isaac",
-      "frames_dir": "Assets/Creatures/Isaac/Default/Animations",
-      "fps": 4
+      "frames_dir": "work/game/entropy/creatures_px/isaac",
+      "fps": {
+        "Idle_back": 4,
+        "Idle_front": 4,
+        "Idle_left": 4,
+        "Idle_right": 4,
+        "Run_back": 10,
+        "Run_front": 10,
+        "Run_left": 10,
+        "Run_right": 10,
+        "Walk_back": 8,
+        "Walk_front": 8,
+        "Walk_left": 8,
+        "Walk_right": 8
+      },
+      "local": true
     },
     {
       "slug": "keeper_mirella",
@@ -308,8 +336,22 @@
     },
     {
       "slug": "vec",
-      "frames_dir": "Assets/Creatures/Vec/Default/Animations",
-      "fps": 4
+      "frames_dir": "work/game/entropy/creatures_px/vec",
+      "fps": {
+        "Idle_back": 4,
+        "Idle_front": 4,
+        "Idle_left": 4,
+        "Idle_right": 4,
+        "Run_back": 10,
+        "Run_front": 10,
+        "Run_left": 10,
+        "Run_right": 10,
+        "Walk_back": 8,
+        "Walk_front": 8,
+        "Walk_left": 8,
+        "Walk_right": 8
+      },
+      "local": true
     },
     {
       "slug": "vendor_naso",

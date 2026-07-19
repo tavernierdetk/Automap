@@ -33,8 +33,8 @@ the content checklist below.
 
 | # | Capability | For | State |
 |---|---|---|---|
-| 1 | `playable_exposition` handler + **inspection points** (examine→text) + optional codex | classroom | none |
-| 2 | `playable_hub` handler + **station abstraction** (visit-tracked, companion reactions, "all seen or exit") | welcome_fair | none |
+| 1 | `playable_exposition` handler + inspection points + codex | classroom | ✅ NS3 |
+| 2 | `playable_hub` handler + station abstraction | welcome_fair | ✅ NS3 |
 | 3 | **In-scene staging** of the class ceremony (enter room, speak professor, take a seat) | class_choice | mechanic works UI-only; not staged in a scene |
 | 4 | `formative_crisis` handler — crowd, player agency at the gate, the flood, the scattering, the slate-seed | incident | none (the hardest segment) |
 | 5 | **Forced-outcome story-battle mode** (Vec vs Caden, scripted result) | incident | battle does win/lose only |

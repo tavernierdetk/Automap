@@ -1037,5 +1037,39 @@
       "intent": "the sparring ring \u2014 a packed-dirt ring by the machine show; step onto the dirt and the coursework constructs oblige (re-arms when you step out)",
       "layout": "corridor"
     }
+  ],
+  "inspections": [
+    {
+      "id": "fair_signboard",
+      "pos": [
+        1472,
+        1780
+      ],
+      "title": "The Fair Sign",
+      "radius": 44,
+      "text": "LA FOIRE VAPORUM \u2014 one week only. Rides riveted by the apprentices of the Order; mind the pressure lines."
+    }
+  ],
+  "stations": [
+    {
+      "id": "station.demo_weaver",
+      "pos": [
+        1360,
+        1300
+      ],
+      "discipline": "weaver",
+      "blurb": "A demonstrator pulls a thread of smoke into a knot and back.",
+      "companion_line": "\u2014 hard to say what a Weaver even does, until it's done to you."
+    },
+    {
+      "id": "station.demo_shaper",
+      "pos": [
+        1600,
+        1300
+      ],
+      "discipline": "shaper",
+      "blurb": "Flagstones rise and settle at the demonstrator's open hand.",
+      "companion_line": "\u2014 now THAT would be useful on a march."
+    }
   ]
 }

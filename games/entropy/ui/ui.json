@@ -27,6 +27,7 @@
       "items",
       "equipment",
       "status",
+      "codex",
       "save",
       "quit"
     ],
