@@ -1,0 +1,46 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "caden",
+    "note": "Caden \u2014 earnest, worn traveler; brown hair, plain longsleeve (the redemption look)"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/male",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/male",
+      "variant": "light"
+    },
+    {
+      "category": "hair/parted/adult",
+      "variant": "chestnut"
+    },
+    {
+      "category": "torso/clothes/longsleeve/longsleeve/male",
+      "variant": "brown"
+    },
+    {
+      "category": "legs/pants/male",
+      "variant": "leather"
+    },
+    {
+      "category": "feet/boots/basic/male",
+      "variant": "brown"
+    }
+  ]
+}

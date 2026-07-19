@@ -3,18 +3,21 @@
   "name": "Vec",
   "archetype": "fighter",
   "stats": {
-    "creature_affinity": 11,
-    "chaos_mastery": 11,
     "kinesthetic": 16,
-    "lucidity": 10,
-    "terrain_control": 13
+    "terrain_control": 15,
+    "lucidity": 11,
+    "creature_affinity": 10,
+    "chaos_mastery": 9
   },
   "skills": [
     "attack"
   ],
   "xp_reward": 10,
   "visual": {
-    "family": "battle",
-    "frames": "Vec"
+    "family": "ulpc"
+  },
+  "intent": "disciplined \u2014 order and force, the Breaker's certainty",
+  "persona": {
+    "region": "originals"
   }
 }

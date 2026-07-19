@@ -1,0 +1,54 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "vec",
+    "note": "Vec \u2014 auburn, chevron mustache, light silver plate, armet helmet (his canon adult look)"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/muscular",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/male",
+      "variant": "light"
+    },
+    {
+      "category": "hair/messy1/adult",
+      "variant": "redhead"
+    },
+    {
+      "category": "beards/mustache/chevron",
+      "variant": "redhead"
+    },
+    {
+      "category": "torso/armour/plate/male",
+      "variant": "silver"
+    },
+    {
+      "category": "legs/armour/plate/male",
+      "variant": "silver"
+    },
+    {
+      "category": "feet/armour/plate/male",
+      "variant": "silver"
+    },
+    {
+      "category": "hat/helmet/armet_simple/adult",
+      "variant": "steel"
+    }
+  ]
+}

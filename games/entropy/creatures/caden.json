@@ -3,18 +3,21 @@
   "name": "Caden",
   "archetype": "fighter",
   "stats": {
-    "creature_affinity": 11,
-    "chaos_mastery": 11,
-    "kinesthetic": 16,
+    "kinesthetic": 15,
+    "creature_affinity": 14,
+    "terrain_control": 12,
     "lucidity": 10,
-    "terrain_control": 13
+    "chaos_mastery": 10
   },
   "skills": [
     "attack"
   ],
   "xp_reward": 10,
   "visual": {
-    "family": "battle",
-    "frames": "Caden"
+    "family": "ulpc"
+  },
+  "intent": "compassionate \u2014 a Steward's heart in a fighter's frame",
+  "persona": {
+    "region": "originals"
   }
 }

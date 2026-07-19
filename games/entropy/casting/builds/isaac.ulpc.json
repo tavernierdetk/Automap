@@ -1,0 +1,54 @@
+{
+  "schema": "ulpc.build/1.0",
+  "generator": {
+    "project": "Universal-LPC-Spritesheet-Character-Generator"
+  },
+  "meta": {
+    "creature": "isaac",
+    "note": "Isaac \u2014 refined Weaver-scholar; dark hair, formal shirt + vest, spectacles"
+  },
+  "output": {
+    "mode": "split_by_frame",
+    "zero_pad": 3,
+    "fps": 8
+  },
+  "animations": [
+    "walk",
+    "idle",
+    "run"
+  ],
+  "layers": [
+    {
+      "category": "body/bodies/male",
+      "variant": "light"
+    },
+    {
+      "category": "head/heads/human/male",
+      "variant": "light"
+    },
+    {
+      "category": "hair/parted2/adult",
+      "variant": "raven"
+    },
+    {
+      "category": "torso/clothes/longsleeve/formal/male",
+      "variant": "white"
+    },
+    {
+      "category": "torso/clothes/vest/male",
+      "variant": "black"
+    },
+    {
+      "category": "legs/pants/male",
+      "variant": "charcoal"
+    },
+    {
+      "category": "feet/shoes/basic/male",
+      "variant": "black"
+    },
+    {
+      "category": "facial/glasses/nerd/adult",
+      "variant": "black"
+    }
+  ]
+}

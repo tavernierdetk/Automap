@@ -1,20 +1,23 @@
 {
   "id": "isaac",
   "name": "Isaac",
-  "archetype": "fighter",
+  "archetype": "weaver",
   "stats": {
+    "chaos_mastery": 16,
+    "lucidity": 15,
     "creature_affinity": 11,
-    "chaos_mastery": 11,
-    "kinesthetic": 16,
-    "lucidity": 10,
-    "terrain_control": 13
+    "kinesthetic": 10,
+    "terrain_control": 9
   },
   "skills": [
     "attack"
   ],
   "xp_reward": 10,
   "visual": {
-    "family": "battle",
-    "frames": "Isaac"
+    "family": "ulpc"
+  },
+  "intent": "keen \u2014 probability and prediction, the Weaver's pull toward the Road",
+  "persona": {
+    "region": "originals"
   }
 }
