@@ -581,6 +581,54 @@
       "family": "furniture",
       "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
       "req": "furniture_chalkboard_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r2"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r3"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r4"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r6"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r7"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r8"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r9"
+    },
+    {
+      "generator": "genlab",
+      "family": "icon",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "icon_weapon_small_r1"
     }
   ]
 }

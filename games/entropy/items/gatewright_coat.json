@@ -1,0 +1,9 @@
+{
+  "id": "gatewright_coat",
+  "kind": "armor",
+  "slot": "armor",
+  "tier": 1,
+  "name": "Gatewright Coat",
+  "modifiers": { "kinesthetic": 1, "lucidity": 1 },
+  "fiction": "Standard oilcloth over the shoulders. Stops a splash, and the worst of a scolding."
+}

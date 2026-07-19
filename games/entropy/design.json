@@ -60,6 +60,7 @@
   "equipment": {
     "slots": [
       "weapon",
+      "armor",
       "charm"
     ]
   },

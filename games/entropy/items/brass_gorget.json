@@ -1,0 +1,9 @@
+{
+  "id": "brass_gorget",
+  "kind": "armor",
+  "slot": "armor",
+  "tier": 1,
+  "name": "Brass Gorget",
+  "modifiers": { "kinesthetic": 2 },
+  "fiction": "Brass at the throat. A gatekeeper's first lesson: guard the gap."
+}

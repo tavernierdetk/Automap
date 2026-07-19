@@ -1,0 +1,9 @@
+{
+  "id": "weirsteel_plate",
+  "kind": "armor",
+  "slot": "armor",
+  "tier": 2,
+  "name": "Weirsteel Plate",
+  "modifiers": { "kinesthetic": 2, "terrain_control": 1 },
+  "fiction": "Salvaged from a flood-lock. Heavy, and it remembers the water."
+}
