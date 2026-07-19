@@ -1,0 +1,16 @@
+{
+  "id": "bulwark",
+  "name": "Bulwark",
+  "target_mode": "ally",
+  "formula": {
+    "atk_stat": "terrain_control",
+    "atk_mult": 0
+  },
+  "status": {
+    "kind": "shield",
+    "amount": 30,
+    "turns": 4
+  },
+  "anim": "buff",
+  "fiction": "Set the stone at your back; let it take the blow."
+}

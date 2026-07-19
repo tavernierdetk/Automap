@@ -16,9 +16,15 @@ constant in the same commit.
   (t1 = 2 points, t2 = 3 … t5 = 6). A +2 kinesthetic charm is a t1
   item at its ceiling.
 - **Skill caps**: `formula.atk_mult` ≤ **8.0** (the basic attack is
-  6.0 — skills may exceed it, never dwarf it); `status.amount` ≤ **60**
-  (admission threshold is 50 — one hit may prime, not perma-lock);
-  heal skills follow the same atk_mult cap as heal power.
+  6.0 — skills may exceed it, never dwarf it); heal skills follow the same
+  atk_mult cap as heal power.
+- **Status/tactics caps** (typed statuses, `status.kind` + `turns`):
+  per-kind magnitude ceilings — poison ≤ **60**, regen/shield ≤ **40**,
+  buffs/debuffs (atk/def up/down) ≤ **0.5** (a fraction, so +50% at most);
+  stun carries no magnitude. `status.turns` ≤ **5** (a status primes, never
+  perma-locks). `hits` (multi-hit) ≤ **4** (a flurry may split, never
+  machine-gun). `anim` must be one of strike/thrust/bash/cast/bolt/heal/
+  buff/debuff/self.
 
 ## Class budgets (the class stat-budget gate, `automap/classes.py`)
 

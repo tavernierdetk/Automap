@@ -7,5 +7,6 @@
     "atk_mult": 3.0,
     "heal": true
   },
-  "fiction": "Order, applied gently to a body."
+  "fiction": "Order, applied gently to a body.",
+  "anim": "heal"
 }

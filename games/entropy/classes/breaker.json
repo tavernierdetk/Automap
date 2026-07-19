@@ -8,7 +8,9 @@
   "ability_pool": [
     "attack",
     "heavy_strike",
-    "pierce"
+    "pierce",
+    "concuss",
+    "ratchet_flurry"
   ],
   "markers": {
     "motif": "force",

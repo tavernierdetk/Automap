@@ -8,5 +8,6 @@
     "def_stat": "terrain_control",
     "def_mult": 0.5
   },
-  "fiction": "Pull one thread of what-holds-them-together."
+  "fiction": "Pull one thread of what-holds-them-together.",
+  "anim": "cast"
 }

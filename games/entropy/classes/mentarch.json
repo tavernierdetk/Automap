@@ -8,7 +8,9 @@
   "ability_pool": [
     "attack",
     "mend",
-    "daze"
+    "daze",
+    "mend_tide",
+    "hex"
   ],
   "markers": {
     "motif": "mind",

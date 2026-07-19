@@ -8,5 +8,6 @@
     "def_stat": "kinesthetic",
     "def_mult": 0.0
   },
-  "fiction": "Finds the seam in any plating."
+  "fiction": "Finds the seam in any plating.",
+  "anim": "thrust"
 }

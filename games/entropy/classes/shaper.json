@@ -8,7 +8,9 @@
   "ability_pool": [
     "attack",
     "gust",
-    "stonewall"
+    "stonewall",
+    "bulwark",
+    "quake"
   ],
   "markers": {
     "motif": "stone_and_soil",

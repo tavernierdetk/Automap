@@ -1,0 +1,16 @@
+{
+  "id": "mend_tide",
+  "name": "Mend Tide",
+  "target_mode": "ally",
+  "formula": {
+    "atk_stat": "lucidity",
+    "atk_mult": 0
+  },
+  "status": {
+    "kind": "regen",
+    "amount": 12,
+    "turns": 3
+  },
+  "anim": "heal",
+  "fiction": "A slow green tide, coming in over three breaths."
+}

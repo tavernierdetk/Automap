@@ -1,0 +1,19 @@
+{
+  "id": "concuss",
+  "name": "Concuss",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "kinesthetic",
+    "atk_mult": 4.0,
+    "def_stat": "kinesthetic",
+    "def_mult": 1.0,
+    "floor": 1.0
+  },
+  "status": {
+    "kind": "stun",
+    "amount": 0,
+    "turns": 1
+  },
+  "anim": "bash",
+  "fiction": "A blow to the helm; the world rings and stops."
+}

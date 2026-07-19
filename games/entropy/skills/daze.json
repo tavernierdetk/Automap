@@ -9,8 +9,9 @@
     "def_mult": 0.5
   },
   "status": {
-    "id": "poison",
-    "amount": 25
+    "amount": 25,
+    "kind": "poison"
   },
-  "fiction": "A pressure behind the eyes; the moment slips."
+  "fiction": "A pressure behind the eyes; the moment slips.",
+  "anim": "cast"
 }

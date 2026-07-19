@@ -8,5 +8,6 @@
     "def_stat": "creature_affinity",
     "def_mult": 0.8
   },
-  "fiction": "Something answers. It is not friendly to your enemy."
+  "fiction": "Something answers. It is not friendly to your enemy.",
+  "anim": "cast"
 }

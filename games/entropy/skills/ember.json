@@ -10,8 +10,9 @@
     "floor": 1.0
   },
   "status": {
-    "id": "poison",
-    "amount": 30
+    "amount": 30,
+    "kind": "poison"
   },
-  "fiction": "A pinch of unlicensed chaos, smouldering."
+  "fiction": "A pinch of unlicensed chaos, smouldering.",
+  "anim": "bolt"
 }

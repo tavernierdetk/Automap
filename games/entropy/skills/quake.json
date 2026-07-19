@@ -1,0 +1,19 @@
+{
+  "id": "quake",
+  "name": "Quake",
+  "target_mode": "all_enemies",
+  "formula": {
+    "atk_stat": "terrain_control",
+    "atk_mult": 3.0,
+    "def_stat": "terrain_control",
+    "def_mult": 0.5,
+    "floor": 1.0
+  },
+  "status": {
+    "kind": "def_down",
+    "amount": 0.3,
+    "turns": 2
+  },
+  "anim": "cast",
+  "fiction": "The floor bucks; footing \u2014 and guard \u2014 go loose."
+}

@@ -8,7 +8,8 @@
   "ability_pool": [
     "attack",
     "soothe",
-    "beast_call"
+    "beast_call",
+    "hearten"
   ],
   "markers": {
     "motif": "living_things",

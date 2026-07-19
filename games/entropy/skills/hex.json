@@ -1,0 +1,19 @@
+{
+  "id": "hex",
+  "name": "Hex",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "lucidity",
+    "atk_mult": 3.0,
+    "def_stat": "lucidity",
+    "def_mult": 0.5,
+    "floor": 1.0
+  },
+  "status": {
+    "kind": "atk_down",
+    "amount": 0.4,
+    "turns": 3
+  },
+  "anim": "cast",
+  "fiction": "A weight on the wrists; every swing comes late."
+}

@@ -1,0 +1,16 @@
+{
+  "id": "hearten",
+  "name": "Hearten",
+  "target_mode": "ally",
+  "formula": {
+    "atk_stat": "creature_affinity",
+    "atk_mult": 0
+  },
+  "status": {
+    "kind": "atk_up",
+    "amount": 0.4,
+    "turns": 3
+  },
+  "anim": "buff",
+  "fiction": "A word at the right moment is worth two hands."
+}

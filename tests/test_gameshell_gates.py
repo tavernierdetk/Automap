@@ -63,6 +63,45 @@ def test_skill_at_cap_passes(tmp_path):
     assert _errors(items.check_skills(tmp_path)) == []
 
 
+def test_status_over_magnitude_cap_is_blocked(tmp_path):
+    _write(tmp_path, "skills/mega_buff.json",
+           {"id": "mega_buff", "name": "Mega Buff", "target_mode": "ally",
+            "status": {"kind": "atk_up", "amount": 0.9}})  # buff cap 0.5
+    assert any("atk_up" in m and "cap" in m
+               for m in _errors(items.check_skills(tmp_path)))
+
+
+def test_unknown_status_kind_is_blocked(tmp_path):
+    _write(tmp_path, "skills/curse.json",
+           {"id": "curse", "name": "Curse", "status": {"kind": "petrify"}})
+    assert any("kind" in m for m in _errors(items.check_skills(tmp_path)))
+
+
+def test_too_many_hits_is_blocked(tmp_path):
+    _write(tmp_path, "skills/machinegun.json",
+           {"id": "machinegun", "name": "Machinegun", "hits": 9,
+            "formula": {"atk_stat": "kinesthetic", "atk_mult": 2.0}})
+    assert any("hits" in m for m in _errors(items.check_skills(tmp_path)))
+
+
+def test_bad_anim_kind_is_blocked(tmp_path):
+    _write(tmp_path, "skills/wiggle.json",
+           {"id": "wiggle", "name": "Wiggle", "anim": "moonwalk",
+            "formula": {"atk_stat": "kinesthetic", "atk_mult": 3.0}})
+    assert any("anim" in m for m in _errors(items.check_skills(tmp_path)))
+
+
+def test_tactics_skill_within_caps_passes(tmp_path):
+    _write(tmp_path, "skills/rally.json",
+           {"id": "rally", "name": "Rally", "target_mode": "ally",
+            "status": {"kind": "atk_up", "amount": 0.4, "turns": 3},
+            "anim": "buff"})
+    _write(tmp_path, "skills/triple.json",
+           {"id": "triple", "name": "Triple", "hits": 3, "anim": "thrust",
+            "formula": {"atk_stat": "kinesthetic", "atk_mult": 2.5}})
+    assert _errors(items.check_skills(tmp_path)) == []
+
+
 # --- economy sim gate --------------------------------------------------------
 
 def _economy_fixture(tmp_path, price_book, shops, rewards, gold=20):

@@ -17,6 +17,15 @@ from automap.story import Finding
 EQUIP_BUDGET_BASE = 1          # Σ|modifiers| ≤ tier + EQUIP_BUDGET_BASE
 SKILL_ATK_MULT_CAP = 8.0
 SKILL_STATUS_CAP = 60.0
+SKILL_HITS_CAP = 4             # a flurry may split, never machine-gun
+SKILL_TURNS_CAP = 5           # a status primes, never perma-locks
+# typed-status magnitude ceilings (poison/regen/shield = HP, buffs = fraction)
+STATUS_MAG_CAP = {"poison": 60.0, "regen": 40.0, "shield": 40.0,
+                  "atk_up": 0.5, "atk_down": 0.5, "def_up": 0.5, "def_down": 0.5,
+                  "stun": 0.0}
+STATUS_KINDS = set(STATUS_MAG_CAP)
+ANIM_KINDS = {"strike", "thrust", "bash", "cast", "bolt", "heal",
+              "buff", "debuff", "self"}
 EQUIPMENT_KINDS = ("weapon", "armor", "accessory")
 
 
@@ -81,9 +90,25 @@ def check_skills(game_dir: Path) -> list[Finding]:
                      "(systems.md: skills may exceed the basic attack, "
                      "never dwarf it)")
         status = doc.get("status", {})
-        if status and float(status.get("amount", 0)) > SKILL_STATUS_CAP:
-            err(sid, f"status amount {status.get('amount')} > cap "
-                     f"{SKILL_STATUS_CAP} (one hit may prime, not perma-lock)")
+        if status:
+            kind = status.get("kind", status.get("id", ""))
+            if kind not in STATUS_KINDS:
+                err(sid, f"status kind {kind!r} not in {sorted(STATUS_KINDS)}")
+            else:
+                cap = STATUS_MAG_CAP[kind]
+                if float(status.get("amount", 0)) > cap:
+                    err(sid, f"status {kind} amount {status.get('amount')} > "
+                             f"cap {cap} (a status primes, never perma-locks)")
+            turns = int(status.get("turns", 0))
+            if turns > SKILL_TURNS_CAP:
+                err(sid, f"status turns {turns} > cap {SKILL_TURNS_CAP}")
+        hits = int(doc.get("hits", 1))
+        if hits > SKILL_HITS_CAP:
+            err(sid, f"hits {hits} > cap {SKILL_HITS_CAP} "
+                     "(a flurry may split, never machine-gun)")
+        anim = doc.get("anim")
+        if anim is not None and anim not in ANIM_KINDS:
+            err(sid, f"anim {anim!r} not in {sorted(ANIM_KINDS)}")
     return findings
 
 

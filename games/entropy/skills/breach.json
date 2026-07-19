@@ -1,0 +1,19 @@
+{
+  "id": "breach",
+  "name": "Breach",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "chaos_mastery",
+    "atk_mult": 4.0,
+    "def_stat": "terrain_control",
+    "def_mult": 0.5,
+    "floor": 1.0
+  },
+  "status": {
+    "kind": "def_down",
+    "amount": 0.4,
+    "turns": 3
+  },
+  "anim": "cast",
+  "fiction": "Find the seam in the weave and pull it wide."
+}

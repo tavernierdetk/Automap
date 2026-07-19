@@ -7,5 +7,6 @@
     "atk_mult": 2.5,
     "heal": true
   },
-  "fiction": "The voice you'd use on a spooked animal, weaponized for good."
+  "fiction": "The voice you'd use on a spooked animal, weaponized for good.",
+  "anim": "heal"
 }
