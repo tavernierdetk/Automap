@@ -3,9 +3,9 @@
   "name": "Caden",
   "archetype": "fighter",
   "stats": {
-    "kinesthetic": 15,
+    "kinesthetic": 20,
     "creature_affinity": 14,
-    "terrain_control": 12,
+    "terrain_control": 20,
     "lucidity": 10,
     "chaos_mastery": 10
   },

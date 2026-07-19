@@ -54,6 +54,28 @@
         "3": [
           "mend"
         ]
+      },
+      "caden": {
+        "1": [
+          "beast_call",
+          "breach",
+          "bulwark",
+          "concuss",
+          "daze",
+          "ember",
+          "gust",
+          "hearten",
+          "heavy_strike",
+          "hex",
+          "mend",
+          "mend_tide",
+          "pierce",
+          "quake",
+          "ratchet_flurry",
+          "soothe",
+          "stonewall",
+          "unravel"
+        ]
       }
     }
   },
