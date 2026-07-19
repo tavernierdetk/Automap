@@ -157,7 +157,7 @@ def check_light_direction(arr, pal, descriptor: dict | None = None) -> Check:
 
 def check_perspective(arr: np.ndarray, descriptor: dict | None = None,
                       tol: float = 0.11, float_exempt: float = 0.30) -> Check:
-    """Doctrine (2026-07-18): front-facing three-quarter top-down — the ground
+    """Doctrine (2026-07-18): a high-angle FRONT view — the ground
     contact is ~ONE flat line; reject the ISOMETRIC corner view (its diamond
     base dips at center). SELF-GATES by shape: if the object's sides float
     above the ground (a stem or canopy — tree, lectern, statue, topiary), the
@@ -170,7 +170,7 @@ def check_perspective(arr: np.ndarray, descriptor: dict | None = None,
     # like the lectern).
     if not d.get("perspective_gate", False):
         return Check("perspective", True, 1.0, "exempt (not a gated family)")
-    if d.get("perspective", "three_quarter") != "three_quarter":
+    if d.get("perspective", "high_front") != "high_front":
         return Check("perspective", True, 1.0, f"exempt ({d.get('perspective')})")
     m = _main_mass(arr)
     cols = np.nonzero(m.any(axis=0))[0]

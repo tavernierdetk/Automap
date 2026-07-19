@@ -258,16 +258,24 @@ SUBJECTS = {
 }
 
 PERSPECTIVE_TEXT = {
-    # THE DOCTRINE (2026-07-18): three-quarter top-down ONLY — the
-    # isometric corner views the model drifts to are retired
-    "three_quarter": (
-        "classic SNES-RPG three-quarter top-down view: the subject is seen "
-        "STRAIGHT FROM THE FRONT and slightly from above — its front face "
-        "is flat and parallel to the picture frame, all vertical edges stay "
-        "perfectly vertical, its ground contact forms ONE horizontal line, "
-        "and top surfaces tilt gently toward the viewer. STRICTLY FORBIDDEN: "
-        "isometric view, corner or 45-degree diagonal angles, showing a "
-        "second side face, rotated bases, vanishing-point perspective"),
+    # THE DOCTRINE (2026-07-18, reworded 2026-07-19): a high-angle FRONT view
+    # — a camera PITCH (tilt down), never a YAW (turn to a corner). The word
+    # "three-quarter" is deliberately gone: it primes the model toward the
+    # isometric corner view (a "three-quarter TURN"), the very thing we forbid.
+    # Name games the model knows for a front-and-above camera instead.
+    "high_front": (
+        "drawn with the CAMERA ANGLE that top-down RPGs like Stardew Valley "
+        "or Zelda: A Link to the Past use for objects — a high-angle FRONT "
+        "view (this describes only the camera, not the subject). The "
+        "camera sits directly IN FRONT of the subject and tilts DOWN a "
+        "little: the whole front face is flat and parallel to the picture "
+        "frame, the top surface recedes gently upward behind it, every "
+        "vertical edge stays perfectly vertical, and the base rests on ONE "
+        "straight horizontal line. This is a downward TILT of the camera, "
+        "NEVER a turn — STRICTLY FORBIDDEN: rotating to a corner, showing a "
+        "second side face, two walls meeting at a vertical edge, an isometric "
+        "or diamond-shaped footprint, 45-degree/diagonal angles, "
+        "vanishing-point perspective"),
     "top_down": "pure top-down (bird's eye) view",
     "side": "straight side view",
 }
@@ -398,7 +406,7 @@ def compose_scene_prompt(brief_md: str, pal: dict) -> str:
     ramps = ", ".join(f"{m} #%02x%02x%02x" % tuple(s["ramp"][2])
                       for m, s in sorted(pal["materials"].items()))
     return f"""Wide establishing illustration of a 2D RPG game scene, seen
-from a high three-quarter top-down angle (the camera of a 16-bit RPG),
+from a high-angle front-and-above camera (the view of a 16-bit RPG),
 painted as a cohesive game-art concept — NOT a tile map, NOT a diagram:
 one readable picture of the whole place.
 

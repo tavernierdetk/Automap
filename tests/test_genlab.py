@@ -66,7 +66,7 @@ def test_prompt_is_deterministic_and_rich(pal):
     for hexes in (pal["materials"]["foliage"]["ramp"],
                   pal["materials"]["wood"]["ramp"]):
         assert ("#%02x%02x%02x" % tuple(hexes[0])) in p1   # explicit palette
-    assert "three-quarter" in p1                            # from descriptor
+    assert "high-angle FRONT view" in p1                    # the perspective doctrine
     assert "96x128" in p1                                   # target canvas
     assert "TOP-LEFT" in p1                                 # fixed key light
     assert "NO ground/cast shadow" in p1                    # pipeline adds it
@@ -328,7 +328,7 @@ def test_check_perspective_gates_isometric_boxes_only():
     a flat-based (front-facing) box passes; ungated families + the per-substyle
     opt-out are exempt."""
     from automap import asset_qc
-    gated = {"perspective": "three_quarter", "perspective_gate": True}
+    gated = {"perspective": "high_front", "perspective_gate": True}
     flat = np.zeros((44, 44, 4), np.uint8)
     flat[8:34, 10:34] = (120, 120, 120, 255)              # flat base -> front view
     assert asset_qc.check_perspective(flat, gated).ok
@@ -337,9 +337,9 @@ def test_check_perspective_gates_isometric_boxes_only():
         base = 30 + int(8 * (1 - abs(c - 22) / 12))       # base dips at center
         iso[8:base, c] = (120, 120, 120, 255)
     assert not asset_qc.check_perspective(iso, gated).ok  # isometric -> rejected
-    assert asset_qc.check_perspective(iso, {"perspective": "three_quarter"}).ok  # not gated
+    assert asset_qc.check_perspective(iso, {"perspective": "high_front"}).ok  # not gated
     assert asset_qc.check_perspective(
-        iso, {"perspective": "three_quarter", "perspective_gate": False}).ok     # opt-out
+        iso, {"perspective": "high_front", "perspective_gate": False}).ok     # opt-out
 
 
 def test_subject_mask_floodfills_arbitrary_background():

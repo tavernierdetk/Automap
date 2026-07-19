@@ -47,7 +47,7 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {
             "blocking": "trunk_base",
             "texture_motifs": "leaf clumps, bark streaks", "anchor": "trunk",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
             "shadow": "dither_ellipse",
         },
         # per-size-class canvases on the 32px grid (w, h)
@@ -72,7 +72,7 @@ FAMILIES: dict[str, dict] = {
             # a rock blocks at its WHOLE base — the footprint spans the mass
             "blocking": "base",
             "texture_motifs": "stone facets, crack lines, chipped edges", "anchor": "base",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
             "shadow": "dither_ellipse",
         },
         "sizes": {"large": (64, 64), "medium": (32, 32), "small": (32, 32)},
@@ -89,7 +89,7 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {
             "blocking": "base",
             "texture_motifs": "growth rings, bark streaks", "anchor": "base",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
             "shadow": "dither_ellipse",
         },
         "sizes": {"large": (64, 32), "medium": (32, 32), "small": (32, 32)},
@@ -111,7 +111,7 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {"blocking": "base",
                        "texture_motifs": "flute shadows, pipe seams, patina drips",
                        "anchor": "plinth",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (64, 192), "medium": (64, 128), "small": (32, 64)},
     },
@@ -128,7 +128,7 @@ FAMILIES: dict[str, dict] = {
                        # dark bronze over pale marble pedestal = albedo
                        # composition; the centroid check misreads it
                        "lighting": "ambient",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (64, 160), "medium": (64, 128), "small": (32, 64)},
     },
@@ -141,7 +141,7 @@ FAMILIES: dict[str, dict] = {
         "materials": ("bronze", "flame"),
         "descriptor": {"blocking": "base",
                        "texture_motifs": "rivet dots, flame licks", "anchor": "base",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"medium": (64, 128), "small": (32, 64), "large": (96, 128)},
         "animation": {"kind": "flame_flicker", "frames": 2,
@@ -157,7 +157,7 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {"blocking": "base",
                        "texture_motifs": "water ripples, stone rim highlights",
                        "anchor": "basin",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (128, 128), "medium": (96, 96), "small": (32, 32)},
         "animation": {"kind": "water_spray", "frames": 2,
@@ -176,7 +176,7 @@ FAMILIES: dict[str, dict] = {
                        # machines compose bronze bodies on pale stone
                        # plinths — albedo + AO the centroid check misreads
                        "lighting": "ambient",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (128, 128), "medium": (64, 96), "small": (32, 32)},
         # gears cannot ROTATE in band space — heat shimmer is the honest limit.
@@ -197,7 +197,7 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {"blocking": "base",
                        "texture_motifs": "clipped leaf clusters",
                        "anchor": "stem",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"medium": (64, 96), "small": (32, 64), "large": (96, 128)},
         "animation": {"kind": "foliage_sway", "frames": 2,
@@ -213,7 +213,7 @@ FAMILIES: dict[str, dict] = {
         "descriptor": {"blocking": "base",
                        "texture_motifs": "stone grain, chiseled edges",
                        "anchor": "supports",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (96, 64), "medium": (64, 32), "small": (32, 32),
                   "set": (128, 96)},
@@ -235,7 +235,7 @@ FAMILIES: dict[str, dict] = {
                            "the opening between the posts is walkable NEGATIVE "
                            "SPACE — keep it clearly open and readable, nothing "
                            "fills the doorway",),
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (128, 192), "medium": (64, 96), "small": (32, 32)},
     },
@@ -264,7 +264,7 @@ FAMILIES: dict[str, dict] = {
                        # dark slate boards + oak in candlelight compose as
                        # albedo; the up-left key-light centroid check misreads
                        "lighting": "ambient",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        # box-like pieces gate against the isometric corner
                        # view; the lectern is a stem (book-rest on a post) so
                        # its base dips at center regardless — exempt it
@@ -297,7 +297,7 @@ FAMILIES: dict[str, dict] = {
                            "glance at small size",),
                        # enamel-contrast icons are albedo BY DOCTRINE
                        "lighting": "ambient",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (64, 128), "medium": (32, 96), "small": (32, 64)},
     },
@@ -314,7 +314,7 @@ FAMILIES: dict[str, dict] = {
                        "texture_motifs": "plank grain, rope loops, "
                                          "hoop lines",
                        "anchor": "base",
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (96, 96), "medium": (64, 96), "small": (32, 32)},
     },
@@ -370,7 +370,7 @@ FAMILIES: dict[str, dict] = {
                                       "circle and its lattice spokes read; "
                                       "gondolas hang inside the rim",),
                        },
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (288, 384), "medium": (224, 224),
                   "small": (96, 128)},
@@ -392,7 +392,7 @@ FAMILIES: dict[str, dict] = {
                        # a pennant line's bright/dark is ALBEDO (cream vs
                        # red flags at random), not lighting
                        "lighting": {"bunting": "ambient", "highstriker": "ambient"},
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (192, 192), "medium": (128, 96), "small": (64, 192),
                   "grand": (256, 256), "pole": (64, 160)},
@@ -427,7 +427,7 @@ FAMILIES: dict[str, dict] = {
                                           "hole, not a floor; the stone ring "
                                           "must read as a low raised curb",),
                        },
-                       "perspective": "three_quarter",
+                       "perspective": "high_front",
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (160, 160), "medium": (96, 96), "small": (32, 32)},
     },
