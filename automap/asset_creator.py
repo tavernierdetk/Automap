@@ -239,6 +239,36 @@ FAMILIES: dict[str, dict] = {
                        "shadow": "dither_ellipse"},
         "sizes": {"large": (128, 192), "medium": (64, 96), "small": (32, 32)},
     },
+    "furniture": {
+        # interior furnishing — the school/inn/shop batch. Wood-dominant
+        # pieces (desk/bookcase/lectern) plus a slate chalkboard; placed as
+        # props[], footprint-blocking. Size-class carries the ASPECT: a desk
+        # is wide-low (medium), a bookcase/chalkboard tall (large), a lectern
+        # narrow-tall (small) — pick the class per substyle at request time.
+        "generator": "genlab",
+        "substyles": ("desk", "bookcase", "lectern", "chalkboard"),
+        "default_min_variants": 1,
+        "style_tokens": {"gen1"},
+        "tileset": True,
+        "materials": ("wood", "stone", "slate"),
+        # only the chalkboard reaches for slate; the rest stay wood/stone so
+        # a desk never snaps a slate-grey panel
+        "materials_by_substyle": {"desk": ("wood", "stone"),
+                                  "bookcase": ("wood", "stone"),
+                                  "lectern": ("wood", "stone"),
+                                  "chalkboard": ("slate", "wood")},
+        "descriptor": {"blocking": "base",
+                       "texture_motifs": "plank grain, panel seams, "
+                                         "drawer lines, shelf edges",
+                       "anchor": "base",
+                       # dark slate boards + oak in candlelight compose as
+                       # albedo; the up-left key-light centroid check misreads
+                       "lighting": "ambient",
+                       "perspective": "three_quarter",
+                       "shadow": "dither_ellipse"},
+        # (w, h) — the aspect per class, chosen per substyle at request time
+        "sizes": {"large": (96, 128), "medium": (96, 64), "small": (64, 96)},
+    },
     "shopsign": {
         # the town's language: hanging trade signs on bracket posts,
         # ICON-first (a mortar, a garment, crossed blades — no readable

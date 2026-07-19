@@ -551,6 +551,36 @@
       "family": "column",
       "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/vaporis.json",
       "req": "column_piped_large_r2"
+    },
+    {
+      "family": "bench",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "substyle": "marble",
+      "min_variants": 1
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_desk_medium_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_bookcase_large_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_lectern_small_r1"
+    },
+    {
+      "generator": "genlab",
+      "family": "furniture",
+      "identity": "/Users/alexandredube-cote/Cowork/Automap/identities/entropy.json",
+      "req": "furniture_chalkboard_large_r1"
     }
   ]
 }

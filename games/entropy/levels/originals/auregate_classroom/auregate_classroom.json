@@ -1,100 +1,217 @@
 {
   "id": "auregate_classroom",
   "name": "The Auregate \u2014 Classroom",
-  "background": {
-    "file": "classroom.png",
-    "pos": [
-      512,
-      512
+  "kind": "tilemap",
+  "intent": "A stone lecture hall inside the Auregate: desks in two columns face a warm oak dais with a lectern and slate board; bookcases and candle sconces line the walls. Prologue segment one \u2014 Caden with Vec and Isaac at the back as Professor Wren teaches; also the stage for the_weirgate incident.",
+  "tilemap": {
+    "atlas": "auregate_classroom",
+    "tile_size": 32,
+    "grid_size": [
+      26,
+      22
     ],
-    "scale": [
-      1,
-      1
+    "layers": [
+      {
+        "name": "ground",
+        "palette": {
+          "w": "wall",
+          "f": "flag",
+          "d": "dais",
+          "a": "aisle"
+        },
+        "rows": [
+          "wwwwwwwwwwwwwwwwwwwwwwwwww",
+          "wddddddddddddddddddddddddw",
+          "wddddddddddddddddddddddddw",
+          "wddddddddddddddddddddddddw",
+          "wddddddddddddddddddddddddw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wfffffffffffaafffffffffffw",
+          "wwwwwwwwwwwwwwwwwwwwwwwwww"
+        ]
+      }
     ]
   },
-  "spawns": [
+  "props": [
     {
-      "tag": "start",
+      "prop": "chalkboard_0",
       "pos": [
-        512,
-        780
+        352,
+        132
+      ]
+    },
+    {
+      "prop": "lectern_0",
+      "pos": [
+        452,
+        160
+      ]
+    },
+    {
+      "prop": "bookcase_0",
+      "pos": [
+        96,
+        330
+      ]
+    },
+    {
+      "prop": "bookcase_1",
+      "pos": [
+        96,
+        600
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        70,
+        468
+      ]
+    },
+    {
+      "prop": "bookcase_1",
+      "pos": [
+        736,
+        330
+      ]
+    },
+    {
+      "prop": "bookcase_0",
+      "pos": [
+        736,
+        600
+      ]
+    },
+    {
+      "prop": "standing_0",
+      "pos": [
+        762,
+        468
+      ]
+    },
+    {
+      "prop": "desk_0",
+      "pos": [
+        232,
+        372
+      ]
+    },
+    {
+      "prop": "desk_1",
+      "pos": [
+        232,
+        476
+      ]
+    },
+    {
+      "prop": "desk_0",
+      "pos": [
+        232,
+        580
+      ]
+    },
+    {
+      "prop": "desk_1",
+      "pos": [
+        592,
+        372
+      ]
+    },
+    {
+      "prop": "desk_0",
+      "pos": [
+        592,
+        476
+      ]
+    },
+    {
+      "prop": "desk_1",
+      "pos": [
+        592,
+        580
       ]
     }
   ],
   "player": {
     "slug": "caden",
     "pos": [
-      512,
-      780
+      416,
+      616
     ]
   },
-  "npcs": [
+  "spawns": [
     {
-      "slug": "auregate_professor",
+      "tag": "start",
       "pos": [
-        512,
-        300
-      ],
-      "dialogue": "prologue_classroom_professor_instruction"
-    },
-    {
-      "slug": "vec",
-      "pos": [
-        380,
-        560
-      ],
-      "dialogue": "prologue_classroom_peer_banter"
-    },
-    {
-      "slug": "isaac",
-      "pos": [
-        648,
-        560
-      ],
-      "dialogue": "prologue_class_choice_isaac"
-    }
-  ],
-  "collision_rects": [
-    {
-      "pos": [
-        512,
-        130
-      ],
-      "size": [
-        1024,
-        40
-      ]
-    },
-    {
-      "pos": [
-        512,
-        900
-      ],
-      "size": [
-        1024,
-        40
-      ]
-    },
-    {
-      "pos": [
-        110,
-        512
-      ],
-      "size": [
-        40,
-        900
-      ]
-    },
-    {
-      "pos": [
-        914,
-        512
-      ],
-      "size": [
-        40,
-        900
+        416,
+        616
       ]
     }
   ],
-  "teleports": []
+  "teleports": [],
+  "npc_slots": [
+    {
+      "tag": "professor",
+      "pos": [
+        524,
+        150
+      ]
+    },
+    {
+      "tag": "student_left",
+      "pos": [
+        320,
+        556
+      ]
+    },
+    {
+      "tag": "student_right",
+      "pos": [
+        496,
+        556
+      ]
+    },
+    {
+      "tag": "dais_center",
+      "pos": [
+        432,
+        150
+      ]
+    },
+    {
+      "tag": "front_row_left",
+      "pos": [
+        232,
+        372
+      ]
+    },
+    {
+      "tag": "front_row_right",
+      "pos": [
+        592,
+        372
+      ]
+    },
+    {
+      "tag": "back_door",
+      "pos": [
+        416,
+        632
+      ]
+    }
+  ]
 }

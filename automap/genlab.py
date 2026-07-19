@@ -223,6 +223,26 @@ SUBJECTS = {
         "barrel": "a single upright wooden barrel with bronze hoops, a "
                   "verdigris stain bleeding under the top hoop",
     },
+    "furniture": {
+        "desk": "a single wooden school desk seen from a high three-quarter "
+                "top-down angle: a sturdy oak writing table with a slightly "
+                "sloped top facing the viewer, clear plank grain, four square "
+                "legs, a small stack of parchment and a quill resting on top",
+        "bookcase": "a single tall wooden bookcase seen from a high "
+                    "three-quarter angle: an oak shelf unit of four shelves "
+                    "packed with rows of worn leather-bound books and a few "
+                    "glass potion bottles, a solid plank base, standing "
+                    "upright against a wall",
+        "lectern": "a single wooden lectern reading-stand seen from a high "
+                   "three-quarter angle: a slanted oak book-rest on a turned "
+                   "central post rising from a wide round base, an open tome "
+                   "resting on the slope",
+        "chalkboard": "a single large slate chalkboard on a wooden A-frame "
+                      "stand seen from a high three-quarter angle: a dark "
+                      "blue-grey slate writing surface framed in oak, faint "
+                      "pale chalk diagrams on the slate, a narrow chalk tray "
+                      "across the bottom",
+    },
     "portal": {
         "arch": "a single carved stone arch gateway: a semicircular arch of "
                 "wedge-shaped voussoir blocks with a protruding keystone, "

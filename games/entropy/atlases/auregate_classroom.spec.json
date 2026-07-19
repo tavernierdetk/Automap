@@ -1,0 +1,21 @@
+{
+  "name": "auregate_classroom",
+  "identity": "identities/entropy.json",
+  "comment": "A stone lecture-hall interior: cold flagstone floor, a warm oak dais at the front, a central aisle runner, raised stone perimeter walls. Colors are literal — interior candlelight owes nothing to the surface identity's sunlit terrain fields. Every transition bases on flag: the floor is what the dais, the aisle, and the walls all meet.",
+  "classes": [
+    {"name": "flag", "painter": "path", "color": [0.29, 0.30, 0.33],
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "dais", "painter": "path", "color": [0.44, 0.32, 0.19],
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "aisle", "painter": "path", "color": [0.39, 0.30, 0.25],
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "wall", "painter": "rock", "color": [0.35, 0.35, 0.38],
+     "relief": "raised",
+     "walkable": false, "speed_mod": 1.0, "hazard": false}
+  ],
+  "transitions": [
+    {"name": "wall", "base": "flag", "overlay": "wall"},
+    {"name": "dais", "base": "flag", "overlay": "dais"},
+    {"name": "aisle", "base": "flag", "overlay": "aisle"}
+  ]
+}

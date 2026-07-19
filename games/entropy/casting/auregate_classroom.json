@@ -1,0 +1,22 @@
+{
+  "level": "auregate_classroom",
+  "region": "originals",
+  "intent": "Prologue segment one — the professor teaches at the lectern; Caden's peers Vec and Isaac sit at the back desks. The two required conversations (professor instruction, peer banter) complete the exposition.",
+  "npcs": [
+    {
+      "slot": "professor",
+      "creature": "auregate_professor",
+      "dialogue": "prologue_classroom_professor_instruction"
+    },
+    {
+      "slot": "student_left",
+      "creature": "vec",
+      "dialogue": "prologue_classroom_peer_banter"
+    },
+    {
+      "slot": "student_right",
+      "creature": "isaac",
+      "dialogue": "prologue_class_choice_isaac"
+    }
+  ]
+}
