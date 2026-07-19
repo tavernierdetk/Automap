@@ -1,0 +1,39 @@
+{
+  "id": "prologue_incident",
+  "intent": "After the flood — Professor Wren, whom Caden saved, and Caden. His reflection reacts to the conviction he stated in the classroom: the guilt is fixed, but its shape is the player's. The prologue's emotional close.",
+  "start": "n0",
+  "nodes": {
+    "n0": {
+      "speaker_id": "professor_wren",
+      "text": "You pulled me out of the water. You shouldn't have — and you understand that now, don't you.",
+      "advance_hint": "Press Enter",
+      "next": "caden_protect"
+    },
+    "caden_protect": {
+      "when": {"flag": "caden.conviction.protect"},
+      "speaker_id": "caden",
+      "text": "I told them I was here to keep people safe. I drowned a town to keep one. That's the man I am now.",
+      "end_session": true,
+      "next": "caden_purpose"
+    },
+    "caden_purpose": {
+      "when": {"flag": "caden.conviction.purpose"},
+      "speaker_id": "caden",
+      "text": "I wanted to know what I was for. Now I do. This — this is the thing I'm for.",
+      "end_session": true,
+      "next": "caden_unsure"
+    },
+    "caden_unsure": {
+      "when": {"flag": "caden.conviction.unsure"},
+      "speaker_id": "caden",
+      "text": "I said I didn't know what I was for. I know now. I would give anything not to.",
+      "end_session": true,
+      "next": "caden_none"
+    },
+    "caden_none": {
+      "speaker_id": "caden",
+      "text": "There isn't a word for what I did. I've looked for one. There isn't.",
+      "end_session": true
+    }
+  }
+}
