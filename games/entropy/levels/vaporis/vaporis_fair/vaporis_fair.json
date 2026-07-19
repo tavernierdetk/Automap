@@ -1034,7 +1034,8 @@
         "bravo"
       ],
       "seed": 88,
-      "intent": "the sparring ring \u2014 a packed-dirt ring by the machine show; step onto the dirt and the coursework constructs oblige (re-arms when you step out)"
+      "intent": "the sparring ring \u2014 a packed-dirt ring by the machine show; step onto the dirt and the coursework constructs oblige (re-arms when you step out)",
+      "layout": "corridor"
     }
   ]
 }
