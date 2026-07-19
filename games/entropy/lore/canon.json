@@ -294,6 +294,56 @@
       "facts": [
         "three-quarter bore; the wheel's first turn depends on it (arc fair_opening)"
       ]
+    },
+    {
+      "id": "the_road",
+      "kind": "term",
+      "name": "the Road",
+      "region": "originals",
+      "status": "proposed",
+      "facts": [
+        "the trusted prediction the Gatewrights guide the world along; publicly benevolent guidance"
+      ]
+    },
+    {
+      "id": "the_gatewrights",
+      "kind": "faction",
+      "name": "the Gatewrights",
+      "region": "originals",
+      "status": "proposed",
+      "facts": [
+        "apply Nudges to keep the world aligned with the Road; the Auregate is their finishing school"
+      ]
+    },
+    {
+      "id": "a_nudge",
+      "kind": "term",
+      "name": "a Nudge",
+      "region": "originals",
+      "status": "proposed",
+      "facts": [
+        "a Gatewright intervention on a large-scale event to preserve alignment with the Road"
+      ]
+    },
+    {
+      "id": "weirgate",
+      "kind": "place",
+      "name": "the Weirgate",
+      "region": "originals",
+      "status": "proposed",
+      "facts": [
+        "the ancient flood-locks above a harvest-fair town; site of the prologue incident (proposed)"
+      ]
+    },
+    {
+      "id": "the_weirgate_release",
+      "kind": "term",
+      "name": "the Weirgate Release",
+      "region": "originals",
+      "status": "proposed",
+      "facts": [
+        "the prologue's formative incident \u2014 a sanctioned Nudge turned catastrophe (proposed; docs/explorations/incident-design.md)"
+      ]
     }
   ]
 }

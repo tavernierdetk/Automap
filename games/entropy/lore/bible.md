@@ -87,3 +87,34 @@ forest, the witch's cottage (outside and in), the castle approach
 
 - **R-005 (2026-07-18).** New vaporis fiction may not borrow originals
   characters or places, and vice versa, until a bridge is ruled in.
+
+### Prologue cosmology (PROPOSED — pending upstream ratification)
+
+Recorded for the Shared Origin prologue; **proposed, not owned** until
+reconciled with `Entropy RPG.md` and human-ratified (R-006). Public
+truth: the **Road** is the trusted prediction the **Gatewrights** guide
+the world along; a **Nudge** is their intervention on a large event to
+keep it aligned. The Auregate is their finishing school; seniors choose
+one of five disciplines (shaper/steward/weaver/breaker/mentarch), the
+**Weaver** assisting prediction-work. Concealed truth (major late
+reveal, unknown to players and characters): worlds are copied at
+inflection points, each given a separate prediction, and worlds that
+fail to match are pruned.
+
+- **The Weirgate Release** (the prologue incident, proposed): a
+  sanctioned Nudge — a controlled release at the Weirgate flood-locks
+  above a harvest-fair town — that Caden's compassionate deviation
+  turns to catastrophic flood. Public story: a reckless student's
+  fault (Caden expelled, his mark struck), the Gatewrights faultless.
+  Vec holds the line and learns order prevents; Isaac, a Weaver, sees
+  the prediction-slate name the dead of a course that did not happen
+  here and keeps it. Full design + fragment plan +
+  human-decision forks: `docs/explorations/incident-design.md`.
+
+- **R-006 (2026-07-18).** The Shared Origin prologue design — the
+  incident (the Weirgate Release) and the Road/Gatewright/pruning
+  framing recorded above — is **PROPOSED**, not owned canon. It fills a
+  gap the source itself flagged (`missing_core_design`,
+  `human_review_required`), does not override `Entropy RPG.md`, and
+  yields to it on any conflict. Promote to `canon` only on human
+  ratification.

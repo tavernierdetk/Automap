@@ -516,13 +516,14 @@
       "id": "prologue.incident",
       "title": "The Incident",
       "segment_type": "formative_crisis",
-      "status": "missing_core_design",
+      "status": "partial",
       "chronology": {
         "character_age": "unresolved",
         "relative_position": "fourth"
       },
       "location": {
-        "scene_role": "prologue_incident_tbd"
+        "scene_role": "weirgate_release",
+        "location_id": "location.weirgate"
       },
       "participants": {
         "required": [
@@ -552,19 +553,43 @@
           "initiate_isaac_antagonist_trajectory"
         ]
       },
-      "unresolved_design_questions": [
-        "What physically happens?",
-        "Who is harmed or lost?",
-        "What does Caden attempt to save?",
-        "What punishment does Caden receive?",
-        "What choice does Vec make?",
-        "What evidence does Isaac discover or conceal?",
-        "Failed Nudge, successful Nudge with casualties, or off-Road event?",
-        "Are the three separated immediately afterward?",
-        "Which details are hidden in the first presentation?"
-      ],
       "completion_trigger": {
-        "status": "to_design"
+        "type": "incident_resolved_and_scattered"
+      },
+      "design": {
+        "event": "The Weirgate Release \u2014 a sanctioned Gatewright Nudge (controlled release at the Weirgate flood-locks above a harvest-fair town) that Caden's deviation turns to catastrophic flood. Public: a reckless student's fault. Concealed: the larger flood may have been written before he moved. Full design: docs/explorations/incident-design.md.",
+        "reference": "docs/explorations/incident-design.md",
+        "canon_status": "proposed (bible R-006; reconcile with Entropy RPG.md)",
+        "caden": "breaks ranks to save the prediction's 'acceptable' few; publicly blamed, expelled, discipline-mark struck.",
+        "vec": "holds the line, tries to pull Caden back; watches autonomy become massacre.",
+        "isaac": "as a Weaver, near the prediction-slate; sees it named the dead of a course that did not happen here; pockets a copy.",
+        "nudge_type": "successful_nudge_publicly_ruined_by_a_student",
+        "separated_afterward": true,
+        "first_presentation_hidden": [
+          "the slate's content",
+          "whether the failure was underway before Caden moved",
+          "the Gatewrights' foreknowledge",
+          "the true cause of the larger flood"
+        ],
+        "pruning_seed": "the slate accounts for the dead of a course that did not happen here (a name resolved 'elsewhere', a doubled tally) \u2014 Isaac keeps it; no mechanism words are spoken."
+      },
+      "output_state_requirements": {
+        "caden": [
+          "compassion_associated_with_catastrophic_cost",
+          "trust_in_self_or_institutions_damaged"
+        ],
+        "vec": [
+          "order_associated_with_prevention",
+          "autonomy_associated_with_unacceptable_risk"
+        ],
+        "isaac": [
+          "uncertainty_associated_with_power_or_truth",
+          "motivation_to_investigate_or_exploit_the_road"
+        ]
+      },
+      "next_segment": {
+        "id": "",
+        "transition": "prologue_ends"
       }
     }
   ],
@@ -616,7 +641,7 @@
       },
       {
         "id": "dialogue.prologue.incident",
-        "status": "blocked_by_incident_design"
+        "status": "unwritten"
       }
     ]
   },
@@ -651,8 +676,13 @@
       ]
     },
     {
-      "scene_id": "scene.prologue.incident_tbd",
-      "status": "unresolved"
+      "scene_id": "scene.weirgate_release",
+      "required_capabilities": [
+        "crowd_and_gates",
+        "managed_release_beats",
+        "player_agency_at_the_gate",
+        "aftermath_and_scattering"
+      ]
     }
   ],
   "asset_requirements": {
@@ -702,7 +732,6 @@
   "validation": {
     "completeness": {
       "blocked": [
-        "incident_design",
         "character_voice_profiles",
         "protagonist_naming_strategy",
         "fragment_release_order",
@@ -712,6 +741,9 @@
         "classroom",
         "welcome_fair",
         "class_choice"
+      ],
+      "proposed_pending_ratification": [
+        "incident_design"
       ]
     }
   },
