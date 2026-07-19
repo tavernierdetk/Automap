@@ -111,8 +111,17 @@ The `formative_crisis` handler orchestrates it windowed: `the_weirgate`
 setup cutscene → the Vec-vs-Caden story-battle → `the_weirgate_aftermath`
 → the segment completes with the three worldview flags. Headless drives the
 state directly (`test_story_battle` proves the mode; `test_prologue` the
-flow). Remaining polish: a Weirgate battle backdrop (the default meadow is
-tonally off) — the "real Weirgate scene" the design still reserves.
+flow; `incident_windowed` proves the whole chain in real play).
+
+**Weirgate backdrop — wired, image pending.** Battles now take a
+per-encounter `backdrop` (`battle_ui` falls back to the default when the
+named background isn't published), and the incident asks for `"weirgate"`.
+The publisher publishes game-owned backgrounds from
+`games/entropy/backgrounds/`. The one missing piece is the image itself:
+generating it hit the **image-API billing hard limit** (raise the cap, then
+run the one-off prompt → drop `weirgate.png` into
+`games/entropy/backgrounds/` → publish; the battle upgrades automatically,
+no code change). Until then the incident battle shows the default backdrop.
 
 ## The pruning seed (incidental now, evidence later)
 

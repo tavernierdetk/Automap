@@ -271,6 +271,18 @@ def main(
                 {"name": p.name, "sha256_12": _sha12(p), "source": rel})
         log(f"backgrounds: {len(spec.get('backgrounds', []))} pulled from reference")
 
+        # game-owned backgrounds (generated, not from the reference game) —
+        # e.g. the Weirgate battle backdrop; they add to / override the pulled
+        # set by filename
+        game_bg = sorted((src_root / "backgrounds").glob("*.png")) \
+            if (src_root / "backgrounds").exists() else []
+        for p in game_bg:
+            shutil.copy2(p, dst / p.name)
+            manifest["artifacts"].setdefault("backgrounds", []).append(
+                {"name": p.name, "sha256_12": _sha12(p), "source": "game"})
+        if game_bg:
+            log(f"backgrounds: {len(game_bg)} game-owned")
+
         cdst = content / "creatures"
         cdst.mkdir(parents=True, exist_ok=True)
         for c in spec.get("creature_sprites", []):
