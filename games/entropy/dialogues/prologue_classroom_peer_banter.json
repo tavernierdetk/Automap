@@ -18,6 +18,7 @@
     "n2": {
       "speaker_id": "vec",
       "text": "Don't mind him. It matters. So — what are you for, Caden?",
+      "effects": [{"type": "flag", "key": "vec.control_creed", "value": true}],
       "choices": [
         {
           "label": "To find what I'm for.",

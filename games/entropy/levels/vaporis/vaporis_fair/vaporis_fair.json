@@ -1060,7 +1060,7 @@
       "discipline": "shaper",
       "radius": 46,
       "blurb": "Flagstones rise and settle at an open hand.",
-      "companion_line": "\u2014 watch how they never force it, Caden."
+      "companion_line": "Earth that moves when you tell it to. Handy \u2014 so long as one voice gives the orders, and it's the right one."
     },
     {
       "id": "station.steward",
@@ -1071,7 +1071,7 @@
       "discipline": "steward",
       "radius": 46,
       "blurb": "A demonstrator calms a startled dray-beast with a word.",
-      "companion_line": "\u2014 watch how they never force it, Caden."
+      "companion_line": "Now THAT'S a discipline, Caden. Standing between people and what's coming for them. The rest of this is decoration."
     },
     {
       "id": "station.weaver",
@@ -1082,7 +1082,7 @@
       "discipline": "weaver",
       "radius": 46,
       "blurb": "A thread of smoke is pulled into a knot, and back.",
-      "companion_line": "\u2014 watch how they never force it, Caden."
+      "companion_line": "They read the pattern and 'nudge' it. But whoever reads it decides what needs nudging. I don't love that much power sitting with the quiet ones."
     },
     {
       "id": "station.breaker",
@@ -1093,7 +1093,7 @@
       "discipline": "breaker",
       "radius": 46,
       "blurb": "A block of stone is struck cleanly in two.",
-      "companion_line": "\u2014 watch how they never force it, Caden."
+      "companion_line": "Strength like that wants a leash. Off one, it's just the next disaster looking for a reason. Remember that tomorrow."
     },
     {
       "id": "station.mentarch",
@@ -1104,7 +1104,7 @@
       "discipline": "mentarch",
       "radius": 46,
       "blurb": "A demonstrator names the next card five times before it turns.",
-      "companion_line": "\u2014 watch how they never force it, Caden."
+      "companion_line": "Reaching into a head to keep it calm. Effective. A little too effective \u2014 where exactly does 'keeping them calm' stop?"
     }
   ]
 }
