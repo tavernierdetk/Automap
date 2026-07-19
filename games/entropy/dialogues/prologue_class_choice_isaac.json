@@ -1,11 +1,60 @@
 {
   "id": "prologue_class_choice_isaac",
-  "intent": "Isaac takes Weaver",
+  "intent": "Isaac in the classroom — his fascination with who reads and writes the prediction (the pruning seed, no mechanism words spoken), a choice for Caden, and a close that reacts to Caden's stated conviction. Sets isaac.slate_curiosity.",
   "start": "n0",
   "nodes": {
     "n0": {
       "speaker_id": "isaac",
-      "text": "Weaver. Of course. Someone has to understand the thing everyone else obeys.",
+      "text": "You keep looking at the prediction-board like it'll blink first. It won't. But someone read it, and someone wrote it down. That's the part worth staring at.",
+      "effects": [{"type": "flag", "key": "isaac.slate_curiosity", "value": true}],
+      "advance_hint": "Press Enter",
+      "next": "n1"
+    },
+    "n1": {
+      "speaker_id": "isaac",
+      "text": "Weaver, for me. Everyone else wants to obey the Road well. I want to know who gets to decide what it says.",
+      "choices": [
+        {
+          "label": "Careful. That sounds like doubting the Road.",
+          "effects": [{"type": "flag", "key": "isaac.pressed_on_faith", "value": true}],
+          "next_node": "react_doubt"
+        },
+        {
+          "label": "Someone should understand it. Why not you?",
+          "effects": [{"type": "flag", "key": "isaac.encouraged", "value": true}],
+          "next_node": "react_encouraged"
+        }
+      ]
+    },
+    "react_doubt": {
+      "speaker_id": "isaac",
+      "text": "I don't doubt it. I just don't want to be the last to know what it's already decided. Neither should you.",
+      "advance_hint": "Press Enter",
+      "next": "conv_protect"
+    },
+    "react_encouraged": {
+      "speaker_id": "isaac",
+      "text": "Why not me. Remember you said that — someday it might matter that someone did.",
+      "advance_hint": "Press Enter",
+      "next": "conv_protect"
+    },
+    "conv_protect": {
+      "when": {"flag": "caden.conviction.protect"},
+      "speaker_id": "isaac",
+      "text": "Though — 'keep people safe', you told Vec. Safe assumes someone already chose who's worth the saving. You should ask who.",
+      "end_session": true,
+      "next": "conv_purpose"
+    },
+    "conv_purpose": {
+      "when": {"flag": "caden.conviction.purpose"},
+      "speaker_id": "isaac",
+      "text": "You'll go find what you're for. I'll go find who decides it. Fair split, I think.",
+      "end_session": true,
+      "next": "conv_none"
+    },
+    "conv_none": {
+      "speaker_id": "isaac",
+      "text": "Anyway. Watch the Fair tomorrow. Watch the people running it, not the tricks.",
       "end_session": true
     }
   }
