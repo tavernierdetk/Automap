@@ -279,7 +279,7 @@ FAMILIES: dict[str, dict] = {
         # Item Director (create_request subject=...), not from genlab.SUBJECTS.
         # Referenced by item.icon (props catalog), never painted as tiles.
         "generator": "genlab",
-        "substyles": ("weapon", "consumable", "accessory", "key", "tool"),
+        "substyles": ("weapon", "armor", "consumable", "accessory", "key", "tool"),
         "default_min_variants": 1,
         "style_tokens": {"gen1"},
         "tileset": False,

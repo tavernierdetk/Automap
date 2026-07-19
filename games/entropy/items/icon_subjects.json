@@ -1,0 +1,50 @@
+{
+  "_doc": "Item Director's authored icon subjects — the durable source the icon pipeline regenerates from (reference PNGs are gitignored intermediates). Keyed by item id. `subject` is the emblem to draw; wearables MUST say 'laid flat, no person' or GMIC draws a character. `substyle` overrides the kind->substyle default. Read by scripts/16_systems_director.py `items icons`.",
+  "subjects": {
+    "bassa_stew": {
+      "subject": "a steaming wooden bowl of thick hearty brown stew, a spoon standing upright in the bowl, warm food"
+    },
+    "brass_baton": {
+      "subject": "a short ornate ceremonial baton of polished golden brass, a single rod with a knob finial"
+    },
+    "brass_gorget": {
+      "subject": "a curved crescent brass neck-collar plate lying flat on a table, a single curved golden brass band, armor piece product photo, no person, no body, no head"
+    },
+    "bronze_valve": {
+      "subject": "a bronze pipe valve handwheel, a round three-spoke wheel with verdigris and bronze patina, no person"
+    },
+    "cooling_draught": {
+      "subject": "a tall glass potion bottle filled with bright icy cyan-blue liquid, frost on the glass, cork stopper, a single blue potion, no pink, no red"
+    },
+    "coursework_spanner": {
+      "subject": "an adjustable wrench spanner tool of grey steel, a single hand tool"
+    },
+    "founders_locket": {
+      "subject": "an oval golden brass locket pendant on a fine chain, engraved with a small profile portrait"
+    },
+    "gatewright_coat": {
+      "subject": "a long waxed oilcloth raincoat garment laid flat, dark tan canvas with brass buttons, a coat with no person wearing it"
+    },
+    "gear_charm": {
+      "subject": "a single small polished brass gear cog threaded on a leather cord, one golden gearwheel"
+    },
+    "laurel_charm": {
+      "subject": "a laurel wreath emblem, a small round ring of green olive leaves, a leafy medallion charm on white, a single object, no food, no plate, no bowl"
+    },
+    "pressure_hammer": {
+      "subject": "a heavy riveting hammer, a steel hammer head on a wooden handle, a single tool"
+    },
+    "spun_sugar": {
+      "subject": "a swirl of pink spun-sugar cotton candy on a paper stick, fluffy pink sweet"
+    },
+    "verdigris_ring": {
+      "subject": "a finger ring, a single round green verdigris copper band, a circular metal jewelry ring on white, product photo, no gem, no mushroom, no food"
+    },
+    "weaver_mantle": {
+      "subject": "a folded deep-red cloak cape lying flat on a table, a shoulder mantle of draped fabric with a brass-thread hem, clothing product photo, no person, no body, no head, no mannequin"
+    },
+    "weirsteel_plate": {
+      "subject": "a steel breastplate cuirass lying flat on a table, a single curved riveted grey metal chest armor plate, product photo, no person, no body, no weapon, no sword"
+    }
+  }
+}
