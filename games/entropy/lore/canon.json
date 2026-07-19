@@ -342,7 +342,17 @@
       "region": "originals",
       "status": "proposed",
       "facts": [
-        "the prologue's formative incident \u2014 a sanctioned Nudge turned catastrophe (proposed; docs/explorations/incident-design.md)"
+        "the prologue's formative incident \u2014 a foreseen Nudge Caden disrupts to save Professor Wren, drowning the town; he is to blame (proposed; docs/explorations/incident-design.md)"
+      ]
+    },
+    {
+      "id": "professor_wren",
+      "kind": "person",
+      "name": "Professor Wren",
+      "region": "originals",
+      "status": "proposed",
+      "facts": [
+        "the trio's Auregate teacher, a Weaver; saved by Caden at the Weirgate at the cost of the town; survives; future role reserved (proposed; docs/explorations/incident-design.md)"
       ]
     }
   ]

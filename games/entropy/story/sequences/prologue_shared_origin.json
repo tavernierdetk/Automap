@@ -226,6 +226,16 @@
       "role": "npc",
       "tbd": true,
       "note": "the classroom / welcoming professor \u2014 Casting to define"
+    },
+    {
+      "id": "professor_wren",
+      "role": "npc",
+      "tbd": true,
+      "long_arc": "reserved",
+      "note": "the trio's teacher, a Weaver; saved by Caden at the Weirgate; survives, future role reserved (proposed canon)",
+      "class": {
+        "fixed_choice": "weaver"
+      }
     }
   ],
   "relationship_model": {
@@ -529,7 +539,8 @@
         "required": [
           "caden",
           "vec",
-          "isaac"
+          "isaac",
+          "professor_wren"
         ]
       },
       "dialogue_refs": [
@@ -557,21 +568,24 @@
         "type": "incident_resolved_and_scattered"
       },
       "design": {
-        "event": "The Weirgate Release \u2014 a sanctioned Gatewright Nudge (controlled release at the Weirgate flood-locks above a harvest-fair town) that Caden's deviation turns to catastrophic flood. Public: a reckless student's fault. Concealed: the larger flood may have been written before he moved. Full design: docs/explorations/incident-design.md.",
+        "event": "The Weirgate Release \u2014 a sanctioned Gatewright Nudge (controlled release at the Weirgate flood-locks above a harvest-fair town) that Caden disrupts to save Professor Wren, marked among the 'acceptable losses'. Caden succeeds and the town drowns \u2014 he is genuinely to blame (darker reading). Full design: docs/explorations/incident-design.md.",
         "reference": "docs/explorations/incident-design.md",
-        "canon_status": "proposed (bible R-006; reconcile with Entropy RPG.md)",
-        "caden": "breaks ranks to save the prediction's 'acceptable' few; publicly blamed, expelled, discipline-mark struck.",
-        "vec": "holds the line, tries to pull Caden back; watches autonomy become massacre.",
-        "isaac": "as a Weaver, near the prediction-slate; sees it named the dead of a course that did not happen here; pockets a copy.",
-        "nudge_type": "successful_nudge_publicly_ruined_by_a_student",
+        "canon_status": "proposed (bible R-006; reconciled later two-way with the rebuilt Entropy RPG.md)",
+        "caden": "breaks ranks and past Vec to save Professor Wren; succeeds; the disruption dooms the town. Genuinely to blame. Expelled, discipline-mark struck.",
+        "vec": "physically restrains Caden (the incident's story-battle) and FAILS; learns restraint must be absolute \u2014 corruption from his own failure to control.",
+        "isaac": "Weaver near the prediction-slate; sees it named the TRUE toll (hundreds), dated before the release \u2014 the 'acceptable few' a lie; pockets a copy.",
+        "nudge_type": "outcome_foreseen_and_permitted_publicly_a_students_fault",
         "separated_afterward": true,
         "first_presentation_hidden": [
-          "the slate's content",
-          "whether the failure was underway before Caden moved",
-          "the Gatewrights' foreknowledge",
-          "the true cause of the larger flood"
+          "that the slate named the true toll beforehand",
+          "that the deviation was foreseen and permitted",
+          "that the 'acceptable number' was a fiction",
+          "Wren's knowledge"
         ],
-        "pruning_seed": "the slate accounts for the dead of a course that did not happen here (a name resolved 'elsewhere', a doubled tally) \u2014 Isaac keeps it; no mechanism words are spoken."
+        "pruning_seed": "the slate's casualty list matches the full flood (hundreds), dated before the release \u2014 foreknowledge that becomes the pruning reveal; no mechanism words spoken.",
+        "professor_wren": "the trio's teacher, a Weaver; the one Caden saves; SURVIVES; future story role reserved.",
+        "combat": "Vec vs Caden at the gate in rising water, fought as their chosen disciplines; FORCED OUTCOME (Caden breaks past); implementation needs NS2 class system + a forced-outcome story-battle mode.",
+        "caden_to_blame": true
       },
       "output_state_requirements": {
         "caden": [

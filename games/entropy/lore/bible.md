@@ -101,20 +101,24 @@ reveal, unknown to players and characters): worlds are copied at
 inflection points, each given a separate prediction, and worlds that
 fail to match are pruned.
 
-- **The Weirgate Release** (the prologue incident, proposed): a
-  sanctioned Nudge — a controlled release at the Weirgate flood-locks
-  above a harvest-fair town — that Caden's compassionate deviation
-  turns to catastrophic flood. Public story: a reckless student's
-  fault (Caden expelled, his mark struck), the Gatewrights faultless.
-  Vec holds the line and learns order prevents; Isaac, a Weaver, sees
-  the prediction-slate name the dead of a course that did not happen
-  here and keeps it. Full design + fragment plan +
-  human-decision forks: `docs/explorations/incident-design.md`.
+- **The Weirgate Release** (the prologue incident, proposed; resolved
+  to the darker reading): a sanctioned Nudge — a controlled release at
+  the Weirgate flood-locks above a harvest-fair town — that Caden
+  disrupts to save **Professor Wren**, their teacher, marked among the
+  "acceptable losses". He succeeds; the town drowns; **he is genuinely
+  to blame.** Public and private truth agree he caused it — the
+  institution hides only that it foresaw him (the slate named the true
+  toll beforehand). Vec physically restrains Caden and fails (a
+  story-battle) → order-must-be-total; Isaac the Weaver keeps the
+  slate → the prediction is power. Professor Wren survives, her future
+  role reserved. Full design + fragment plan: `docs/explorations/
+  incident-design.md`.
 
 - **R-006 (2026-07-18).** The Shared Origin prologue design — the
   incident (the Weirgate Release) and the Road/Gatewright/pruning
-  framing recorded above — is **PROPOSED**, not owned canon. It fills a
-  gap the source itself flagged (`missing_core_design`,
-  `human_review_required`), does not override `Entropy RPG.md`, and
-  yields to it on any conflict. Promote to `canon` only on human
-  ratification.
+  framing recorded above — is **PROPOSED**, not yet owned canon. It
+  fills a gap the source flagged (`missing_core_design`,
+  `human_review_required`). Reconciliation with `Entropy RPG.md` is
+  **two-way**: that document is being rebuilt to fit this engine as a
+  build/reference doc, and this design feeds that rebuild. Promote to
+  `canon` on human ratification.
