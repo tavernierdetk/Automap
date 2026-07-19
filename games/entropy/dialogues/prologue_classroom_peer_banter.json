@@ -1,11 +1,11 @@
 {
   "id": "prologue_classroom_peer_banter",
-  "intent": "classroom peer banter",
+  "intent": "Classroom peer banter — the player chooses Caden's conviction (what he's 'for'). The choice sets a flag the professor and the fair echo back, and that the incident turns tragic.",
   "start": "n0",
   "nodes": {
     "n0": {
       "speaker_id": "vec",
-      "text": "The Welcome Fair's tomorrow, Caden. You can try every discipline before you ever choose.",
+      "text": "The Welcome Fair's tomorrow, Caden. You get to try every discipline before you ever choose.",
       "advance_hint": "Press Enter",
       "next": "n1"
     },
@@ -16,14 +16,57 @@
       "next": "n2"
     },
     "n2": {
-      "speaker_id": "caden",
-      "text": "It's the whole point, isn't it? Finding what you're for.",
-      "advance_hint": "Press Enter",
-      "next": "n3"
-    },
-    "n3": {
       "speaker_id": "vec",
-      "text": "It's finding what keeps people safe. That's what I'm for.",
+      "text": "Don't mind him. It matters. So — what are you for, Caden?",
+      "choices": [
+        {
+          "label": "To find what I'm for.",
+          "effects": [{"type": "flag", "key": "caden.conviction.purpose", "value": true}],
+          "next_node": "purpose"
+        },
+        {
+          "label": "To keep people safe. Like you.",
+          "effects": [{"type": "flag", "key": "caden.conviction.protect", "value": true}],
+          "next_node": "protect"
+        },
+        {
+          "label": "I don't know yet.",
+          "effects": [{"type": "flag", "key": "caden.conviction.unsure", "value": true}],
+          "next_node": "unsure"
+        }
+      ]
+    },
+    "purpose": {
+      "speaker_id": "isaac",
+      "text": "\"What you're for.\" The luxury of a boy the Road has never once stood against.",
+      "advance_hint": "Press Enter",
+      "next": "purpose_close"
+    },
+    "purpose_close": {
+      "speaker_id": "vec",
+      "text": "Purpose is fine. Just leave room in it for other people. Promise me that much.",
+      "end_session": true
+    },
+    "protect": {
+      "speaker_id": "vec",
+      "text": "Then we're the same, you and I. Hold the line and you'll never be lost.",
+      "advance_hint": "Press Enter",
+      "next": "protect_close"
+    },
+    "protect_close": {
+      "speaker_id": "isaac",
+      "text": "Safe. Everyone says safe. Nobody ever asks: safe for whom?",
+      "end_session": true
+    },
+    "unsure": {
+      "speaker_id": "isaac",
+      "text": "Honest, at least. Most people lie about that until the day it's chosen for them.",
+      "advance_hint": "Press Enter",
+      "next": "unsure_close"
+    },
+    "unsure_close": {
+      "speaker_id": "vec",
+      "text": "Then stay close to me tomorrow. I'll show you what being sure looks like.",
       "end_session": true
     }
   }

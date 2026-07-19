@@ -1,9 +1,16 @@
 {
   "id": "prologue_fair_station_reactions",
-  "intent": "a companion at the fair",
-  "start": "n0",
+  "intent": "Vec at a fair station — warmer if Caden told him he's here to keep people safe (the shared conviction), the neutral line otherwise.",
+  "start": "bonded",
   "nodes": {
-    "n0": {
+    "bonded": {
+      "when": {"flag": "caden.conviction.protect"},
+      "speaker_id": "vec",
+      "text": "See how the demonstrator never forces it? Guidance, not force. That's the line we hold, you and I. I meant what I said.",
+      "end_session": true,
+      "next": "neutral"
+    },
+    "neutral": {
       "speaker_id": "vec",
       "text": "See how the demonstrator never forces it? Guidance, not force. The Order at its best.",
       "end_session": true

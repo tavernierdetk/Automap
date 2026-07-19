@@ -1,6 +1,6 @@
 {
   "id": "prologue_classroom_professor_instruction",
-  "intent": "professor introduces the Auregate",
+  "intent": "The professor introduces the Auregate, then closes with a warning shaped by the conviction the player gave Vec (if they spoke first) — foreshadowing the incident.",
   "start": "n0",
   "nodes": {
     "n0": {
@@ -18,6 +18,33 @@
     "n2": {
       "speaker_id": "auregate_professor",
       "text": "At fifteen you each take a discipline. Tomorrow's Fair shows you the five. Watch closely.",
+      "advance_hint": "Press Enter",
+      "next": "close_protect"
+    },
+    "close_protect": {
+      "when": {"flag": "caden.conviction.protect"},
+      "speaker_id": "auregate_professor",
+      "text": "And you, Caden — I'm told you mean to keep people safe. Hear me, then: a Nudge will one day ask you to let some you could save go unsaved. Bearing that is the discipline. Not the reaching.",
+      "end_session": true,
+      "next": "close_purpose"
+    },
+    "close_purpose": {
+      "when": {"flag": "caden.conviction.purpose"},
+      "speaker_id": "auregate_professor",
+      "text": "And you, Caden — still looking for your shape, I hear. The Road will hand you one. Whether it fits is a question you answer for the rest of your life.",
+      "end_session": true,
+      "next": "close_unsure"
+    },
+    "close_unsure": {
+      "when": {"flag": "caden.conviction.unsure"},
+      "speaker_id": "auregate_professor",
+      "text": "And you, Caden — undecided, they say. Then listen hardest of anyone tomorrow. The uncertain make the finest Gatewrights, or the very worst. Rarely the middle.",
+      "end_session": true,
+      "next": "close_none"
+    },
+    "close_none": {
+      "speaker_id": "auregate_professor",
+      "text": "Tomorrow, then. Watch closely — all of you.",
       "end_session": true
     }
   }
