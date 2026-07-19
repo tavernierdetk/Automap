@@ -469,11 +469,16 @@ def imagegen_config() -> dict:
         return {"provider": "openai", "api_key": key}
     if KEYFILE.exists():
         cfg = json.loads(KEYFILE.read_text())
+        # a self-hosted node needs no key — the genserver transport reaches it
+        # over the private LAN (money-saving swap for the OpenAI box)
+        if cfg.get("provider") == "genserver":
+            return {"provider": "genserver", **cfg}
         if cfg.get("api_key"):
             return {"provider": "openai", **cfg}
     raise RuntimeError(
-        "no image-generation key: set IMAGEGEN_API_KEY, or write "
-        f"{KEYFILE} as {{\"provider\": \"openai\", \"api_key\": \"...\"}}")
+        "no image-generation provider: set IMAGEGEN_API_KEY (OpenAI), or write "
+        f"{KEYFILE} as {{\"provider\": \"openai\", \"api_key\": \"...\"}} or "
+        "{\"provider\": \"genserver\", \"target\": \"gpu1\"}")
 
 
 def _post_json(url: str, payload: dict, headers: dict, timeout: int = 300) -> dict:
@@ -508,9 +513,11 @@ def generate_via_api(req_dir: Path, provider: str | None = None,
 
     cfg = imagegen_config()
     provider = provider or cfg.get("provider", "openai")
+    if provider == "genserver":
+        return _generate_via_genserver(req_dir, cfg, count, log)
     if provider != "openai":
         raise NotImplementedError(f"unknown image provider '{provider}' "
-                                  "(supported: openai)")
+                                  "(supported: openai, genserver)")
     req = json.loads((req_dir / "request.json").read_text())
     prompt = (req_dir / "prompt.md").read_text()
     target = _family_sizes(req["family"])[req["size_class"]]
@@ -536,6 +543,70 @@ def generate_via_api(req_dir: Path, provider: str | None = None,
         "provider": provider, "model": cfg.get("model", "gpt-image-1"),
         "size": size, "quality": quality, "n": n,
         "prompt_sha12": req["prompt_sha12"],
+        "saved": [p.name for p in saved],
+    }, indent=2) + "\n")
+    log(f"[genlab] {req_dir.name}: {len(saved)} reference(s) -> incoming/ "
+        "(next: assets preview)")
+    return saved
+
+
+def _generate_via_genserver(req_dir: Path, cfg: dict, count: int | None = None,
+                            log=print) -> list[Path]:
+    """Fill incoming/ from the self-hosted SDXL node via genserver — the
+    money-saving swap for the OpenAI box. Downstream (preview/ingest) is
+    identical; the only difference is where the pixels came from. genserver
+    content-keys the job on prompt+params, so a re-run is a free cache hit.
+
+    Config (~/.automap/imagegen.json): {"provider": "genserver",
+    "target": "gpu1", "genserver_root": "~/Cowork/genserver", "steps": 30,
+    "model": "…", "seed": 0}.
+    """
+    import re
+    import shutil
+    import subprocess
+    import tempfile
+
+    req = json.loads((req_dir / "request.json").read_text())
+    prompt = (req_dir / "prompt.md").read_text()
+    target = str(cfg.get("target", "gpu1"))
+    root = Path(str(cfg.get("genserver_root", "~/Cowork/genserver"))).expanduser()
+    gs = str(cfg.get("bin") or (root / ".venv" / "bin" / "genserver"))
+    w, h = (int(x) for x in _gen_size(_family_sizes(req["family"])[req["size_class"]]).split("x"))
+    n = count or max(2, int(req.get("count", 2)))
+
+    with tempfile.TemporaryDirectory() as td:
+        (Path(td) / "prompt.txt").write_text(prompt)
+        cmd = [gs, "run", "imagegen", "--input", f"prompt={td}",
+               "--param", f"n={n}", "--param", f"width={w}", "--param", f"height={h}",
+               "--param", f"steps={cfg.get('steps', 30)}",
+               "--param", f"guidance={cfg.get('guidance', 6.5)}",
+               "--param", f"seed={cfg.get('seed', 0)}",
+               "--param", f"model={cfg.get('model', 'stabilityai/stable-diffusion-xl-base-1.0')}",
+               "--target", target]
+        log(f"[genlab] {req_dir.name}: requesting {n} reference(s) ({w}x{h}) "
+            f"from genserver:{target}…")
+        proc = subprocess.run(cmd, capture_output=True, text=True)
+        if proc.returncode != 0:
+            raise RuntimeError(f"genserver imagegen failed: {proc.stderr or proc.stdout}")
+        m = re.search(r"outputs:\s*(\S+)", proc.stdout)
+        if not m:
+            raise RuntimeError(f"genserver: no outputs path in:\n{proc.stdout}")
+        out_dir = Path(m.group(1))
+
+    incoming = req_dir / "incoming"
+    incoming.mkdir(exist_ok=True)
+    start = len(list(incoming.glob("*.png")))
+    saved = []
+    for i, src in enumerate(sorted(out_dir.glob("gen_*.png"))):
+        dst = incoming / f"gen_{start + i}.png"
+        shutil.copy2(src, dst)
+        saved.append(dst)
+    if not saved:
+        raise RuntimeError(f"genserver: no PNGs produced in {out_dir}")
+    (req_dir / "generation.json").write_text(json.dumps({
+        "provider": "genserver", "target": target,
+        "model": cfg.get("model", "stabilityai/stable-diffusion-xl-base-1.0"),
+        "size": f"{w}x{h}", "n": n, "prompt_sha12": req["prompt_sha12"],
         "saved": [p.name for p in saved],
     }, indent=2) + "\n")
     log(f"[genlab] {req_dir.name}: {len(saved)} reference(s) -> incoming/ "

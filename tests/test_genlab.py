@@ -182,6 +182,62 @@ def test_keyfile_configures_provider(tmp_path, monkeypatch):
     assert cfg["quality"] == "medium"
 
 
+def test_keyfile_configures_genserver_provider(tmp_path, monkeypatch):
+    """A self-hosted node is a keyless provider — the LAN transport reaches it."""
+    monkeypatch.delenv("IMAGEGEN_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    kf = tmp_path / "imagegen.json"
+    kf.write_text(json.dumps({"provider": "genserver", "target": "gpu1"}))
+    monkeypatch.setattr(genlab, "KEYFILE", kf)
+    cfg = genlab.imagegen_config()
+    assert cfg["provider"] == "genserver" and cfg["target"] == "gpu1"
+    assert "api_key" not in cfg
+
+
+def test_genserver_provider_runs_node_and_fills_incoming(tmp_path, monkeypatch):
+    """genserver mode drops PNGs into incoming/ exactly like the OpenAI path —
+    same downstream contract, just from the self-hosted SDXL node."""
+    import subprocess
+    req = genlab.create_request(tmp_path, IDENTITY, "id.json",
+                                "tree", "deciduous", "large", 2,
+                                FAM["descriptor"], FAM["materials"])
+    seen = {}
+
+    def fake_run(cmd, capture_output=True, text=True):
+        import pathlib
+        seen["cmd"] = cmd
+        # the prompt was staged as a --input dir with prompt.txt == prompt.md
+        idir = next(c.split("=", 1)[1] for c in cmd if c.startswith("prompt="))
+        seen["prompt"] = (pathlib.Path(idir) / "prompt.txt").read_text()
+        out = tmp_path / "store" / "outputs"
+        out.mkdir(parents=True, exist_ok=True)
+        for i in range(2):
+            synthetic_reference(64, 96).save(out / f"gen_{i}.png")
+        return subprocess.CompletedProcess(
+            cmd, 0, stdout=f"[genserver] imagegen abc123: ran on gpu1\n"
+            f"[genserver] outputs: {out}\n", stderr="")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    kf = tmp_path / "imagegen.json"
+    kf.write_text(json.dumps({"provider": "genserver", "target": "gpu1",
+                              "steps": 24, "seed": 5}))
+    monkeypatch.setattr(genlab, "KEYFILE", kf)
+
+    saved = genlab.generate_via_api(req, log=lambda m: None)
+    assert [p.name for p in saved] == ["gen_0.png", "gen_1.png"]
+    assert all(p.exists() for p in saved)
+    joined = " ".join(seen["cmd"])
+    assert "run imagegen" in joined and "--target gpu1" in joined
+    assert "n=2" in joined and "steps=24" in joined and "seed=5" in joined
+    assert "width=1024" in joined and "height=1536" in joined  # large tree -> portrait
+    assert seen["prompt"] == (req / "prompt.md").read_text()   # prompt staged verbatim
+    gen = json.loads((req / "generation.json").read_text())
+    assert gen["provider"] == "genserver" and gen["saved"] == ["gen_0.png", "gen_1.png"]
+    # append, never overwrite — same as the API path
+    saved2 = genlab.generate_via_api(req, log=lambda m: None)
+    assert [p.name for p in saved2] == ["gen_2.png", "gen_3.png"]
+
+
 # --- repixel ------------------------------------------------------------------------
 
 def test_repixel_passes_the_full_qc_gate(pal):
