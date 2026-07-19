@@ -190,6 +190,22 @@ def main(
         _run_gate("items", items_mod.check_items(src_root))
     if (src_root / "skills").exists():
         _run_gate("skills", items_mod.check_skills(src_root))
+    # sequences are a design tier (Story Director); the publisher reports
+    # their checklist non-fatally — errors are contradictions, warnings are
+    # the to-author list. They are NOT copied to content/ (no runtime yet;
+    # the SequenceRunner arrives in NS1).
+    from automap import sequences as sequences_mod
+    if (src_root / "story" / "sequences").exists():
+        seq_findings = sequences_mod.check_all(src_root)
+        seq_errs = [f for f in seq_findings if f.severity == "error"]
+        for f in seq_errs:
+            log(f"ERROR: sequence [{f.beat}]: {f.message}")
+        n_warn = len(seq_findings) - len(seq_errs)
+        log(f"sequences: {len(seq_errs)} contradictions, {n_warn} to-author "
+            "(checklist, not published — runtime lands in NS1)")
+        if seq_errs:
+            raise typer.Exit(code=1)
+
     for kind, gate in (("economy", economy_mod.check_economy),
                        ("ui", ui_mod.check_ui),
                        ("cutscenes", cutscenes_mod.check_all)):

@@ -1,0 +1,723 @@
+{
+  "id": "prologue_shared_origin",
+  "title": "Shared Origin",
+  "sequence_type": "fragmented_prologue",
+  "status": "concept",
+  "source_reference": {
+    "canonical_id": "narrative.prologue.shared_origin",
+    "document": "Entropy RPG.md",
+    "section": "Story beats / Prologue"
+  },
+  "ownership": {
+    "primary_director": "story_director",
+    "contributing_directors": [
+      "lore_keeper",
+      "casting_director",
+      "dialogue_writer",
+      "scene_director",
+      "encounter_director",
+      "systems_director",
+      "cutscene_director",
+      "continuity_director",
+      "asset_director"
+    ]
+  },
+  "narrative_purpose": {
+    "player_facing": [
+      "Introduce Caden, Vec, and Isaac as childhood companions.",
+      "Establish the Auregate as a formative institution.",
+      "Introduce the five disciplines through ordinary school life.",
+      "Let the player participate in Caden and Vec's class choices.",
+      "Present the formative incident that diverges the three paths.",
+      "Create uncertainty over who becomes heroic or villainous."
+    ],
+    "structural": [
+      "Establish the common origin of the parallel protagonists.",
+      "Seed Caden's redemption arc.",
+      "Seed Vec's corruption arc.",
+      "Establish Isaac as a future antagonist, not yet reduced to it.",
+      "Introduce the Road and Gatewright worldview from inside a trusted institution.",
+      "Preserve information recontextualizable by later fragments."
+    ],
+    "thematic": [
+      "freedom_under_prediction",
+      "compassion_and_consequence",
+      "control_and_uncertainty",
+      "identity_through_choice",
+      "retrospective_reinterpretation"
+    ]
+  },
+  "presentation": {
+    "chronology": {
+      "diegetic_order": [
+        "prologue.classroom",
+        "prologue.welcome_fair",
+        "prologue.class_choice",
+        "prologue.incident"
+      ],
+      "player_experience_order": {
+        "status": "unresolved",
+        "policy": "fragmented_revelation"
+      }
+    },
+    "framing": {
+      "method": "playable_flashback_fragments",
+      "narrator": "none",
+      "reliability": "apparently_objective"
+    },
+    "protagonist_naming": {
+      "status": "unresolved",
+      "decision_owner": "story_director",
+      "options": [
+        "identify_caden_and_vec_immediately",
+        "initially_use_visual_or_relational_labels",
+        "reveal_one_or_both_names_later"
+      ]
+    }
+  },
+  "world_context": {
+    "age": "third_age",
+    "movement": "sixth_movement",
+    "location": {
+      "institution_id": "location.auregate",
+      "institution_type": "gatewright_finishing_school"
+    },
+    "public_worldview": {
+      "road": {
+        "perception": "broadly_beneficial",
+        "institutional_interpretation": "legitimate_guidance"
+      },
+      "gatewrights": {
+        "perception": "broadly_positive",
+        "known_function": [
+          "preserve_alignment_with_the_road",
+          "apply_nudges_to_large_scale_events",
+          "influence_social_movements"
+        ]
+      }
+    },
+    "concealed_cosmology": {
+      "world_branching": {
+        "known_to_player": false,
+        "known_to_characters": false,
+        "reveal_scope": "major_late_game_revelation",
+        "truth": [
+          "Worlds are copied at major inflection points.",
+          "Each resulting world receives a separate prediction.",
+          "Worlds that fail to match their prediction are pruned."
+        ]
+      }
+    }
+  },
+  "disciplines": [
+    "shaper",
+    "steward",
+    "weaver",
+    "breaker",
+    "mentarch"
+  ],
+  "characters": [
+    {
+      "id": "caden",
+      "creature": "caden",
+      "role": "protagonist",
+      "long_arc": "redemption",
+      "class": {
+        "selected_by_player": true,
+        "allowed_choices": [
+          "shaper",
+          "steward",
+          "weaver",
+          "breaker",
+          "mentarch"
+        ]
+      },
+      "arc_seed": {
+        "premise": "Was compassionate and dearly punished for it.",
+        "required_prologue_evidence": [
+          "genuine_compassion",
+          "willingness_to_accept_personal_risk",
+          "a consequence that makes compassion appear naive or destructive"
+        ]
+      },
+      "age_by_segment": {
+        "classroom": 11,
+        "welcome_fair": 11,
+        "class_choice": 15,
+        "incident": "unresolved"
+      },
+      "initial_relationships": {
+        "vec": "close_peer",
+        "isaac": "close_peer"
+      }
+    },
+    {
+      "id": "vec",
+      "creature": "vec",
+      "role": "protagonist",
+      "long_arc": "corruption",
+      "class": {
+        "selected_by_player": true,
+        "allowed_choices": [
+          "shaper",
+          "steward",
+          "weaver",
+          "breaker",
+          "mentarch"
+        ]
+      },
+      "arc_seed": {
+        "premise": "Begins with goodwill, descends into evil.",
+        "required_prologue_evidence": [
+          "sincere_initial_goodwill",
+          "a desire_for_order_or_effectiveness",
+          "a vulnerability_to_control_justified_by_outcomes"
+        ]
+      },
+      "age_by_segment": {
+        "classroom": 11,
+        "welcome_fair": 11,
+        "class_choice": 15,
+        "incident": "unresolved"
+      },
+      "visual_profile": {
+        "adult": {
+          "age_range": "22-32",
+          "hair": "auburn",
+          "facial_hair": "sharp_mustache",
+          "clothing": "light_crisp_battle_ready_uniform",
+          "headgear": "battle_helmet"
+        }
+      },
+      "initial_relationships": {
+        "caden": "close_peer",
+        "isaac": "close_peer"
+      }
+    },
+    {
+      "id": "isaac",
+      "creature": "isaac",
+      "role": "major_npc",
+      "long_arc": "antagonist",
+      "class": {
+        "fixed_choice": "weaver"
+      },
+      "arc_seed": {
+        "required_prologue_evidence": [
+          "charisma_or_peer_influence",
+          "intellectual_or_emotional_affinity_for_uncertainty",
+          "credible_friendship_with_both_protagonists",
+          "behavior_that_can_be_read_in_multiple_ways"
+        ]
+      },
+      "age_by_segment": {
+        "classroom": 11,
+        "welcome_fair": 11,
+        "class_choice": 15,
+        "incident": "unresolved"
+      },
+      "initial_relationships": {
+        "caden": "close_peer",
+        "vec": "close_peer"
+      }
+    },
+    {
+      "id": "auregate_professor",
+      "role": "npc",
+      "tbd": true,
+      "note": "the classroom / welcoming professor \u2014 Casting to define"
+    }
+  ],
+  "relationship_model": {
+    "group_id": "relationship.caden_vec_isaac_youth",
+    "shorthand": "CVI",
+    "starting_state": {
+      "social_status_difference": "insignificant",
+      "wealth_difference": "insignificant",
+      "institutional_status_difference": "insignificant",
+      "relationship": "established_friend_group"
+    },
+    "dramatic_requirement": [
+      "Divergence must feel caused by interpretation and choice, not predetermined inequality.",
+      "Each must derive a different lesson from the same incident."
+    ]
+  },
+  "state": {
+    "entry_conditions": [
+      "new_game"
+    ],
+    "exit_conditions": [
+      "all_required_fragments_completed"
+    ],
+    "persistent_outputs": [
+      "caden_selected_class",
+      "vec_selected_class",
+      "prologue_relationship_baseline",
+      "incident_interpretation_caden",
+      "incident_interpretation_vec",
+      "incident_interpretation_isaac",
+      "player_knowledge_road_intro",
+      "player_knowledge_gatewrights_intro"
+    ],
+    "hidden_outputs": [
+      "prologue_detail_memory_flags",
+      "incident_truth_fragments",
+      "isaac_early_behavior_evidence"
+    ]
+  },
+  "segments": [
+    {
+      "id": "prologue.classroom",
+      "title": "Before the Fair",
+      "segment_type": "playable_exposition",
+      "status": "partial",
+      "chronology": {
+        "character_age": 11,
+        "relative_position": "first"
+      },
+      "location": {
+        "scene_role": "auregate_classroom",
+        "location_id": "location.auregate.classroom"
+      },
+      "participants": {
+        "required": [
+          "caden",
+          "vec",
+          "isaac",
+          "auregate_professor"
+        ],
+        "ambient": [
+          "auregate_students"
+        ]
+      },
+      "dialogue_refs": [
+        "dialogue.prologue.classroom.peer_banter",
+        "dialogue.prologue.classroom.professor_instruction"
+      ],
+      "produces": [
+        "player_knowledge_road_intro",
+        "player_knowledge_gatewrights_intro",
+        "prologue_detail_memory_flags"
+      ],
+      "dramatic_function": {
+        "primary": [
+          "establish_friend_group",
+          "establish_normality",
+          "introduce_upcoming_welcome_fair"
+        ],
+        "secondary": [
+          "introduce_auregate",
+          "introduce_five_disciplines",
+          "establish_choice_as_a_future_rite_of_passage"
+        ]
+      },
+      "exposition": {
+        "required": [
+          "auregate_guides_students_toward_professions",
+          "class_specialization_occurs_at_age_15",
+          "five_disciplines_exist",
+          "welcome_fair_demonstrates_the_disciplines"
+        ],
+        "prohibited": [
+          "exhaustive_combat_rules",
+          "direct_explanation_of_world_pruning",
+          "overt_identification_of_isaac_as_antagonist"
+        ]
+      },
+      "gameplay_teaching": {
+        "systems": [
+          "movement",
+          "interaction",
+          "inspection",
+          "dialogue"
+        ],
+        "optional": [
+          "journal_or_codex"
+        ]
+      },
+      "completion_trigger": {
+        "type": "classroom_period_ends"
+      },
+      "next_segment": {
+        "id": "prologue.welcome_fair",
+        "transition": "temporal_or_fragment_break"
+      }
+    },
+    {
+      "id": "prologue.welcome_fair",
+      "title": "The Welcome Fair",
+      "segment_type": "playable_hub",
+      "status": "partial",
+      "chronology": {
+        "character_age": 11,
+        "relative_position": "second"
+      },
+      "location": {
+        "scene_role": "auregate_fair",
+        "location_id": "location.auregate.welcome_fair",
+        "entry_anchor": "fair_entrance"
+      },
+      "participants": {
+        "required": [
+          "caden",
+          "vec",
+          "isaac"
+        ],
+        "supporting": [
+          "auregate_professor"
+        ],
+        "ambient": [
+          "discipline_demonstrators",
+          "professors",
+          "students",
+          "visitors"
+        ]
+      },
+      "dialogue_refs": [
+        "dialogue.prologue.fair.station_reactions"
+      ],
+      "produces": [
+        "prologue_relationship_baseline",
+        "isaac_early_behavior_evidence"
+      ],
+      "requires": [
+        "player_knowledge_road_intro"
+      ],
+      "structure": {
+        "mode": "bounded_free_exploration",
+        "required_stations": [
+          "station.shaper",
+          "station.steward",
+          "station.weaver",
+          "station.breaker",
+          "station.mentarch"
+        ],
+        "optional_order": "player_selected"
+      },
+      "station_template": {
+        "required_fields": [
+          "discipline_identity",
+          "visible_practical_application",
+          "short_interaction",
+          "optional_vanilla_ability_demonstration",
+          "companion_reaction",
+          "future_mechanical_foreshadowing"
+        ]
+      },
+      "gameplay": {
+        "combat": {
+          "status": "optional",
+          "policy": [
+            "nonlethal",
+            "instructional",
+            "simplified_vanilla_abilities"
+          ]
+        }
+      },
+      "completion_trigger": {
+        "type": "all_required_stations_seen_or_exit_confirmed"
+      },
+      "next_segment": {
+        "id": "prologue.class_choice",
+        "transition": "age_jump"
+      }
+    },
+    {
+      "id": "prologue.class_choice",
+      "title": "The Welcoming",
+      "segment_type": "ritualized_player_choice",
+      "status": "partial",
+      "chronology": {
+        "character_age": 15,
+        "relative_position": "third"
+      },
+      "location": {
+        "scene_role": "auregate_specialty_wing",
+        "location_id": "location.auregate.specialty_wing"
+      },
+      "participants": {
+        "required": [
+          "caden",
+          "vec",
+          "isaac",
+          "auregate_professor"
+        ]
+      },
+      "dialogue_refs": [
+        "dialogue.prologue.class_choice.isaac",
+        "dialogue.prologue.class_choice.caden",
+        "dialogue.prologue.class_choice.vec"
+      ],
+      "produces": [
+        "caden_selected_class",
+        "vec_selected_class"
+      ],
+      "sequence": {
+        "order": [
+          "isaac_choice",
+          "caden_choice",
+          "vec_choice"
+        ],
+        "fixed_events": [
+          {
+            "character_id": "isaac",
+            "chosen_class": "weaver",
+            "player_control": false
+          }
+        ],
+        "player_choice_events": [
+          {
+            "character_id": "caden",
+            "allowed_classes": [
+              "shaper",
+              "steward",
+              "weaver",
+              "breaker",
+              "mentarch"
+            ]
+          },
+          {
+            "character_id": "vec",
+            "allowed_classes": [
+              "shaper",
+              "steward",
+              "weaver",
+              "breaker",
+              "mentarch"
+            ]
+          }
+        ]
+      },
+      "choice_interaction": {
+        "structure": [
+          "enter_specialty_classroom",
+          "inspect_or_speak_with_professor",
+          "take_a_seat",
+          "receive_confirmation_prompt",
+          "confirm_choice"
+        ],
+        "commitment_point": "confirmation_with_professor",
+        "cancellation_allowed_before_commitment": true
+      },
+      "narrative_constraints": [
+        "Every available class must remain plausible for both protagonists.",
+        "Class choice may shape expression of the arc but must not determine morality.",
+        "Isaac's Weaver choice must be meaningful without announcing villainy."
+      ],
+      "completion_trigger": {
+        "type": "both_player_choices_confirmed"
+      },
+      "next_segment": {
+        "id": "prologue.incident",
+        "transition": "unresolved"
+      }
+    },
+    {
+      "id": "prologue.incident",
+      "title": "The Incident",
+      "segment_type": "formative_crisis",
+      "status": "missing_core_design",
+      "chronology": {
+        "character_age": "unresolved",
+        "relative_position": "fourth"
+      },
+      "location": {
+        "scene_role": "prologue_incident_tbd"
+      },
+      "participants": {
+        "required": [
+          "caden",
+          "vec",
+          "isaac"
+        ]
+      },
+      "dialogue_refs": [
+        "dialogue.prologue.incident"
+      ],
+      "produces": [
+        "incident_interpretation_caden",
+        "incident_interpretation_vec",
+        "incident_interpretation_isaac",
+        "incident_truth_fragments"
+      ],
+      "requires": [
+        "caden_selected_class",
+        "vec_selected_class"
+      ],
+      "dramatic_function": {
+        "primary": [
+          "separate_three_character_worldviews",
+          "initiate_caden_redemption_trajectory",
+          "initiate_vec_corruption_trajectory",
+          "initiate_isaac_antagonist_trajectory"
+        ]
+      },
+      "unresolved_design_questions": [
+        "What physically happens?",
+        "Who is harmed or lost?",
+        "What does Caden attempt to save?",
+        "What punishment does Caden receive?",
+        "What choice does Vec make?",
+        "What evidence does Isaac discover or conceal?",
+        "Failed Nudge, successful Nudge with casualties, or off-Road event?",
+        "Are the three separated immediately afterward?",
+        "Which details are hidden in the first presentation?"
+      ],
+      "completion_trigger": {
+        "status": "to_design"
+      }
+    }
+  ],
+  "revelation_plan": {
+    "major_reveal": {
+      "id": "reveal.world_pruning",
+      "content": [
+        "parallel_worlds_created_at_movements",
+        "separate_predictions_assigned",
+        "incorrect_worlds_pruned"
+      ],
+      "prologue_seed_requirement": [
+        "Include one detail in the incident that appears incidental initially.",
+        "The detail must later evidence branching, prediction, or pruning.",
+        "Avoid terminology that reveals the mechanism before the reveal."
+      ]
+    },
+    "fragment_policy": [
+      "Each replayed fragment must add material information.",
+      "New information may alter interpretation but cannot contradict visible facts.",
+      "Withheld framing / missing dialogue preferred over false narration."
+    ]
+  },
+  "dialogue_package": {
+    "required_dialogue_sets": [
+      {
+        "id": "dialogue.prologue.classroom.peer_banter",
+        "status": "unwritten"
+      },
+      {
+        "id": "dialogue.prologue.classroom.professor_instruction",
+        "status": "unwritten"
+      },
+      {
+        "id": "dialogue.prologue.fair.station_reactions",
+        "status": "unwritten"
+      },
+      {
+        "id": "dialogue.prologue.class_choice.isaac",
+        "status": "unwritten"
+      },
+      {
+        "id": "dialogue.prologue.class_choice.caden",
+        "status": "unwritten"
+      },
+      {
+        "id": "dialogue.prologue.class_choice.vec",
+        "status": "unwritten"
+      },
+      {
+        "id": "dialogue.prologue.incident",
+        "status": "blocked_by_incident_design"
+      }
+    ]
+  },
+  "scene_requirements": [
+    {
+      "scene_id": "scene.auregate.classroom_age11",
+      "required_capabilities": [
+        "seated_students",
+        "professor_presentation",
+        "back_of_room_peer_conversation",
+        "inspection_points",
+        "class_visual_foreshadowing"
+      ]
+    },
+    {
+      "scene_id": "scene.auregate.welcome_fair_age11",
+      "required_capabilities": [
+        "fair_entrance_meeting_anchor",
+        "five_discipline_stations",
+        "free_exploration",
+        "demonstrations",
+        "optional_tutorial_encounter"
+      ]
+    },
+    {
+      "scene_id": "scene.auregate.specialty_wing_age15",
+      "required_capabilities": [
+        "five_specialty_classrooms",
+        "professor_confirmation",
+        "selectable_seats",
+        "irreversible_choice_confirmation"
+      ]
+    },
+    {
+      "scene_id": "scene.prologue.incident_tbd",
+      "status": "unresolved"
+    }
+  ],
+  "asset_requirements": {
+    "characters": [
+      "character.caden.age11",
+      "character.caden.age15",
+      "character.vec.age11",
+      "character.vec.age15",
+      "character.isaac.age11",
+      "character.isaac.age15",
+      "character.auregate_professor_tbd"
+    ],
+    "environments": [
+      "environment.auregate.classroom",
+      "environment.auregate.fair",
+      "environment.auregate.specialty_shaper",
+      "environment.auregate.specialty_steward",
+      "environment.auregate.specialty_weaver",
+      "environment.auregate.specialty_breaker",
+      "environment.auregate.specialty_mentarch",
+      "environment.prologue.incident_tbd"
+    ],
+    "interface": [
+      "ui.class_choice_confirmation",
+      "ui.fair_station_information"
+    ],
+    "audiovisual": [
+      "music.auregate_childhood",
+      "music.auregate_welcoming",
+      "music.prologue_incident",
+      "ambience.classroom",
+      "ambience.fair"
+    ]
+  },
+  "continuity_rules": [
+    "Caden, Vec, and Isaac begin on relatively equal social footing.",
+    "Isaac chooses Weaver at age 15.",
+    "Caden's and Vec's classes are player-selected.",
+    "The three share a formative incident.",
+    "Caden's compassion precedes the punishment associated with it.",
+    "Vec's initial goodwill is credible.",
+    "The Road is broadly trusted during the prologue.",
+    "The pruning cosmology is not common knowledge.",
+    "Player-selected class cannot invalidate the fixed moral arcs.",
+    "Later fragments may reveal omitted info but may not erase player-observed actions."
+  ],
+  "validation": {
+    "completeness": {
+      "blocked": [
+        "incident_design",
+        "character_voice_profiles",
+        "protagonist_naming_strategy",
+        "fragment_release_order",
+        "exact_player_control_model"
+      ],
+      "partially_complete": [
+        "classroom",
+        "welcome_fair",
+        "class_choice"
+      ]
+    }
+  },
+  "generation_provenance": {
+    "human_review_required": true,
+    "note": "Transcribed 2026-07-18 from the narrative_sequence sample into sequence@1.0.0. Canon vs inferred vs proposed per the source doc."
+  },
+  "intent": "The fragmented prologue: Caden, Vec, and Isaac's shared origin at the Auregate, seeding redemption / corruption / antagonist arcs."
+}

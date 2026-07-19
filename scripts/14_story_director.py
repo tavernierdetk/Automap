@@ -65,6 +65,35 @@ def arcs(game: str = typer.Option("entropy")) -> None:
 
 
 @app.command()
+def sequences(game: str = typer.Option("entropy")) -> None:
+    """List narrative sequences + run the structural gate. Warnings are the
+    living checklist (unbuilt scenes/dialogue/cast); errors are genuine
+    contradictions (docs/explorations/narrative-sequence-gap.md)."""
+    from automap import sequences as sq
+    gdir = _game_dir(game)
+    docs = sq.load_sequences(gdir)
+    if not docs:
+        typer.echo("no sequences yet — the Story Director composes the first")
+        return
+    findings = sq.check_all(gdir)
+    for f in findings:
+        typer.echo(f"  {f.severity.upper():5s} [{f.beat}] {f.message}")
+    errs = [f for f in findings if f.severity == "error"]
+    warns = len(findings) - len(errs)
+    for sid, doc in sorted(docs.items()):
+        segs = doc.get("segments", [])
+        blocked = [s["id"] for s in segs
+                   if s.get("status") in ("missing_core_design", "blocked")]
+        typer.echo(f"  {sid:26s} {doc.get('status','?'):11s} "
+                   f"{len(segs)} segments ({len(blocked)} design-blocked)")
+    typer.echo(f"\nchecklist: {warns} to-author warnings, {len(errs)} errors")
+    if errs:
+        typer.echo("BLOCKED — contradictions must be fixed (warnings are fine)")
+        raise typer.Exit(1)
+    typer.echo("sequence gate passed — the spine is sound; warnings are the work")
+
+
+@app.command()
 def cutscenes(game: str = typer.Option("entropy")) -> None:
     """List cutscenes + run the cutscene gate (the Cutscene Director's
     chair sits under this one — docs/explorations/cutscene-module.md)."""

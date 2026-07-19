@@ -59,7 +59,8 @@ Handshakes (parallel work meeting at sockets):
 | Role | Status | Owned document | Skill door | Gate on output | Library consulted |
 |---|---|---|---|---|---|
 | **Game Director** | new (R6) | `games/<g>/game.md` — pitch, pillars, scope, commissions | `/game-director` (R6) | pillars review (human) | world + story + systems docs |
-| **Story Director** | seam (R2) | `games/<g>/story/` — arcs, beats, quests, dialogue commissions | `/story-director` (R2) | Lore Keeper canon gate; dialogue-script@ schema | lore bible, cast book |
+| **Story Director** | built (R2) | `games/<g>/story/` — arcs, beats, quests; + `story/sequences/` (sequence@1, the tier above arcs — a prologue's segments + state ledger) | `/story-director`, `/sequence-director` | Lore Keeper canon gate; ★ **sequence gate** (warn=to-author, error=contradiction); dialogue-script@ schema | lore bible, cast book |
+| **Continuity Director** | seam (named 2026-07-18) | cross-sequence invariants (`continuity_rules`, narrative checks) | (future) | ★ continuity gate (mechanical: equal-status, fixed choices, arc-independent-of-class, ledger completeness) + judgment (not-telegraphed, fragment-fairness) | the sequence ledger |
 | **Lore Keeper** | new (R2) | `games/<g>/lore/` — canon bible (places, names, history, tone) | `/lore-keeper` (R2) | consistency review on canon edits | existing briefs (canon seeds) |
 | **Dialogue Writer** | wearable | dialogue-script@ documents under `story/` | via Story Director | dialogue-script@ schema + canon gate | lore bible, cast book |
 | **Cutscene Director** | built (2026-07-18) | `games/<g>/cutscenes/` — cutscene@1 staged story (puppets, free camera, frozen/absent PC) | `/cutscene-director` | ★ **cutscene gate**: stage exists, actors real + region-legal (R-005), speakers staged, dialogues exist, choreography in bounds | cast book, scene briefs |
@@ -155,6 +156,8 @@ are marked ★ — they are where quality is actually enforced.
 | 34 | Cutscene Director → Casting Director | actor requisition (staged ids → creatures) | cast book — no creature/sprite, no stage |
 | 35 | Cutscene Director → publisher/engine | cutscene@ document | ★ **cutscene gate** (stage, actors, R-005, speakers, dialogues, bounds) |
 | 36 | Audio Director key door | `automap/audio.py` (`~/.automap/musicgen.json`, SUNO_API_KEY) | seam — pipeline pending |
+| 37 | Story Director → its own sequence tier | sequence@1 (`story/sequences/`) — segments + state ledger | ★ **sequence gate** (checklist vs contradiction) |
+| 38 | Sequence → every downstream chair | to-author warnings route work (scenes→Scene, dialogue→Dialogue, cast→Casting, design-blocked→human) | each chair's own gate |
 
 ## Phases
 
