@@ -1,0 +1,18 @@
+{
+  "id": "shaper",
+  "name": "Shaper",
+  "primary_stat": "terrain_control",
+  "attribute_bonus": {
+    "terrain_control": 2
+  },
+  "ability_pool": [
+    "attack",
+    "gust",
+    "stonewall"
+  ],
+  "markers": {
+    "motif": "stone_and_soil",
+    "accent": "earthen"
+  },
+  "fiction": "Shapes stone and soil to the will; the ground answers."
+}

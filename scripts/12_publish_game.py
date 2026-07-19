@@ -41,7 +41,7 @@ app = typer.Typer(add_completion=False)
 
 JSON_KINDS = {"levels": "level", "creatures": "creature",
               "dialogues": "dialogue-script", "items": "item",
-              "skills": "skill"}
+              "skills": "skill", "classes": "class"}
 # kinds published by dedicated gated blocks (not the JSON_KINDS loop)
 GATED_SCHEMAS = {"economy": "economy", "ui": "ui", "casting": None,
                  "cutscenes": "cutscene"}
@@ -190,6 +190,9 @@ def main(
         _run_gate("items", items_mod.check_items(src_root))
     if (src_root / "skills").exists():
         _run_gate("skills", items_mod.check_skills(src_root))
+    if (src_root / "classes").exists():
+        from automap import classes as classes_mod
+        _run_gate("classes", classes_mod.check_classes(src_root))
     # sequences (Story Director's tier): gate = contradictions block,
     # to-author warnings inform; then publish to content/sequences/ for the
     # SequenceRunner (NS1). The state ledger's runtime substrate is

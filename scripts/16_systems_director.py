@@ -20,6 +20,7 @@ from pathlib import Path
 import typer
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from automap import classes as classes_mod  # noqa: E402
 from automap import economy as economy_mod  # noqa: E402
 from automap import items as items_mod  # noqa: E402
 from automap import ui_gate as ui_mod  # noqa: E402
@@ -27,10 +28,12 @@ from automap import ui_gate as ui_mod  # noqa: E402
 app = typer.Typer(add_completion=False)
 items_app = typer.Typer(add_completion=False)
 skills_app = typer.Typer(add_completion=False)
+classes_app = typer.Typer(add_completion=False)
 economy_app = typer.Typer(add_completion=False)
 ui_app = typer.Typer(add_completion=False)
 for name, sub in (("items", items_app), ("skills", skills_app),
-                  ("economy", economy_app), ("ui", ui_app)):
+                  ("classes", classes_app), ("economy", economy_app),
+                  ("ui", ui_app)):
     app.add_typer(sub, name=name)
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -73,6 +76,11 @@ def items_library(game: str = typer.Option("entropy")) -> None:
 @skills_app.command("check")
 def skills_check(game: str = typer.Option("entropy")) -> None:
     _report(items_mod.check_skills(_game_dir(game)))
+
+
+@classes_app.command("check")
+def classes_check(game: str = typer.Option("entropy")) -> None:
+    _report(classes_mod.check_classes(_game_dir(game)))
 
 
 @economy_app.command("check")

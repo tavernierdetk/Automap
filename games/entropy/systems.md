@@ -20,6 +20,18 @@ constant in the same commit.
   (admission threshold is 50 — one hit may prime, not perma-lock);
   heal skills follow the same atk_mult cap as heal power.
 
+## Class budgets (the class stat-budget gate, `automap/classes.py`)
+
+- The five disciplines map onto the five attributes: **shaper**=
+  terrain_control, **steward**=creature_affinity, **breaker**=
+  kinesthetic, **mentarch**=lucidity, **weaver**=chaos_mastery (the
+  discipline nearest the Road — prediction/probability).
+- A discipline's `attribute_bonus` sums to ≤ **3** (a +2 primary and at
+  most one +1 elsewhere). Chosen once, at age 15, it is irreversible.
+- Every ability in a discipline's `ability_pool` must be a real skill@
+  (and should include the basic `attack`). Pools stay within the skill
+  caps above.
+
 ## Progression (design.json `progression`, game-design@1.1)
 
 - XP curve: `base 100, growth 1.35`, max level **20**.

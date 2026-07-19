@@ -1,0 +1,11 @@
+{
+  "id": "stonewall",
+  "name": "Stonewall",
+  "target_mode": "ally",
+  "formula": {
+    "atk_stat": "terrain_control",
+    "atk_mult": 3.0,
+    "heal": true
+  },
+  "fiction": "Raise the ground to shield the one behind it."
+}

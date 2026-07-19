@@ -1,0 +1,12 @@
+{
+  "id": "unravel",
+  "name": "Unravel",
+  "target_mode": "enemy",
+  "formula": {
+    "atk_stat": "chaos_mastery",
+    "atk_mult": 6.0,
+    "def_stat": "terrain_control",
+    "def_mult": 0.5
+  },
+  "fiction": "Pull one thread of what-holds-them-together."
+}

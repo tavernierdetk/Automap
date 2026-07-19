@@ -1,0 +1,18 @@
+{
+  "id": "breaker",
+  "name": "Breaker",
+  "primary_stat": "kinesthetic",
+  "attribute_bonus": {
+    "kinesthetic": 2
+  },
+  "ability_pool": [
+    "attack",
+    "heavy_strike",
+    "pierce"
+  ],
+  "markers": {
+    "motif": "force",
+    "accent": "iron"
+  },
+  "fiction": "Meets the world with force, and the world gives way."
+}

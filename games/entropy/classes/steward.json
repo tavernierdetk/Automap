@@ -1,0 +1,18 @@
+{
+  "id": "steward",
+  "name": "Steward",
+  "primary_stat": "creature_affinity",
+  "attribute_bonus": {
+    "creature_affinity": 2
+  },
+  "ability_pool": [
+    "attack",
+    "soothe",
+    "beast_call"
+  ],
+  "markers": {
+    "motif": "living_things",
+    "accent": "verdant"
+  },
+  "fiction": "Tends what lives; calls it, calms it, keeps it."
+}

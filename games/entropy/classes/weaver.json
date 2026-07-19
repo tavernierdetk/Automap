@@ -1,0 +1,18 @@
+{
+  "id": "weaver",
+  "name": "Weaver",
+  "primary_stat": "chaos_mastery",
+  "attribute_bonus": {
+    "chaos_mastery": 2
+  },
+  "ability_pool": [
+    "attack",
+    "ember",
+    "unravel"
+  ],
+  "markers": {
+    "motif": "threads",
+    "accent": "iridescent"
+  },
+  "fiction": "Reads and pulls the threads of what-might-be \u2014 the discipline nearest the Road."
+}

@@ -1,0 +1,18 @@
+{
+  "id": "mentarch",
+  "name": "Mentarch",
+  "primary_stat": "lucidity",
+  "attribute_bonus": {
+    "lucidity": 2
+  },
+  "ability_pool": [
+    "attack",
+    "mend",
+    "daze"
+  ],
+  "markers": {
+    "motif": "mind",
+    "accent": "pale"
+  },
+  "fiction": "Orders mind and moment; clarity is the sharpest edge."
+}
