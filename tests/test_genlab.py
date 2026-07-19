@@ -273,6 +273,30 @@ def test_a1111_provider_posts_to_webui_and_fills_incoming(tmp_path, monkeypatch)
     assert [p.name for p in saved2] == ["gen_2.png", "gen_3.png"]
 
 
+def test_a1111_base_scales_the_canvas_for_sd15(tmp_path, monkeypatch):
+    """`base` retargets the SDXL 1024 canvas to the model's native short side
+    (SD 1.5 -> 512), keeping aspect and snapping to /64."""
+    import base64, io
+    req = genlab.create_request(tmp_path, IDENTITY, "id.json",
+                                "tree", "deciduous", "large", 2,  # portrait 1024x1536
+                                FAM["descriptor"], FAM["materials"])
+    seen = {}
+
+    def fake_post(url, payload, headers, timeout=300):
+        seen.update(payload)
+        buf = io.BytesIO()
+        synthetic_reference(64, 96).save(buf, format="PNG")
+        return {"images": [base64.b64encode(buf.getvalue()).decode()] * payload["batch_size"]}
+
+    monkeypatch.setattr(genlab, "_post_json", fake_post)
+    kf = tmp_path / "imagegen.json"
+    kf.write_text(json.dumps({"provider": "a1111", "endpoint": "http://box:7860",
+                              "base": 512}))
+    monkeypatch.setattr(genlab, "KEYFILE", kf)
+    genlab.generate_via_api(req, log=lambda m: None)
+    assert seen["width"] == 512 and seen["height"] == 768   # 1024x1536 -> short side 512
+
+
 # --- repixel ------------------------------------------------------------------------
 
 def test_repixel_passes_the_full_qc_gate(pal):

@@ -633,7 +633,13 @@ def _generate_via_a1111(req_dir: Path, cfg: dict, count: int | None = None,
     req = json.loads((req_dir / "request.json").read_text())
     prompt = (req_dir / "prompt.md").read_text()
     endpoint = str(cfg["endpoint"]).rstrip("/")
-    w, h = (int(x) for x in _gen_size(_family_sizes(req["family"])[req["size_class"]]).split("x"))
+    # scale the SDXL-tuned canvas to the model's native size via `base` (the
+    # target SHORT side): SD 1.5 wants ~512-640, not 1024, or it duplicates
+    # and warps. Default 1024 = unchanged (SDXL). Snap to /64 (SD requirement).
+    bw, bh = (int(x) for x in _gen_size(_family_sizes(req["family"])[req["size_class"]]).split("x"))
+    scale = int(cfg.get("base", 1024)) / min(bw, bh)
+    w = max(64, round(bw * scale / 64) * 64)
+    h = max(64, round(bh * scale / 64) * 64)
     n = count or max(2, int(req.get("count", 2)))
     payload = {
         "prompt": prompt,
