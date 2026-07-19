@@ -119,6 +119,29 @@ def master_palette(identity: dict) -> dict:
     return pal
 
 
+def with_extra_materials(pal: dict, extra: dict) -> dict:
+    """A COPY of `pal` with extra named ramps appended — built the same way
+    master_palette builds identity materials (rgb01 base, optional hue_span).
+
+    The seam for a family that needs a wider color language than the scene
+    identity provides — item icons repixelize against master + saturated
+    accent ramps (red=health, blue=mana, gold=key) so their color-coding
+    survives quantization, while scene props (whose pixels sit far from those
+    saturated hues) still snap to the muted scene ramps. Still ONE
+    identity-rooted palette; icons just see a superset of it."""
+    out = dict(pal)
+    out["materials"] = dict(pal["materials"])
+    for mat, spec in extra.items():
+        if isinstance(spec, dict):
+            base, span = list(spec["color"]), float(spec.get("hue_span", 0.5))
+        else:
+            base, span = list(spec), 0.5
+        colors = ramp(base, 5, span)
+        out["materials"][mat] = {"ramp": [list(c) for c in colors],
+                                 "outline": list(outline_color(colors, span))}
+    return out
+
+
 def palette_colors(pal: dict) -> set[tuple[int, int, int]]:
     out: set = set(tuple(n) for n in pal["neutrals"])
     for m in pal["materials"].values():

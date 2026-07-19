@@ -385,6 +385,12 @@ def create_request(genlab_dir: Path, identity: dict, identity_path: str,
     req_dir = genlab_dir / f"{base}_r{n}"
     (req_dir / "incoming").mkdir(parents=True)
     (req_dir / "prompt.md").write_text(prompt)
+    # a family may carry its own local-model steering (LoRA stack + trigger)
+    # that OVERRIDES the global imagegen prompt_suffix — item icons want the
+    # GMIC game-icon LoRA, not the scene-prop pixel LoRA. Stored per-request
+    # so regeneration reproduces it, and so props/tiles keep the global suffix.
+    suffix = descriptor.get("imagegen_suffix")
+    negative = descriptor.get("imagegen_negative")
     (req_dir / "request.json").write_text(json.dumps({
         "schema": REQUEST_SCHEMA,
         "family": family, "substyle": substyle, "size_class": size_class,
@@ -392,6 +398,8 @@ def create_request(genlab_dir: Path, identity: dict, identity_path: str,
         "prompt_sha12": hashlib.sha256(prompt.encode()).hexdigest()[:12],
         "mode": "drop",
         **({"subject": subject} if subject else {}),
+        **({"prompt_suffix": suffix} if suffix else {}),
+        **({"negative_prompt": negative} if negative else {}),
     }, indent=2) + "\n")
     return req_dir
 
@@ -654,7 +662,10 @@ def _generate_via_a1111(req_dir: Path, cfg: dict, count: int | None = None,
     # `prompt_suffix` lets a local model be steered without touching genlab's
     # generated prompt — e.g. a pixel-art LoRA + trigger:
     # ", pixel art, <lora:pixelart:0.8>". Empty by default (OpenAI/SDXL).
-    prompt = (req_dir / "prompt.md").read_text() + str(cfg.get("prompt_suffix", ""))
+    # a per-request suffix/negative (e.g. the icon family's GMIC stack) OVERRIDES
+    # the global cfg one so props/tiles and icons steer to different LoRAs.
+    prompt = (req_dir / "prompt.md").read_text() + str(
+        req.get("prompt_suffix", cfg.get("prompt_suffix", "")))
     endpoint = str(cfg["endpoint"]).rstrip("/")
     # scale the SDXL-tuned canvas to the model's native size via `base` (the
     # target SHORT side): SD 1.5 wants ~512-640, not 1024, or it duplicates
@@ -666,7 +677,7 @@ def _generate_via_a1111(req_dir: Path, cfg: dict, count: int | None = None,
     n = count or max(2, int(req.get("count", 2)))
     payload = {
         "prompt": prompt,
-        "negative_prompt": cfg.get("negative_prompt", ""),
+        "negative_prompt": req.get("negative_prompt", cfg.get("negative_prompt", "")),
         "steps": int(cfg.get("steps", 30)),
         "width": w, "height": h,
         "cfg_scale": float(cfg.get("guidance", 6.5)),
@@ -833,6 +844,11 @@ def ingest(req_dir: Path, game_dir: Path, staging_dir: Path, identity: dict,
         return {"staged": [], "skipped": []}
 
     pal = pixelart.master_palette(identity)
+    # a family may extend the palette with its own accent ramps (icons need a
+    # color language the muted scene palette lacks) — icon repixel only.
+    extra = fam.get("palette_extra")
+    if extra:
+        pal = pixelart.with_extra_materials(pal, extra)
     staging_dir.mkdir(parents=True, exist_ok=True)
     pixelart.write_palette(staging_dir.parent / "palette", pal)
     catalog_path = staging_dir / "props.json"

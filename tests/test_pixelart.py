@@ -88,6 +88,20 @@ def test_master_palette_custom_materials():
     assert len(palette_colors(pal)) > len(palette_colors(master_palette({"name": "v"})))
 
 
+def test_with_extra_materials_extends_without_mutating():
+    """A family (item icons) can repixel against master + its own accent ramps;
+    the base palette is copied, not mutated."""
+    from automap.pixelart import master_palette, with_extra_materials
+    base = master_palette({"name": "v"})
+    n0 = len(base["materials"])
+    ext = with_extra_materials(base, {"potion_red": {"color": [0.82, 0.16, 0.18]},
+                                      "gold": [0.87, 0.68, 0.22]})
+    assert len(base["materials"]) == n0                 # original untouched
+    assert "potion_red" in ext["materials"] and "gold" in ext["materials"]
+    assert len(ext["materials"]["potion_red"]["ramp"]) == 5
+    assert len(ext["materials"]) == n0 + 2
+
+
 def test_ground_shadow_follows_the_silhouette():
     """The shadow agrees with its caster: wide table -> wide low shadow,
     narrow post -> narrow shadow; anchored at the foot line."""

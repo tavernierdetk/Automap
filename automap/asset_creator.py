@@ -283,8 +283,29 @@ FAMILIES: dict[str, dict] = {
         "default_min_variants": 1,
         "style_tokens": {"gen1"},
         "tileset": False,
-        "materials": ("bronze", "verdigris", "wood", "stone", "flame", "water",
+        # repixel snaps subject pixels ONLY to the ramps named here (repixel.py
+        # filters `available` to this list) — so the icon color language must be
+        # listed, not just present in the palette. Vivid accents first, then the
+        # scene neutrals for wood/metal/glass that need no coding.
+        "materials": ("potion_red", "mana_blue", "gold", "steel",
+                      "poison_green", "flame_orange", "leather_tan", "amethyst",
+                      "bronze", "verdigris", "wood", "stone", "water",
                       "foliage"),
+        # icons live by a color LANGUAGE the muted scene palette can't speak;
+        # these saturated accent ramps extend the palette FOR ICON REPIXEL ONLY
+        # (with_extra_materials) so red=health / blue=mana / gold=key survive
+        # quantization. Scene props never see them (nearest-snap keeps muted
+        # pixels on muted ramps).
+        "palette_extra": {
+            "potion_red":   {"color": [0.82, 0.16, 0.18], "hue_span": 0.35},
+            "mana_blue":    {"color": [0.22, 0.42, 0.86], "hue_span": 0.35},
+            "gold":         {"color": [0.87, 0.68, 0.22], "hue_span": 0.35},
+            "steel":        {"color": [0.66, 0.70, 0.77], "hue_span": 0.30},
+            "poison_green": {"color": [0.46, 0.72, 0.26], "hue_span": 0.35},
+            "flame_orange": {"color": [0.92, 0.48, 0.13], "hue_span": 0.35},
+            "leather_tan":  {"color": [0.60, 0.40, 0.22], "hue_span": 0.35},
+            "amethyst":     {"color": [0.56, 0.30, 0.72], "hue_span": 0.35},
+        },
         "descriptor": {"blocking": "none",
                        "texture_motifs": "bold enamel shapes, crisp readable "
                                          "silhouette, a single trade emblem",
@@ -293,7 +314,22 @@ FAMILIES: dict[str, dict] = {
                        # not gated for isometric (it's not a scene object)
                        "lighting": "ambient",
                        "perspective": "flat",
-                       "shadow": "none"},
+                       "shadow": "none",
+                       # local-model steering that OVERRIDES the global suffix:
+                       # the GMIC game-icon LoRA (silhouette + mass that survives
+                       # the 24px menu) stacked with the pixel LoRA (variant B of
+                       # the A/B/C test). `game icon institute` is GMIC's trigger.
+                       "imagegen_suffix":
+                           ", game icon institute, pixel_art, "
+                           "<lora:GameIconResearch_Pixel_Lora:0.7>, "
+                           "<lora:PX64NOCAP_epoch_10:0.8>, single centered game "
+                           "item icon, one object, plain solid flat white "
+                           "background, no person, no frame, no border",
+                       "imagegen_negative":
+                           "isometric, 3d render, realistic, photograph, "
+                           "person, character, face, hand, two objects, "
+                           "ornate frame, rounded frame, border, drop shadow, "
+                           "floor, room, text, watermark, lowres, blurry"},
         "sizes": {"small": (32, 32), "medium": (48, 48), "large": (64, 64)},
     },
     "shopsign": {

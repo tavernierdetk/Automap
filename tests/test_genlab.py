@@ -321,6 +321,41 @@ def test_a1111_prompt_suffix_steers_the_local_model(tmp_path, monkeypatch):
     assert seen["prompt"].startswith((req / "prompt.md").read_text()[:40])
 
 
+def test_family_imagegen_suffix_overrides_the_global_one(tmp_path, monkeypatch):
+    """A family descriptor's imagegen_suffix/negative (e.g. the icon GMIC stack)
+    REPLACES the global cfg suffix — so icons and scene props steer to different
+    LoRAs from one box config."""
+    import base64, io
+    desc = dict(FAM["descriptor"],
+                imagegen_suffix=", game icon institute, <lora:GMIC:0.7>",
+                imagegen_negative="person, frame, border")
+    req = genlab.create_request(tmp_path, IDENTITY, "id.json",
+                                "tree", "deciduous", "large", 2,
+                                desc, FAM["materials"])
+    doc = json.loads((req / "request.json").read_text())
+    assert doc["prompt_suffix"] == ", game icon institute, <lora:GMIC:0.7>"
+    assert doc["negative_prompt"] == "person, frame, border"
+    seen = {}
+
+    def fake_post(url, payload, headers, timeout=300):
+        seen.update(payload)
+        buf = io.BytesIO()
+        synthetic_reference(64, 96).save(buf, format="PNG")
+        return {"images": [base64.b64encode(buf.getvalue()).decode()] * payload["batch_size"]}
+
+    monkeypatch.setattr(genlab, "_post_json", fake_post)
+    kf = tmp_path / "imagegen.json"
+    kf.write_text(json.dumps({"provider": "a1111", "endpoint": "http://box:7860",
+                              "prompt_suffix": ", GLOBAL <lora:scene:1>",
+                              "negative_prompt": "GLOBALNEG"}))
+    monkeypatch.setattr(genlab, "KEYFILE", kf)
+    genlab.generate_via_api(req, log=lambda m: None)
+    # the family suffix wins; the global one is nowhere in the prompt
+    assert seen["prompt"].endswith(", game icon institute, <lora:GMIC:0.7>")
+    assert "GLOBAL" not in seen["prompt"]
+    assert seen["negative_prompt"] == "person, frame, border"
+
+
 # --- repixel ------------------------------------------------------------------------
 
 def test_check_perspective_gates_isometric_boxes_only():
