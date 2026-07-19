@@ -631,7 +631,10 @@ def _generate_via_a1111(req_dir: Path, cfg: dict, count: int | None = None,
     import base64
 
     req = json.loads((req_dir / "request.json").read_text())
-    prompt = (req_dir / "prompt.md").read_text()
+    # `prompt_suffix` lets a local model be steered without touching genlab's
+    # generated prompt — e.g. a pixel-art LoRA + trigger:
+    # ", pixel art, <lora:pixelart:0.8>". Empty by default (OpenAI/SDXL).
+    prompt = (req_dir / "prompt.md").read_text() + str(cfg.get("prompt_suffix", ""))
     endpoint = str(cfg["endpoint"]).rstrip("/")
     # scale the SDXL-tuned canvas to the model's native size via `base` (the
     # target SHORT side): SD 1.5 wants ~512-640, not 1024, or it duplicates

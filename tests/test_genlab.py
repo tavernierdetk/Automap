@@ -297,6 +297,30 @@ def test_a1111_base_scales_the_canvas_for_sd15(tmp_path, monkeypatch):
     assert seen["width"] == 512 and seen["height"] == 768   # 1024x1536 -> short side 512
 
 
+def test_a1111_prompt_suffix_steers_the_local_model(tmp_path, monkeypatch):
+    """`prompt_suffix` appends a LoRA/trigger to genlab's prompt (untouched)."""
+    import base64, io
+    req = genlab.create_request(tmp_path, IDENTITY, "id.json",
+                                "tree", "deciduous", "large", 2,
+                                FAM["descriptor"], FAM["materials"])
+    seen = {}
+
+    def fake_post(url, payload, headers, timeout=300):
+        seen.update(payload)
+        buf = io.BytesIO()
+        synthetic_reference(64, 96).save(buf, format="PNG")
+        return {"images": [base64.b64encode(buf.getvalue()).decode()] * payload["batch_size"]}
+
+    monkeypatch.setattr(genlab, "_post_json", fake_post)
+    kf = tmp_path / "imagegen.json"
+    kf.write_text(json.dumps({"provider": "a1111", "endpoint": "http://box:7860",
+                              "prompt_suffix": ", pixel art, <lora:pixelart:0.8>"}))
+    monkeypatch.setattr(genlab, "KEYFILE", kf)
+    genlab.generate_via_api(req, log=lambda m: None)
+    assert seen["prompt"].endswith(", pixel art, <lora:pixelart:0.8>")
+    assert seen["prompt"].startswith((req / "prompt.md").read_text()[:40])
+
+
 # --- repixel ------------------------------------------------------------------------
 
 def test_repixel_passes_the_full_qc_gate(pal):
