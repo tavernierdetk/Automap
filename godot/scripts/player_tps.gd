@@ -9,16 +9,13 @@ extends CharacterBody3D
 ##   F          toggle fly/walk    Ctrl   down (fly)
 ##   R          respawn            Esc    free/capture the mouse cursor
 
-@export var walk_speed := 6.0
 @export var fly_speed := 25.0
 @export var sprint_mult := 3.0
-@export var jump_velocity := 6.0
 @export var mouse_sensitivity := 0.0025
-@export var turn_speed := 12.0  # how fast the body swivels to face movement
 
 var fly := false
-var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity", 9.8)
 var _spawn: Transform3D
+var _loco: Locomotion  # walking is the movement module's job (input adapter here)
 
 @onready var body: Node3D = $Body
 @onready var pivot: Node3D = $CameraPivot
@@ -29,6 +26,13 @@ var _spawn: Transform3D
 func _ready() -> void:
 	_spawn = global_transform
 	Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	# The mover: params come from the Body's CharacterProfile (stage 10 derives
+	# them from the character's stats), so who you play as changes how you move.
+	_loco = Locomotion.new()
+	_loco.visual = body
+	add_child(_loco)
+	_loco.sprint_mult = sprint_mult
+	_loco.configure_from_profile(body.get("profile"))
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -71,27 +75,19 @@ func _physics_process(delta: float) -> void:
 
 	var yaw := pivot.global_transform.basis.get_euler().y
 	var dir := Vector3(input.x, 0.0, input.z).rotated(Vector3.UP, yaw).normalized()
-
-	var speed := fly_speed if fly else walk_speed
-	if Input.is_physical_key_pressed(KEY_SHIFT):
-		speed *= sprint_mult
+	var sprint := Input.is_physical_key_pressed(KEY_SHIFT)
 
 	if fly:
+		# No-clip dev mode stays outside the movement module on purpose: it is a
+		# tool for escaping scan holes, not a character verb.
+		var speed := fly_speed * (sprint_mult if sprint else 1.0)
 		var vert := 0.0
 		if Input.is_physical_key_pressed(KEY_SPACE): vert += 1.0
 		if Input.is_physical_key_pressed(KEY_CTRL): vert -= 1.0
 		velocity = (dir + Vector3.UP * vert).normalized() * speed
+		if dir.length() > 0.01:
+			var target := atan2(-dir.x, -dir.z)
+			body.rotation.y = lerp_angle(body.rotation.y, target, _loco.turn_speed * delta)
+		move_and_slide()
 	else:
-		velocity.x = dir.x * speed
-		velocity.z = dir.z * speed
-		if not is_on_floor():
-			velocity.y -= _gravity * delta
-		elif Input.is_physical_key_pressed(KEY_SPACE):
-			velocity.y = jump_velocity
-
-	# Swivel the visible body so its forward (-Z) faces the movement direction.
-	if dir.length() > 0.01:
-		var target := atan2(-dir.x, -dir.z)
-		body.rotation.y = lerp_angle(body.rotation.y, target, turn_speed * delta)
-
-	move_and_slide()
+		_loco.move(dir, delta, sprint, Input.is_physical_key_pressed(KEY_SPACE))

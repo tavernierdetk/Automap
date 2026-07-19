@@ -1,10 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://di6t2qwu16x0w"]
+[gd_scene load_steps=3 format=3 uid="uid://b7rhq8kfqp5sl"]
 
 [ext_resource type="PackedScene" uid="uid://ckqlj6fw560mr" path="res://scenes/game.tscn" id="1_game"]
 [ext_resource type="PackedScene" uid="uid://b3bobcynqjb1m" path="res://scenes/plateau/sf_plateau.glb" id="2_map"]
 
 [node name="sf_plateau" instance=ExtResource("1_game")]
 map_scene = ExtResource("2_map")
-
-[node name="Minimap" parent="." index="4"]
-layout_mode = 3

@@ -20,3 +20,11 @@ extends Resource
 @export_enum("bald", "short", "medium", "long", "ponytail", "afro") var hairstyle := "short"
 @export var glasses := false
 @export var facial_hair := false
+
+## Locomotion params — derived from the five attributes by the mechanics module
+## (automap/balance.derive_movement) and projected here by stage 10. Never
+## hand-set on admitted characters; the defaults are the all-average baseline
+## so hand-written/photo profiles keep the engine's historical feel.
+@export var walk_speed := 6.0
+@export var jump_velocity := 6.0
+@export var turn_speed := 12.0

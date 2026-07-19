@@ -415,3 +415,79 @@ def test_minimap_caps_resolution_for_huge_scenes(tmp_path):
                          tmp_path / "m.minimap.png", m_per_px=1.0)
     assert max(meta["width"], meta["height"]) <= MAX_PX
     assert (tmp_path / "m.minimap.png").exists() and (tmp_path / "m.minimap.json").exists()
+
+
+# --- per-building variety (visual-identity@2.3.0) ------------------------------
+
+PALETTE = ((0.45, 0.26, 0.20), (0.52, 0.50, 0.46), (0.30, 0.28, 0.26))
+
+
+def test_wall_palette_varies_flat_buildings():
+    feats = [_bld(i * 15.0, 0) for i in range(10)]
+    s = trimesh.Scene()
+    instance_buildings(s, _flat_ground(200), feats, VisualIdentity(wall_palette=PALETTE))
+    colors = set()
+    for g in s.geometry.values():
+        mat = getattr(g.visual, "material", None)
+        if getattr(mat, "baseColorFactor", None) is not None:
+            colors.add(tuple(np.round(np.asarray(mat.baseColorFactor[:3], float)
+                                      / max(np.max(mat.baseColorFactor[:3]), 1e-9), 2)))
+    hues = {tuple(np.round(np.asarray(p) / max(p), 2)) for p in PALETTE}
+    assert len(colors & hues) >= 2                  # several pool entries in use
+
+
+def test_wall_palette_is_deterministic():
+    feats = [_bld(i * 15.0, 0) for i in range(6)]
+    runs = []
+    for _ in range(2):
+        s = trimesh.Scene()
+        instance_buildings(s, _flat_ground(120), feats, VisualIdentity(wall_palette=PALETTE))
+        runs.append(sorted(
+            tuple(np.round(np.asarray(g.visual.material.baseColorFactor[:3], float), 4))
+            for g in s.geometry.values()
+            if getattr(getattr(g.visual, "material", None), "baseColorFactor", None) is not None))
+    assert runs[0] == runs[1]
+
+
+def test_wall_palette_adds_no_texture_images():
+    # the palette rides the material factor over shared near-neutral tiles
+    feats = [_bld(i * 15.0, 0) for i in range(10)]
+    s = trimesh.Scene()
+    instance_buildings(s, _flat_ground(200), feats,
+                       VisualIdentity(wall_palette=PALETTE, textures=TEX))
+    images = {id(g.visual.material.baseColorTexture) for g in s.geometry.values()
+              if getattr(getattr(g.visual, "material", None), "baseColorTexture", None) is not None}
+    assert len(images) <= 2 * TEX["variants"]       # same pool bound as one color
+
+    factors = {tuple(np.round(np.asarray(g.visual.material.baseColorFactor[:3]), 3))
+               for g in s.geometry.values()
+               if getattr(getattr(g.visual, "material", None), "baseColorTexture", None) is not None}
+    assert len(factors) >= 4                        # ...while the buildings still differ
+
+
+def test_weighted_pick_respects_weights():
+    from automap.presentation import _weighted_pick, _instance_rng
+    rng = _instance_rng(1.0, 2.0)
+    draws = {_weighted_pick({"brick": 1, "siding": 1, "concrete": 0}, rng)
+             for _ in range(200)}
+    assert draws == {"brick", "siding"}             # both mix in, weight-0 never
+    assert _weighted_pick(None, rng) is None
+    assert _weighted_pick({}, rng) is None
+
+
+def test_style_mixes_and_uv_jitter_are_deterministic():
+    tex = dict(TEX, facade_styles={"brick": 2, "concrete": 1},
+               roof_styles={"tin": 1, "membrane": 1}, uv_jitter=0.12)
+    feats = [_bld(i * 15.0, 0) for i in range(8)]
+    runs = []
+    for _ in range(2):
+        s = trimesh.Scene()
+        instance_buildings(s, _flat_ground(160), feats, VisualIdentity(textures=tex))
+        runs.append(sorted(
+            (id and 0,  # placeholder to keep tuple shape stable
+             tuple(np.round(np.asarray(g.visual.material.baseColorFactor[:3]), 4)),
+             float(np.round(g.visual.uv[:, 1].max(), 4)))
+            for g in s.geometry.values()
+            if getattr(getattr(g.visual, "material", None), "baseColorTexture", None) is not None
+            and getattr(g.visual, "uv", None) is not None and len(g.visual.uv)))
+    assert runs[0] == runs[1]

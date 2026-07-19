@@ -219,8 +219,13 @@ def _color_literal(c: Rgb) -> str:
     return f"Color({c[0]:.4g}, {c[1]:.4g}, {c[2]:.4g}, 1)"
 
 
-def attributes_to_tres(attrs: CharacterAttributes) -> str:
-    """Render a Godot CharacterProfile .tres (text) from attributes."""
+def attributes_to_tres(attrs: CharacterAttributes, movement: dict | None = None) -> str:
+    """Render a Godot CharacterProfile .tres (text) from attributes.
+
+    `movement` is the mechanics-derived locomotion block (balance.derive_movement);
+    stage 10 passes it, the photo path (no stats) leaves it None and the profile
+    keeps the engine's baseline defaults.
+    """
     lines = [
         '[gd_resource type="Resource" script_class="CharacterProfile" load_steps=2 format=3]',
         "",
@@ -238,6 +243,9 @@ def attributes_to_tres(attrs: CharacterAttributes) -> str:
         f"glasses = {str(attrs.glasses).lower()}",
         f"facial_hair = {str(attrs.facial_hair).lower()}",
     ]
+    for key in ("walk_speed", "jump_velocity", "turn_speed"):
+        if movement and key in movement:
+            lines.append(f"{key} = {movement[key]:.4g}")
     return "\n".join(lines) + "\n"
 
 

@@ -53,6 +53,16 @@ func apply_profile(p: CharacterProfile) -> void:
 	# run (node live in tree) re-apply now so the new profile is reflected immediately.
 	if _character.is_inside_tree() and _character.has_method("_apply_profile"):
 		_character.call("_apply_profile")
+	# Movement params travel with the profile too (stage 10 derives them from stats).
+	var loco := get_node_or_null("Locomotion")
+	if loco != null and loco.has_method("configure_from_profile"):
+		loco.call("configure_from_profile", p)
+
+
+## Whether the player is currently inside the interaction volume (the mover
+## pauses its route while this holds, so talking always beats walking).
+func player_in_range() -> bool:
+	return _player != null
 
 
 ## Interactable seam: talking to this NPC starts its dialogue tree.
@@ -72,7 +82,7 @@ func _process(delta: float) -> void:
 	to.y = 0.0
 	if to.length_squared() < 0.0001:
 		return
-	var target := atan2(to.x, to.z)  # character figure faces +Z of its own basis
+	var target := atan2(-to.x, -to.z)  # face (-Z, where the figure's eyes are) the player
 	_character.rotation.y = lerp_angle(_character.rotation.y, target, turn_speed * delta)
 
 

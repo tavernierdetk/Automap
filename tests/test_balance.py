@@ -104,3 +104,38 @@ def test_summary_mentions_every_opponent():
     text = evaluate(_block(), seed=0).summary()
     for name in REFERENCE_CAST:
         assert name in text
+
+
+# --- movement derivation -------------------------------------------------------
+
+def test_deckhand_movement_is_the_engine_baseline():
+    # The all-average block must land exactly on the historical constants, so
+    # admitting an average character leaves the game feel untouched.
+    from automap.balance import derive_movement
+    assert derive_movement(_block()) == {
+        "walk_speed": 6.0, "jump_velocity": 6.0, "turn_speed": 12.0}
+
+
+def test_movement_is_monotonic_in_kinesthetic():
+    from automap.balance import derive_movement
+    lo = derive_movement(_block(kinesthetic=1))
+    hi = derive_movement(_block(kinesthetic=10))
+    assert hi["walk_speed"] > lo["walk_speed"]
+    assert hi["jump_velocity"] > lo["jump_velocity"]
+    assert hi["turn_speed"] > lo["turn_speed"]
+
+
+def test_movement_range_stays_sane():
+    # Extremes must stay playable: no crawling statues, no superheroes.
+    from automap.balance import derive_movement
+    slow = derive_movement({a: 1 for a in ATTRIBUTES})
+    fast = derive_movement({a: 10 for a in ATTRIBUTES})
+    assert 5.0 <= slow["walk_speed"] < fast["walk_speed"] <= 7.0
+    assert 5.5 <= slow["jump_velocity"] < fast["jump_velocity"] <= 6.5
+
+
+def test_movement_requires_full_stat_block():
+    from automap.balance import derive_movement
+    import pytest as _pytest
+    with _pytest.raises(ValueError):
+        derive_movement({"kinesthetic": 5})

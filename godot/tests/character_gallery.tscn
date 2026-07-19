@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://cg000aowccsog"]
+
+[ext_resource type="Script" uid="uid://beysb2c3skb6v" path="res://tests/character_gallery.gd" id="1_gal"]
+
+[sub_resource type="ProceduralSkyMaterial" id="SkyMat"]
+sky_top_color = Color(0.45, 0.6, 0.78, 1)
+sky_horizon_color = Color(0.78, 0.82, 0.85, 1)
+ground_bottom_color = Color(0.4, 0.4, 0.42, 1)
+ground_horizon_color = Color(0.78, 0.82, 0.85, 1)
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("SkyMat")
+
+[sub_resource type="Environment" id="Env"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="PlaneMesh" id="FloorMesh"]
+size = Vector2(30, 30)
+
+[node name="Gallery" type="Node3D"]
+script = ExtResource("1_gal")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.25, 0.433, 0, 0.866, 0.5, -0.5, -0.433, 0.75, 4, 6, 4)
+shadow_enabled = true
+
+[node name="Floor" type="MeshInstance3D" parent="."]
+mesh = SubResource("FloorMesh")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -3.6)

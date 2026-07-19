@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://834na8pkxkkg"]
+
+[ext_resource type="Script" uid="uid://4ia2wkfy857a" path="res://tests/test_locomotion.gd" id="1_test"]
+
+[node name="TestLocomotion" type="Node3D"]
+script = ExtResource("1_test")

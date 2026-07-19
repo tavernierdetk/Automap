@@ -45,7 +45,9 @@ def test_committed_entropy_levels_pass_the_gate():
                     + list(lv.glob("*/*/*.json"))):
         doc = json.loads(f.read_text())
         levels[doc["id"]] = doc
-    assert len(levels) >= 5  # the world keeps its originals at minimum
+    # the world was pruned to the fair (the test ground + new-game spawn);
+    # whatever remains must pass the teleport graph
+    assert len(levels) >= 1 and "vaporis_fair" in levels
     assert publish_game._check_teleport_graph(levels, lambda m: None) == []
 
 

@@ -66,3 +66,27 @@ Fused into the existing document — stable ids and Marguerite survive.
   with the landcover gap #3).
 - Style masks / resolution regime (visual-identity v3 material): the
   pixel-art mask from the platform brief.
+
+## Addendum — per-building variety (2026-07-15, visual-identity@2.3.0)
+
+The plateau read as one red-brown mass: every intact building shared
+`wall_color`, one facade style, one roof style. v2.3 adds the variety dials,
+all deterministic per building position:
+
+- **`wall_palette`** — each building draws its wall from a pool (postapo:
+  red brick / brown brick / greystone / ochre / soot / faded paint). The
+  color rides the material factor over a **near-neutral** wall tile (the
+  roof/road pattern applied to walls), so the whole palette costs zero
+  embedded images. Gotcha fixed en route: the factor is linear while the
+  tile is sRGB — without `_srgb_to_linear` on the ratio the scene renders
+  washed-out pastel.
+- **`textures.facade_styles` / `roof_styles`** — weight maps mixing
+  brick/concrete/siding bodies and tin/membrane/shingle roofs per building
+  (these do grow the tile pool: style × state × variant; plateau glb
+  +~2 MB).
+- **`textures.uv_jitter`** — ±12% window-bay/storey tiling per building, so
+  window size/density varies at zero image cost.
+
+Before/after: `work/scene_snapshots/{before,after}_street.png` (regenerate
+with `tests/scene_snapshot.tscn`). 1,468 buildings restyled; decay/crumble
+paths inherit the picked wall color (soot and fade multiply on top).

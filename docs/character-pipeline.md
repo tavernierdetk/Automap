@@ -74,12 +74,31 @@ hand-write one in a text editor or the Godot inspector — Stage C just automate
 
 `character.gd` reads the profile and configures a primitive rig: scales by `height_m`,
 widens by `build`, colours skin/hair/clothes, shows the matching hairstyle, toggles
-glasses and facial hair — then animates it (speed-driven walk cycle, head-bob, idle
-breathing). The body is a swap-point: a real rigged model can replace it without the
-controller changing.
+glasses and facial hair — then animates it.
+
+**This rig is `figure-2` — the platform's out-of-the-box character tier.** Every
+game the studio produces gets it for free; richer tiers (`skeletal-3`: Skeleton3D
+on Godot's humanoid bone profile; styled/skinned bodies from asset-factory) are
+future opt-ins, and `figure-1` (the box-torso original) is retired. The tier enum
+enters the game spec only when a second live tier exists to select on; until then
+this scene is the tier's reference implementation and the gallery renders below
+are its acceptance images. Rationale and roadmap:
+[character-runtime-stack](explorations/character-runtime-stack.md).
+
+The v2 rig (2026-07-15) is articulated
+and has a face: human 7.5-head proportions, tapered chest/pelvis, two-segment limbs
+with knee/elbow flexion in the gait, hip/shoulder counter-rotation, body bob and
+lean while walking, plus an idle layer (breathing, blinking, weight shifts, slow
+head wander) that keeps stationary NPCs alive. Eyes/brows/nose/mouth/ears are part
+of the face; glasses are torus frames. Still all procedural primitives — no binary
+assets — and the body remains a swap-point: a real rigged model can replace it
+without the controller changing.
 
 **Inspect:** open `godot/scenes/game.tscn`, press **F6**. Edit `profiles/default.tres`
-in the inspector and watch the figure rebuild.
+in the inspector and watch the figure rebuild. For a quick render of several
+profiles (front / three-quarter / portrait to `work/character_gallery/*.png`):
+`/Applications/Godot.app/Contents/MacOS/Godot --path godot res://tests/character_gallery.tscn`
+(needs a window; the headless driver renders nothing).
 
 ### Stage C — Read traits from a photo · `scripts/char_photo_to_profile.py`  ✅ built & working
 | | |

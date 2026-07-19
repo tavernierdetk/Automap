@@ -1,15 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://cnpc0autmap001"]
+[gd_scene load_steps=6 format=3 uid="uid://cnpc0autmap001"]
 
 [ext_resource type="Script" path="res://game/npc/npc_controller.gd" id="1_npc"]
 [ext_resource type="PackedScene" uid="uid://dsuqn2c1bvy0x" path="res://scenes/character.tscn" id="2_char"]
+[ext_resource type="Script" path="res://scripts/locomotion.gd" id="3_loco"]
+[ext_resource type="Script" path="res://game/npc/npc_mover.gd" id="4_mover"]
 
 [sub_resource type="SphereShape3D" id="Sphere_area"]
 radius = 3.0
 
-[node name="Npc" type="Node3D"]
+[sub_resource type="CapsuleShape3D" id="Capsule_body"]
+radius = 0.3
+height = 1.75
+
+[node name="Npc" type="CharacterBody3D"]
 script = ExtResource("1_npc")
 
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.875, 0)
+shape = SubResource("Capsule_body")
+
 [node name="Character" parent="." instance=ExtResource("2_char")]
+
+[node name="Locomotion" type="Node" parent="."]
+script = ExtResource("3_loco")
+visual = NodePath("../Character")
+
+[node name="Mover" type="Node" parent="."]
+script = ExtResource("4_mover")
 
 [node name="InteractionArea" type="Area3D" parent="."]
 

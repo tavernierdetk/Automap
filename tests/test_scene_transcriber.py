@@ -91,15 +91,15 @@ def test_no_spawn_synthesizes_default_loudly(tmp_path):
     assert any("synthesized" in s for s in skipped)
 
 
-def test_committed_originals_still_roundtrip():
+def test_transcriber_still_reads_a_reference_scene():
+    # the originals were pruned from the world (the fair is the survivor),
+    # so there is no committed golden to diff against; the transcriber tool
+    # itself must still parse a reference .tscn into a level doc
     ref = Path.home() / "Cowork" / "entropy-integrated" / "Scenes" / "Test" / "JeuZoeMila"
-    if not ref.exists():
+    if not (ref / "witch_cottage.tscn").exists():
         import pytest
         pytest.skip("reference clone not present")
-    import json
     uid_map = build_uid_map(ref.parent)
     doc, _ = transcribe(ref / "witch_cottage.tscn", uid_map)
-    committed = json.loads(Path(
-        "games/entropy/levels/originals/witch_cottage/witch_cottage.json").read_text())
-    assert doc["teleports"] == committed["teleports"]
-    assert doc["spawns"] == committed["spawns"]
+    assert "teleports" in doc and "spawns" in doc
+    assert isinstance(doc["spawns"], list)

@@ -30,6 +30,14 @@ from PIL import Image
 SIZE = 256                      # every tile is SIZE x SIZE
 WINDOW_STATES = ("dark", "lit", "boarded", "broken")
 
+# The near-neutral wall body (visual-identity@2.3.0): pass this as wall_tile's
+# `wall` and let the building's actual color arrive via the material factor —
+# the roof/road pattern applied to walls, so a wall_palette shares one image
+# per (style, state, variant). Note the factor also modulates the absolute
+# window/trim colors in the tile; identities with bright `lit` windows should
+# keep walls colored in-tile instead.
+NEUTRAL_BODY = (0.94, 0.94, 0.94)
+
 Rgb = tuple[float, float, float]
 
 

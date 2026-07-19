@@ -51,6 +51,11 @@
       0.3,
       0.36,
       0.28
+    ],
+    [
+      0.42,
+      0.26,
+      0.18
     ]
   ],
   "ruin_fraction": 0.18,
@@ -159,7 +164,18 @@
     },
     "roof_style": "tin",
     "road_texture": true,
-    "variants": 6
+    "variants": 6,
+    "facade_styles": {
+      "brick": 4,
+      "concrete": 1,
+      "siding": 1
+    },
+    "roof_styles": {
+      "tin": 2,
+      "membrane": 2,
+      "shingle": 1
+    },
+    "uv_jitter": 0.12
   },
   "crumble": {
     "severity": [
@@ -167,5 +183,37 @@
       0.85
     ],
     "segment_m": 1.2
-  }
+  },
+  "wall_palette": [
+    [
+      0.45,
+      0.26,
+      0.2
+    ],
+    [
+      0.38,
+      0.28,
+      0.22
+    ],
+    [
+      0.52,
+      0.5,
+      0.46
+    ],
+    [
+      0.55,
+      0.44,
+      0.3
+    ],
+    [
+      0.3,
+      0.28,
+      0.26
+    ],
+    [
+      0.38,
+      0.42,
+      0.34
+    ]
+  ]
 }

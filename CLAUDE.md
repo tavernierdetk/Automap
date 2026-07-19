@@ -77,7 +77,13 @@ clean of it before any commit.
   instance. v2.2: the `crumble` block dials `automap/crumble.py` — the
   pattern engine (deterministic fBm erosion profiles) behind damaged
   buildings: **sections crumble, walls are never removed** (hard 1.5 m
-  floor). First game identity: `identities/postapo.json`.
+  floor). v2.3: per-building variety — `wall_palette` (each building draws
+  its wall color; rides the material factor over near-neutral tiles, zero
+  image cost, sRGB→linear converted), `textures.facade_styles`/`roof_styles`
+  weighted mixes, `uv_jitter` (window-size variation). Snapshot any styled
+  glb for eyeballing: `GLB=<abs path> LABEL=x Godot --path godot
+  res://tests/scene_snapshot.tscn` (windowed) → `work/scene_snapshots/`.
+  First game identity: `identities/postapo.json`.
 - **Minimap**: stage 6 renders `minimap.png/json` from the world model in
   identity colors; stage 7 publishes them beside the scene; the
   `godot/ui/minimap` module (instanced in game.tscn) picks them up via
@@ -106,12 +112,35 @@ clean of it before any commit.
   published scene (edits the inherited game.tscn shell). The interview flow
   that fills the JSON is the `/create-character` skill. The JSON is the
   committed source of truth; never hand-write the `.tres` or skip the gate.
+- **`figure-2` is the out-of-the-box character tier**: the articulated
+  primitive rig in `godot/scenes/character.tscn` (+`scripts/character.gd`) —
+  all text, no binary assets. Acceptance renders: run
+  `tests/character_gallery.tscn` windowed (not `--headless`) →
+  `work/character_gallery/*.png`. Tier ladder + movement-module roadmap:
+  `docs/explorations/character-runtime-stack.md`.
+- **Movement module (R2)**: `godot/scripts/locomotion.gd` is the one mover —
+  player (`player_tps.gd`) and NPCs (`game/npc/npc_mover.gd`, routes via
+  `set_route()`) are just adapters over it. Movement params (walk/jump/turn)
+  are **derived from the five stats** by `balance.derive_movement` and
+  projected into the `.tres` by stage 10 — never hand-set; the all-average
+  block equals the old engine constants. Headless test:
+  `tests/test_locomotion.tscn`.
 - **Populate a scene**: admitted characters become NPCs via the scene's
   `godot/scenes/<name>/game.json` (`npcs[].profile` + `dialogue_variants`;
   validate against `game@1.0.0`). Worked example: Marguerite's old-quay quest
   in lagrave, played to completion headless by `test_game_integration.tscn`
   (`[lagrave populate]`). Platform plateau locked 2026-07-12: **D
   (game-creation studio) in thin vertical slices** — see the diagram changelog.
+
+- **Entropy recreation campaign (E0–E5)**: recreate the reference game
+  2D-faithful via the platform — see
+  `docs/explorations/entropy-recreation.md` (THE campaign doc; read before
+  touching). Reference repos (read-only): `~/Cowork/entropy-integrated`,
+  `~/Cowork/EntropySnapShot`. The consumer project is
+  `~/Cowork/entropy-remade` (own git): its `content/` tree is **published,
+  never hand-edited** — stage `work/game/entropy/…` then
+  `scripts/12_publish_game.py --game entropy` (validates vs level@*/
+  creature@*/dialogue-script@* schemas as they land in platform-specs).
 
 ## Prerequisites (status as of 2026-06-30)
 - ffmpeg ✅ (arm64, homebrew)

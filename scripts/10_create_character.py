@@ -100,11 +100,14 @@ def main(
         raise typer.Exit(code=1)
 
     attrs = character.appearance_to_attributes(doc["appearance"])
+    movement = balance.derive_movement(doc["stats"])
     out_dir = profiles_dir or root / "godot" / "profiles"
     out = out_dir / f"{slug}.tres"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(character.attributes_to_tres(attrs))
+    out.write_text(character.attributes_to_tres(attrs, movement=movement))
     log(f"admitted - wrote {out}")
+    log("movement (derived from stats): " + ", ".join(
+        f"{k}={v:g}" for k, v in movement.items()))
     if play:
         _set_player_profile(root, f"res://profiles/{slug}.tres")
         log(f"game.tscn player Body -> {slug}.tres (every published scene inherits it)")

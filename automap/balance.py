@@ -167,6 +167,39 @@ def duel(stats_a: dict[str, int], stats_b: dict[str, int], *, seed: int) -> str:
     return "draw"
 
 
+# --- movement derivation (stats -> locomotion params) ------------------------
+# The same opinion-in-one-place pattern as the Fighter formulas: mechanics owns
+# how the five attributes become locomotion. Stage 10 projects the result into
+# the CharacterProfile .tres beside the appearance fields; the Godot Locomotion
+# component reads them at runtime. Movement params are DERIVED, never hand-set.
+# Calibration anchor: the all-5 "deckhand" lands exactly on the engine's
+# historical constants (walk 6.0, jump 6.0, turn 12.0), so average characters
+# leave the game feel untouched.
+BASE_WALK_SPEED = 5.0
+WALK_PER_KINESTHETIC = 0.15
+WALK_PER_LUCIDITY = 0.05
+BASE_JUMP_VELOCITY = 5.5
+JUMP_PER_KINESTHETIC = 0.1
+BASE_TURN_SPEED = 10.0
+TURN_PER_KINESTHETIC = 0.25
+TURN_PER_LUCIDITY = 0.15
+
+
+def derive_movement(stats: dict[str, int]) -> dict[str, float]:
+    """Locomotion params for a stat block. Kinesthetic carries speed and jump;
+    lucidity adds composure (a little top speed, most of the turn agility).
+    Chaos/affinity/terrain stay priced in combat and (later) traversal rules."""
+    missing = [a for a in ATTRIBUTES if a not in stats]
+    if missing:
+        raise ValueError(f"stat block is missing {missing}")
+    k, lu = stats["kinesthetic"], stats["lucidity"]
+    return {
+        "walk_speed": round(BASE_WALK_SPEED + WALK_PER_KINESTHETIC * k + WALK_PER_LUCIDITY * lu, 2),
+        "jump_velocity": round(BASE_JUMP_VELOCITY + JUMP_PER_KINESTHETIC * k, 2),
+        "turn_speed": round(BASE_TURN_SPEED + TURN_PER_KINESTHETIC * k + TURN_PER_LUCIDITY * lu, 2),
+    }
+
+
 # --- the reference cast: archetypes spanning the envelope, totals near 25 ----
 REFERENCE_CAST: dict[str, dict[str, int]] = {
     "deckhand":  # the all-average baseline

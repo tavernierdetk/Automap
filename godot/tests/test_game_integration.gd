@@ -97,7 +97,7 @@ func _test_phare_slice() -> void:
 	print("      player spawn: %v" % player.global_position)
 	for actor in [keeper, fisher, zone]:
 		var label: String = str(actor.get("display_name")) if actor.get("display_name") else str(actor.get("zone_id"))
-		var gap := _surface_gap(actor, [player])
+		var gap := _surface_gap(actor, [player, actor])  # NPCs carry their own body now
 		print("      %s at %v (probe gap %.2f)" % [label, actor.global_position, gap])
 		_check(gap < 1.0, "%s on terrain surface (gap %.2f m)" % [label, gap])
 	_check(keeper.global_position.distance_to(fisher.global_position) > 1.0,
@@ -227,7 +227,7 @@ func _test_lagrave_populate() -> void:
 	var player: CharacterBody3D = shell.get_node("Player")
 	await get_tree().physics_frame
 	for actor in [marguerite, zone]:
-		var gap := _surface_gap(actor, [player])
+		var gap := _surface_gap(actor, [player, actor])  # NPCs carry their own body now
 		_check(gap < 1.0, "%s on terrain surface (gap %.2f m)"
 			% [str(actor.get("display_name")) if actor.get("display_name") else "zone", gap])
 

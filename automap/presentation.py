@@ -42,6 +42,11 @@ class VisualIdentity:
     trim_color: tuple = (0.95, 0.94, 0.90)      # door/window/chimney trim
     roof_saturation: float = 1.0                # boost detected roof colors (>1 = punchier)
     roof_palette: tuple = ()                    # colors for near-gray/unknown roofs
+    # per-building wall colors (visual-identity@2.3.0): each building draws its
+    # wall from this pool (deterministic per position); empty = wall_color only.
+    # With textures on, the color rides the material factor over a near-neutral
+    # tile — a whole palette costs zero extra embedded images.
+    wall_palette: tuple = ()
     # terrain zone colors (style_terrain transformer; None fields unused otherwise)
     grass_color: tuple = (0.50, 0.64, 0.30)
     cliff_color: tuple = (0.79, 0.66, 0.48)
@@ -100,6 +105,26 @@ def _flat_material(rgb):
 def _instance_rng(x: float, z: float) -> np.random.Generator:
     """Deterministic per-instance RNG so re-runs style identically."""
     return np.random.default_rng(hash((round(float(x), 2), round(float(z), 2))) & 0xFFFFFFFF)
+
+
+def _srgb_to_linear(c: float) -> float:
+    """One sRGB channel -> linear. Identity colors are authored as sRGB (what
+    you see is what you pick); glTF baseColorFactor is linear, so a color that
+    rides the factor instead of a texture must convert or it renders washed out."""
+    return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
+
+
+def _weighted_pick(weights: dict | None, rng: np.random.Generator) -> str | None:
+    """Draw a key from a {name: weight} map (facade_styles/roof_styles mixes).
+
+    None/empty map -> None (caller falls back to the singular key). Weight-0
+    entries never draw; insertion order keeps the draw deterministic.
+    """
+    if not weights:
+        return None
+    names = [k for k, w in weights.items() if float(w) > 0] or list(weights)
+    w = np.array([max(float(weights[k]), 1e-9) for k in names])
+    return names[int(rng.choice(len(names), p=w / w.sum()))]
 
 
 def _shift_color(rgb, hue: float = 0.0, value: float = 0.0):
@@ -577,27 +602,51 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
         elif identity.roof_saturation != 1.0:
             rgb = _saturate(rgb, identity.roof_saturation)
 
+        # per-building wall color: its own deterministic stream, so palettes
+        # never perturb the roof/texture/decay draws (roof_palette's pattern
+        # applied to walls)
+        wprng = _instance_rng(c.mean(axis=0)[0] + 43.0, c.mean(axis=0)[1] + 7.0)
+        wall_base = tuple(identity.wall_color)
+        if identity.wall_palette:
+            wall_base = tuple(
+                identity.wall_palette[int(wprng.integers(len(identity.wall_palette)))])
+
         # texture selection: its own deterministic stream, so turning textures
         # on/off never perturbs the roof-palette or decay draws
         tex = identity.textures
         tex_kw: dict = {}
         base_tint = 1.0
+        wall_tint = (1.0, 1.0, 1.0)
         if tex:
             from automap import facades
             trng = _instance_rng(c.mean(axis=0)[0] + 29.0, c.mean(axis=0)[1] - 13.0)
             variant = int(trng.integers(int(tex.get("variants", 4))))
             state = facades.pick_window_state(tex.get("window_states", {"dark": 1.0}), trng)
             base_tint = float(trng.uniform(0.88, 1.08))
+            style = (_weighted_pick(tex.get("facade_styles"), trng)
+                     or tex.get("facade_style", "brick"))
+            roof_style = (_weighted_pick(tex.get("roof_styles"), trng)
+                          or tex.get("roof_style", "membrane"))
+            jit = float(tex.get("uv_jitter", 0.0))
+            ju = float(trng.uniform(1.0 - jit, 1.0 + jit)) if jit > 0 else 1.0
+            jv = float(trng.uniform(1.0 - jit, 1.0 + jit)) if jit > 0 else 1.0
+            # walls follow the roof/road pattern: a near-neutral tile shared per
+            # (style, state, variant), the building's wall color riding the
+            # material factor — so wall_palette adds zero embedded images. The
+            # ratio converts sRGB->linear: the tile is sRGB-encoded, the factor
+            # is linear, and the authored color must survive the round trip.
+            wall_tint = tuple(
+                _srgb_to_linear(ch) / _srgb_to_linear(facades.NEUTRAL_BODY[0])
+                for ch in wall_base)
             tex_kw = {
                 "wall_image": facades.wall_tile(
-                    tex.get("facade_style", "brick"), tuple(identity.wall_color),
+                    style, facades.NEUTRAL_BODY,
                     tuple(identity.trim_color), tuple(identity.soot_color),
                     state, variant),
-                "roof_image": facades.roof_tile(tex.get("roof_style", "membrane"),
-                                                variant % 2),
-                "tex_tint": (base_tint,) * 3,
-                "window_tile_m": float(tex.get("window_tile_m", 3.5)),
-                "storey_m": float(tex.get("storey_m", 3.0)),
+                "roof_image": facades.roof_tile(roof_style, variant % 2),
+                "tex_tint": tuple(t * base_tint for t in wall_tint),
+                "window_tile_m": float(tex.get("window_tile_m", 3.5)) * ju,
+                "storey_m": float(tex.get("storey_m", 3.0)) * jv,
             }
 
         decay_on = (identity.ruin_fraction > 0 or identity.damage_fraction > 0
@@ -608,7 +657,7 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
             drng = _instance_rng(c.mean(axis=0)[0] + 17.0, c.mean(axis=0)[1] - 31.0)
             roll = float(drng.random())
             fade = float(drng.uniform(0.0, identity.weather_variation))
-            wall = tuple(ch * (1.0 - 0.45 * fade) for ch in identity.wall_color)
+            wall = tuple(ch * (1.0 - 0.45 * fade) for ch in wall_base)
             if roll < identity.ruin_fraction:
                 for part in rubble_parts(c, y0, b["height"], identity, drng):
                     scene.add_geometry(part)
@@ -635,7 +684,7 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
                 if tex_kw:
                     # grime + soot arrive through the tint over the shared tile
                     t = base_tint * (1.0 - 0.45 * fade) * 0.72
-                    tex_kw["tex_tint"] = (t, t, t)
+                    tex_kw["tex_tint"] = tuple(w * t for w in wall_tint)
                 for part in proxy_building_parts(
                         c, y0, b["height"], b.get("ridge", b["height"]),
                         b.get("roof", "flat"), rgb, identity,
@@ -646,7 +695,7 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
                 continue
             if tex_kw:
                 t = base_tint * (1.0 - 0.45 * fade)
-                tex_kw["tex_tint"] = (t, t, t)
+                tex_kw["tex_tint"] = tuple(w * t for w in wall_tint)
             for part in proxy_building_parts(
                     c, y0, b["height"], b.get("ridge", b["height"]),
                     b.get("roof", "flat"), rgb, identity,
@@ -657,7 +706,7 @@ def instance_buildings(scene: trimesh.Scene, ground: trimesh.Trimesh, features, 
 
         for part in proxy_building_parts(
                 c, y0, b["height"], b.get("ridge", b["height"]),
-                b.get("roof", "flat"), rgb, identity, **tex_kw):
+                b.get("roof", "flat"), rgb, identity, wall_rgb=wall_base, **tex_kw):
             scene.add_geometry(part)
         placed += 1
     return placed
