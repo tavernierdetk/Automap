@@ -1,0 +1,29 @@
+{
+  "id": "the_weirgate_aftermath",
+  "level": "auregate_classroom",
+  "kind": "interstitial",
+  "hide_player": true,
+  "intent": "The Weirgate Release — AFTERMATH: Caden has broken past Vec and reached Wren; the disruption is a heartbeat too much and the gate fails catastrophically; the flood takes the town. Caden saved his teacher and drowned hundreds, and he knows it. (The three worldview flags are set by the sequence, not here.)",
+  "actors": [
+    {
+      "id": "wren",
+      "creature": "professor_wren",
+      "spawn": [512, 360],
+      "face": "front"
+    },
+    {
+      "id": "caden",
+      "creature": "caden",
+      "spawn": [512, 430],
+      "face": "back"
+    }
+  ],
+  "steps": [
+    {"camera": {"pos": [512, 360], "zoom": 0.9, "duration": 1.5}},
+    {"say": {"actor": "wren", "text": "…the gate. The gate is going —", "auto": 2.5}},
+    {"move": {"actor": "caden", "to": [512, 384], "speed": 70}},
+    {"wait": 0.6},
+    {"camera": {"pos": [512, 300], "zoom": 0.8, "duration": 2.0}},
+    {"say": {"actor": "caden", "text": "I saved her. The water took the town. I know what I did.", "auto": 3.5}}
+  ]
+}

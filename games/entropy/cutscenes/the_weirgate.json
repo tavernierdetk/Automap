@@ -3,123 +3,34 @@
   "level": "auregate_classroom",
   "kind": "interstitial",
   "hide_player": true,
-  "intent": "The Weirgate Release (slice): the beats as a cutscene. A real Weirgate scene + battle is future.",
+  "intent": "The Weirgate Release — SETUP: the sanctioned Nudge names Professor Wren among the 'acceptable losses' at the gate; Vec orders Caden to hold the line; Caden refuses and steps forward; Vec moves to block him. Leads straight into the forced-outcome story-battle (Vec restrains Caden).",
   "actors": [
     {
       "id": "wren",
       "creature": "professor_wren",
-      "spawn": [
-        512,
-        360
-      ],
+      "spawn": [512, 360],
       "face": "front"
     },
     {
       "id": "caden",
       "creature": "caden",
-      "spawn": [
-        512,
-        560
-      ],
+      "spawn": [512, 560],
       "face": "back"
     },
     {
       "id": "vec",
       "creature": "vec",
-      "spawn": [
-        420,
-        620
-      ],
+      "spawn": [420, 600],
       "face": "right"
     }
   ],
   "steps": [
-    {
-      "camera": {
-        "pos": [
-          512,
-          420
-        ],
-        "zoom": 1.0,
-        "duration": 0.0
-      }
-    },
-    {
-      "say": {
-        "actor": "wren",
-        "text": "The prediction is clear. Some are too close to the gate to clear in time. Do NOT break ranks.",
-        "auto": 3.0
-      }
-    },
-    {
-      "say": {
-        "actor": "vec",
-        "text": "Caden \u2014 hold the line. HOLD it.",
-        "auto": 2.5
-      }
-    },
-    {
-      "move": {
-        "actor": "caden",
-        "to": [
-          512,
-          400
-        ],
-        "speed": 90
-      }
-    },
-    {
-      "say": {
-        "actor": "caden",
-        "text": "I'm not leaving her to a number.",
-        "auto": 2.5
-      }
-    },
-    {
-      "camera": {
-        "pos": [
-          512,
-          340
-        ],
-        "zoom": 0.9,
-        "duration": 1.5
-      }
-    },
-    {
-      "say": {
-        "actor": "wren",
-        "text": "\u2026the gate. The gate is going \u2014",
-        "auto": 2.5
-      }
-    },
-    {
-      "wait": 0.6
-    },
-    {
-      "say": {
-        "actor": "caden",
-        "text": "I saved her. The water took the town. I know what I did.",
-        "auto": 3.5
-      }
-    },
-    {
-      "effects": [
-        {
-          "type": "flag",
-          "key": "incident_interpretation_caden",
-          "value": "guilt"
-        },
-        {
-          "type": "flag",
-          "key": "incident_interpretation_vec",
-          "value": "order"
-        },
-        {
-          "type": "flag",
-          "key": "incident_interpretation_isaac",
-          "value": "the_slate_knew"
-        }
-      ]
-    }
+    {"camera": {"pos": [512, 420], "zoom": 1.0, "duration": 0.0}},
+    {"say": {"actor": "wren", "text": "The prediction is clear. Some are too close to the gate to clear in time. Do NOT break ranks.", "auto": 3.0}},
+    {"say": {"actor": "vec", "text": "Caden — hold the line. HOLD it.", "auto": 2.5}},
+    {"move": {"actor": "caden", "to": [512, 452], "speed": 90}},
+    {"say": {"actor": "caden", "text": "I'm not leaving her to a number.", "auto": 2.5}},
+    {"move": {"actor": "vec", "to": [500, 476], "speed": 150}},
+    {"say": {"actor": "vec", "text": "Then I will STOP you.", "auto": 2.0}}
   ]
 }

@@ -99,9 +99,20 @@ the rising water, Vec against Caden, fought as their chosen disciplines
 test the chosen classes"). The **outcome is fixed** — Caden breaks past
 and reaches Wren, whatever the player does — a formative struggle, not a
 win/lose gate. Whose side the player fights it from is the
-`exact_player_control_model` decision (still open); the combat is
-designed regardless. Implementation depends on NS2 (the class system)
-and a **forced-outcome story-battle mode** — noted, not built here.
+`exact_player_control_model` decision; for the slice the player is Caden,
+so the fight is Caden vs Vec from Caden's side.
+
+**Built (2026-07-19).** The forced-outcome story-battle mode is in
+`engine/combat/battle.gd`: a `story` spec on the pending battle makes it a
+scripted struggle — nobody falls (hp held at ≥1), it runs a turn budget and
+ends on the FIXED outcome (`caden_breaks_past`), Run *is* breaking past, and
+both sides fight as their chosen discipline (class stats + ability pool).
+The `formative_crisis` handler orchestrates it windowed: `the_weirgate`
+setup cutscene → the Vec-vs-Caden story-battle → `the_weirgate_aftermath`
+→ the segment completes with the three worldview flags. Headless drives the
+state directly (`test_story_battle` proves the mode; `test_prologue` the
+flow). Remaining polish: a Weirgate battle backdrop (the default meadow is
+tonally off) — the "real Weirgate scene" the design still reserves.
 
 ## The pruning seed (incidental now, evidence later)
 
