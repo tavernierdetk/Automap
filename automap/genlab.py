@@ -278,6 +278,13 @@ PERSPECTIVE_TEXT = {
         "vanishing-point perspective"),
     "top_down": "pure top-down (bird's eye) view",
     "side": "straight side view",
+    # item icons: a flat emblem, not a scene object on the ground
+    "flat": (
+        "a flat, straight-on ICON — a single clean centered emblem of the "
+        "object as it sits in an RPG inventory grid: NO ground, NO cast "
+        "shadow, NO perspective depth, no scene around it. A bold, instantly "
+        "readable silhouette filling most of the frame, slightly angled for "
+        "legibility if that helps the shape read"),
 }
 
 
@@ -300,7 +307,7 @@ def _family_sizes(family: str) -> dict:
 
 def compose_prompt(identity: dict, family: str, substyle: str,
                    size_class: str, pal: dict, descriptor: dict,
-                   materials: tuple[str, ...]) -> str:
+                   materials: tuple[str, ...], subject: str | None = None) -> str:
     """The ONE rich prompt. Deterministic — its sha rides in provenance.
 
     The shared scaffold (style, palette, light, canvas) is family-agnostic;
@@ -311,7 +318,9 @@ def compose_prompt(identity: dict, family: str, substyle: str,
     Tree language leaking into a doorway prompt was the mine_hall arch
     failure (plan S4) — never hardcode a family's anatomy here.
     """
-    subject = SUBJECTS.get(family, {}).get(
+    # a caller may override the subject (item icons: one custom subject per
+    # item, not a fixed SUBJECTS entry); else the family/substyle library
+    subject = subject or SUBJECTS.get(family, {}).get(
         substyle, f"a single {substyle} {family}")
     w, h = _family_sizes(family)[size_class]
     perspective = PERSPECTIVE_TEXT.get(descriptor.get("perspective", ""),
@@ -361,11 +370,14 @@ COMPOSITION:
 def create_request(genlab_dir: Path, identity: dict, identity_path: str,
                    family: str, substyle: str, size_class: str,
                    count: int, descriptor: dict,
-                   materials: tuple[str, ...]) -> Path:
-    """Write a drop-mode request: prompt.md + request.json + incoming/."""
+                   materials: tuple[str, ...], subject: str | None = None) -> Path:
+    """Write a drop-mode request: prompt.md + request.json + incoming/.
+
+    `subject` overrides the family/substyle subject line — item icons use it
+    (one custom subject per item); it is stored so regeneration reproduces."""
     pal = pixelart.master_palette(identity)
     prompt = compose_prompt(identity, family, substyle, size_class, pal,
-                            descriptor, materials)
+                            descriptor, materials, subject=subject)
     base = f"{family}_{substyle}_{size_class}"
     n = 1
     while (genlab_dir / f"{base}_r{n}").exists():
@@ -379,6 +391,7 @@ def create_request(genlab_dir: Path, identity: dict, identity_path: str,
         "identity": identity_path, "count": count,
         "prompt_sha12": hashlib.sha256(prompt.encode()).hexdigest()[:12],
         "mode": "drop",
+        **({"subject": subject} if subject else {}),
     }, indent=2) + "\n")
     return req_dir
 

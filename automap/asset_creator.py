@@ -274,6 +274,28 @@ FAMILIES: dict[str, dict] = {
         # (w, h) — the aspect per class, chosen per substyle at request time
         "sizes": {"large": (96, 128), "medium": (96, 64), "small": (64, 96)},
     },
+    "icon": {
+        # item inventory icons — one per item, subject supplied per-item by the
+        # Item Director (create_request subject=...), not from genlab.SUBJECTS.
+        # Referenced by item.icon (props catalog), never painted as tiles.
+        "generator": "genlab",
+        "substyles": ("weapon", "consumable", "accessory", "key", "tool"),
+        "default_min_variants": 1,
+        "style_tokens": {"gen1"},
+        "tileset": False,
+        "materials": ("bronze", "verdigris", "wood", "stone", "flame", "water",
+                      "foliage"),
+        "descriptor": {"blocking": "none",
+                       "texture_motifs": "bold enamel shapes, crisp readable "
+                                         "silhouette, a single trade emblem",
+                       "anchor": "center",
+                       # a flat emblem: no key-light centroid, no ground shadow,
+                       # not gated for isometric (it's not a scene object)
+                       "lighting": "ambient",
+                       "perspective": "flat",
+                       "shadow": "none"},
+        "sizes": {"small": (32, 32), "medium": (48, 48), "large": (64, 64)},
+    },
     "shopsign": {
         # the town's language: hanging trade signs on bracket posts,
         # ICON-first (a mortar, a garment, crossed blades — no readable
