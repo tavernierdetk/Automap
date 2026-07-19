@@ -1,0 +1,108 @@
+{
+  "id": "first_turn",
+  "level": "vaporis_fair",
+  "kind": "interstitial",
+  "hide_player": true,
+  "intent": "The payoff the arc earns: dusk, the terrace, the valve seated \u2014 the wheel's first turn, shown as a stage the player is not on.",
+  "actors": [
+    {
+      "id": "druso",
+      "creature": "operator_druso",
+      "spawn": [
+        2304,
+        700
+      ],
+      "face": "back"
+    },
+    {
+      "id": "aulus",
+      "creature": "student_aulus",
+      "spawn": [
+        2100,
+        900
+      ],
+      "face": "back"
+    }
+  ],
+  "steps": [
+    {
+      "camera": {
+        "pos": [
+          2240,
+          620
+        ],
+        "zoom": 1.0,
+        "duration": 0.0
+      }
+    },
+    {
+      "move": {
+        "actor": "druso",
+        "to": [
+          2240,
+          560
+        ],
+        "speed": 60
+      }
+    },
+    {
+      "say": {
+        "actor": "druso",
+        "text": "Three-quarter bore\u2026 seats clean.",
+        "auto": 2.5
+      }
+    },
+    {
+      "camera": {
+        "pos": [
+          2240,
+          440
+        ],
+        "zoom": 0.85,
+        "duration": 2.0
+      }
+    },
+    {
+      "wait": 0.6
+    },
+    {
+      "move": {
+        "actor": "aulus",
+        "to": [
+          2180,
+          640
+        ],
+        "speed": 130
+      }
+    },
+    {
+      "say": {
+        "actor": "aulus",
+        "text": "It's turning! The wheel's turning!",
+        "auto": 2.5
+      }
+    },
+    {
+      "face": {
+        "actor": "druso",
+        "dir": "front"
+      }
+    },
+    {
+      "say": {
+        "actor": "druso",
+        "text": "And nobody official heard a word of it.",
+        "auto": 3.0
+      }
+    },
+    {
+      "effects": [
+        {
+          "type": "flag",
+          "key": "fair_opening_done",
+          "value": true
+        }
+      ]
+    }
+  ]
+}

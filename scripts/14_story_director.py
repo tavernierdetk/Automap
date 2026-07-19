@@ -65,6 +65,30 @@ def arcs(game: str = typer.Option("entropy")) -> None:
 
 
 @app.command()
+def cutscenes(game: str = typer.Option("entropy")) -> None:
+    """List cutscenes + run the cutscene gate (the Cutscene Director's
+    chair sits under this one — docs/explorations/cutscene-module.md)."""
+    from automap import cutscenes as cs
+    gdir = _game_dir(game)
+    docs = cs.load_cutscenes(gdir)
+    if not docs:
+        typer.echo("no cutscenes yet — the Cutscene Director stages the first")
+        return
+    findings = cs.check_all(gdir)
+    for f in findings:
+        typer.echo(f"  {f.severity.upper():5s} [{f.beat}] {f.message}")
+    errs = [f for f in findings if f.severity == "error"]
+    for cid, doc in sorted(docs.items()):
+        typer.echo(f"  {cid:24s} {doc.get('kind', '?'):12s} on "
+                   f"{doc.get('level', '?')} — {len(doc.get('steps', []))} steps, "
+                   f"{len(doc.get('actors', []))} actors")
+    if errs:
+        typer.echo(f"BLOCKED — {len(errs)} errors")
+        raise typer.Exit(1)
+    typer.echo("cutscene gate passed")
+
+
+@app.command()
 def check(arc: str, game: str = typer.Option("entropy")) -> None:
     """The canon gate: names, places, sockets, admission, flag continuity."""
     gdir = _game_dir(game)

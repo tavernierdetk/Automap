@@ -1,0 +1,118 @@
+{
+  "id": "gate_welcome",
+  "level": "vaporis_fair",
+  "kind": "triggered",
+  "trigger": {
+    "rect": {
+      "pos": [
+        1520,
+        1650
+      ],
+      "size": [
+        288,
+        64
+      ]
+    },
+    "once_flag": "seen_gate_welcome"
+  },
+  "hide_player": false,
+  "intent": "First steps into the fair: the crowd streams past \u2014 two students hurry toward the court, all wheel-gossip. The player stands frozen in the stream.",
+  "actors": [
+    {
+      "id": "aulus",
+      "creature": "student_aulus",
+      "spawn": [
+        1400,
+        1700
+      ],
+      "face": "right"
+    },
+    {
+      "id": "livia",
+      "creature": "student_livia",
+      "spawn": [
+        1340,
+        1740
+      ],
+      "face": "right"
+    }
+  ],
+  "steps": [
+    {
+      "camera": {
+        "pos": [
+          1520,
+          1600
+        ],
+        "zoom": 1.1,
+        "duration": 0.8
+      }
+    },
+    {
+      "parallel": [
+        {
+          "move": {
+            "actor": "aulus",
+            "to": [
+              1560,
+              1560
+            ],
+            "speed": 90
+          }
+        },
+        {
+          "move": {
+            "actor": "livia",
+            "to": [
+              1500,
+              1600
+            ],
+            "speed": 90
+          }
+        }
+      ]
+    },
+    {
+      "face": {
+        "actor": "livia",
+        "dir": "right"
+      }
+    },
+    {
+      "say": {
+        "actor": "aulus",
+        "text": "The wheel turns at dusk \u2014 Vox swears it!"
+      }
+    },
+    {
+      "say": {
+        "actor": "livia",
+        "text": "Vox also swore the boiler was fine last year."
+      }
+    },
+    {
+      "parallel": [
+        {
+          "move": {
+            "actor": "aulus",
+            "to": [
+              1560,
+              1200
+            ],
+            "speed": 110
+          }
+        },
+        {
+          "move": {
+            "actor": "livia",
+            "to": [
+              1520,
+              1240
+            ],
+            "speed": 110
+          }
+        }
+      ]
+    }
+  ]
+}

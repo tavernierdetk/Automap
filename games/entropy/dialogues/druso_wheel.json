@@ -24,6 +24,10 @@
             {
               "type": "gold",
               "amount": 30
+            },
+            {
+              "type": "cutscene",
+              "id": "first_turn"
             }
           ]
         }

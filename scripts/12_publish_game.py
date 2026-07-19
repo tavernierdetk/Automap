@@ -43,7 +43,8 @@ JSON_KINDS = {"levels": "level", "creatures": "creature",
               "dialogues": "dialogue-script", "items": "item",
               "skills": "skill"}
 # kinds published by dedicated gated blocks (not the JSON_KINDS loop)
-GATED_SCHEMAS = {"economy": "economy", "ui": "ui", "casting": None}
+GATED_SCHEMAS = {"economy": "economy", "ui": "ui", "casting": None,
+                 "cutscenes": "cutscene"}
 
 
 def _validate(kind: str, path: Path, log) -> None:
@@ -181,6 +182,7 @@ def main(
         if blocked:
             raise typer.Exit(code=1)
 
+    from automap import cutscenes as cutscenes_mod
     from automap import economy as economy_mod
     from automap import items as items_mod
     from automap import ui_gate as ui_mod
@@ -189,7 +191,8 @@ def main(
     if (src_root / "skills").exists():
         _run_gate("skills", items_mod.check_skills(src_root))
     for kind, gate in (("economy", economy_mod.check_economy),
-                       ("ui", ui_mod.check_ui)):
+                       ("ui", ui_mod.check_ui),
+                       ("cutscenes", cutscenes_mod.check_all)):
         src = src_root / kind
         docs = sorted(src.glob("*.json")) if src.exists() else []
         if not docs:

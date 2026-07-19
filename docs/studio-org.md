@@ -31,7 +31,9 @@ resource) is machinery, never a chair.
 ```
 Game Director
 ├── Story Director ──── Lore Keeper (canon gate)
-│        ⇅                └ Dialogue Writer (wearable by Story Director)
+│        ⇅                ├ Dialogue Writer (wearable by Story Director)
+│        ⇅                └ Cutscene Director ── (actors from the Casting
+│        ⇅                   Director; stages from the Scene Director)
 │   Casting Director
 │   ├── PC branch  (existing character-admission pipeline — other session's lane)
 │   └── NPC Director ── NPC Creator (balance gate, character library)
@@ -60,6 +62,7 @@ Handshakes (parallel work meeting at sockets):
 | **Story Director** | seam (R2) | `games/<g>/story/` — arcs, beats, quests, dialogue commissions | `/story-director` (R2) | Lore Keeper canon gate; dialogue-script@ schema | lore bible, cast book |
 | **Lore Keeper** | new (R2) | `games/<g>/lore/` — canon bible (places, names, history, tone) | `/lore-keeper` (R2) | consistency review on canon edits | existing briefs (canon seeds) |
 | **Dialogue Writer** | wearable | dialogue-script@ documents under `story/` | via Story Director | dialogue-script@ schema + canon gate | lore bible, cast book |
+| **Cutscene Director** | built (2026-07-18) | `games/<g>/cutscenes/` — cutscene@1 staged story (puppets, free camera, frozen/absent PC) | `/cutscene-director` | ★ **cutscene gate**: stage exists, actors real + region-legal (R-005), speakers staged, dialogues exist, choreography in bounds | cast book, scene briefs |
 | **Casting Director** | new (R3) | `games/<g>/casting/` — cast-book.md + per-scene sheets | `/casting-director` (R3) | populate gate (slots, creatures, dialogues, R-005 regions) | cast book, lore bible |
 | **PC branch** | built (other lane) | `godot/characters/<slug>.json` → `.tres` | `/create-character` | schema + autosim balance harness | — (consumed via artifacts only) |
 | **NPC Director** | new (R3) | per-scene casting sheet — which archetypes → which npc_slots | `/npc-director` (R3) | slots exist in baked scene; roles covered | cast book, scene brief |
@@ -86,7 +89,8 @@ deliberate exclusion. Silence is not.
 
 | Need | Owner |
 |---|---|
-| Story, quests, cutscene beats | Story Director |
+| Story, quests | Story Director |
+| Cutscenes / staged story (triggered + interstitials) | Cutscene Director (under Story) |
 | Canon, naming, world history | Lore Keeper |
 | Dialogue text | Dialogue Writer (wearable by Story Director) |
 | Playable characters | PC branch (other lane) |
@@ -147,6 +151,10 @@ are marked ★ — they are where quality is actually enforced.
 | 30 | Interface Director → engine | menu specs + theme (baked, never hand-.tscn) | ★ **readability gate** — font px, contrast, pad-navigable graph |
 | 31 | Scene/Story Director → Audio Director | audio register (music brief + SFX list per scene) | seam — briefs reserve the section today |
 | 32 | Every director → QA Director | acceptance reads + quest specs | ★ playtest scripts run green headless |
+| 33 | Story Director → Cutscene Director | a beat commissions a staged scene | the beat must exist |
+| 34 | Cutscene Director → Casting Director | actor requisition (staged ids → creatures) | cast book — no creature/sprite, no stage |
+| 35 | Cutscene Director → publisher/engine | cutscene@ document | ★ **cutscene gate** (stage, actors, R-005, speakers, dialogues, bounds) |
+| 36 | Audio Director key door | `automap/audio.py` (`~/.automap/musicgen.json`, SUNO_API_KEY) | seam — pipeline pending |
 
 ## Phases
 
