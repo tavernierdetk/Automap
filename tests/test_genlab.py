@@ -238,6 +238,41 @@ def test_genserver_provider_runs_node_and_fills_incoming(tmp_path, monkeypatch):
     assert [p.name for p in saved2] == ["gen_2.png", "gen_3.png"]
 
 
+def test_a1111_provider_posts_to_webui_and_fills_incoming(tmp_path, monkeypatch):
+    """The Windows-native path: a local SD-WebUI over the LAN, via the same
+    _post_json seam as OpenAI — identical downstream contract."""
+    import base64, io
+    req = genlab.create_request(tmp_path, IDENTITY, "id.json",
+                                "tree", "deciduous", "large", 2,
+                                FAM["descriptor"], FAM["materials"])
+    calls = {}
+
+    def fake_post(url, payload, headers, timeout=300):
+        calls.update(url=url, payload=payload, timeout=timeout)
+        buf = io.BytesIO()
+        synthetic_reference(64, 96).save(buf, format="PNG")
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        return {"images": [b64] * payload["batch_size"]}
+
+    monkeypatch.setattr(genlab, "_post_json", fake_post)
+    kf = tmp_path / "imagegen.json"
+    kf.write_text(json.dumps({"provider": "a1111",
+                              "endpoint": "http://box:7860/", "steps": 22}))
+    monkeypatch.setattr(genlab, "KEYFILE", kf)
+
+    saved = genlab.generate_via_api(req, log=lambda m: None)
+    assert [p.name for p in saved] == ["gen_0.png", "gen_1.png"]
+    assert all(p.exists() for p in saved)
+    assert calls["url"] == "http://box:7860/sdapi/v1/txt2img"   # trailing / stripped
+    assert calls["payload"]["steps"] == 22 and calls["payload"]["batch_size"] == 2
+    assert calls["payload"]["width"] == 1024 and calls["payload"]["height"] == 1536
+    assert calls["payload"]["prompt"] == (req / "prompt.md").read_text()
+    gen = json.loads((req / "generation.json").read_text())
+    assert gen["provider"] == "a1111" and gen["endpoint"] == "http://box:7860"
+    saved2 = genlab.generate_via_api(req, log=lambda m: None)
+    assert [p.name for p in saved2] == ["gen_2.png", "gen_3.png"]
+
+
 # --- repixel ------------------------------------------------------------------------
 
 def test_repixel_passes_the_full_qc_gate(pal):

@@ -469,16 +469,18 @@ def imagegen_config() -> dict:
         return {"provider": "openai", "api_key": key}
     if KEYFILE.exists():
         cfg = json.loads(KEYFILE.read_text())
-        # a self-hosted node needs no key — the genserver transport reaches it
-        # over the private LAN (money-saving swap for the OpenAI box)
-        if cfg.get("provider") == "genserver":
-            return {"provider": "genserver", **cfg}
+        # any non-openai provider is self-hosted on the private LAN and needs
+        # no key — the genserver transport (docker node) or a1111 (a local
+        # Stable-Diffusion-WebUI HTTP server) reaches it directly
+        if cfg.get("provider", "openai") != "openai":
+            return dict(cfg)
         if cfg.get("api_key"):
             return {"provider": "openai", **cfg}
     raise RuntimeError(
         "no image-generation provider: set IMAGEGEN_API_KEY (OpenAI), or write "
-        f"{KEYFILE} as {{\"provider\": \"openai\", \"api_key\": \"...\"}} or "
-        "{\"provider\": \"genserver\", \"target\": \"gpu1\"}")
+        f"{KEYFILE} as {{\"provider\": \"openai\", \"api_key\": \"...\"}}, "
+        "{\"provider\": \"genserver\", \"target\": \"gpu1\"}, or "
+        "{\"provider\": \"a1111\", \"endpoint\": \"http://<box-ip>:7860\"}")
 
 
 def _post_json(url: str, payload: dict, headers: dict, timeout: int = 300) -> dict:
@@ -515,9 +517,11 @@ def generate_via_api(req_dir: Path, provider: str | None = None,
     provider = provider or cfg.get("provider", "openai")
     if provider == "genserver":
         return _generate_via_genserver(req_dir, cfg, count, log)
+    if provider == "a1111":
+        return _generate_via_a1111(req_dir, cfg, count, log)
     if provider != "openai":
         raise NotImplementedError(f"unknown image provider '{provider}' "
-                                  "(supported: openai, genserver)")
+                                  "(supported: openai, genserver, a1111)")
     req = json.loads((req_dir / "request.json").read_text())
     prompt = (req_dir / "prompt.md").read_text()
     target = _family_sizes(req["family"])[req["size_class"]]
@@ -606,6 +610,67 @@ def _generate_via_genserver(req_dir: Path, cfg: dict, count: int | None = None,
     (req_dir / "generation.json").write_text(json.dumps({
         "provider": "genserver", "target": target,
         "model": cfg.get("model", "stabilityai/stable-diffusion-xl-base-1.0"),
+        "size": f"{w}x{h}", "n": n, "prompt_sha12": req["prompt_sha12"],
+        "saved": [p.name for p in saved],
+    }, indent=2) + "\n")
+    log(f"[genlab] {req_dir.name}: {len(saved)} reference(s) -> incoming/ "
+        "(next: assets preview)")
+    return saved
+
+
+def _generate_via_a1111(req_dir: Path, cfg: dict, count: int | None = None,
+                        log=print) -> list[Path]:
+    """Fill incoming/ from a local Stable-Diffusion-WebUI (Automatic1111 /
+    Forge / reForge) over the LAN — the Windows-native, no-Docker, no-Linux
+    swap for the OpenAI box. Reuses _post_json (the same POST seam), so
+    downstream (preview/ingest) is byte-for-byte identical.
+
+    Config (~/.automap/imagegen.json): {"provider": "a1111",
+    "endpoint": "http://<box-ip>:7860", "steps": 30, "sampler": "DPM++ 2M"}.
+    """
+    import base64
+
+    req = json.loads((req_dir / "request.json").read_text())
+    prompt = (req_dir / "prompt.md").read_text()
+    endpoint = str(cfg["endpoint"]).rstrip("/")
+    w, h = (int(x) for x in _gen_size(_family_sizes(req["family"])[req["size_class"]]).split("x"))
+    n = count or max(2, int(req.get("count", 2)))
+    payload = {
+        "prompt": prompt,
+        "negative_prompt": cfg.get("negative_prompt", ""),
+        "steps": int(cfg.get("steps", 30)),
+        "width": w, "height": h,
+        "cfg_scale": float(cfg.get("guidance", 6.5)),
+        "sampler_name": cfg.get("sampler", "DPM++ 2M"),
+        "batch_size": n,
+        "seed": int(cfg.get("seed", -1)),
+    }
+    headers = {}
+    if cfg.get("api_user"):   # optional --api-auth on the WebUI (LAN hardening)
+        tok = base64.b64encode(
+            f"{cfg['api_user']}:{cfg.get('api_pass', '')}".encode()).decode()
+        headers["Authorization"] = "Basic " + tok
+    log(f"[genlab] {req_dir.name}: requesting {n} reference(s) ({w}x{h}) "
+        f"from a1111 {endpoint}…")
+    out = _post_json(endpoint + "/sdapi/v1/txt2img", payload, headers,
+                     timeout=int(cfg.get("timeout", 600)))
+    images = out.get("images", [])
+    if not images:
+        raise RuntimeError(f"a1111: no images returned from {endpoint}")
+
+    incoming = req_dir / "incoming"
+    incoming.mkdir(exist_ok=True)
+    start = len(list(incoming.glob("*.png")))
+    saved = []
+    for i, b64 in enumerate(images):
+        if "," in b64[:32]:            # strip a data: URI prefix if present
+            b64 = b64.split(",", 1)[1]
+        p = incoming / f"gen_{start + i}.png"
+        p.write_bytes(base64.b64decode(b64))
+        saved.append(p)
+    (req_dir / "generation.json").write_text(json.dumps({
+        "provider": "a1111", "endpoint": endpoint,
+        "model": cfg.get("model", "webui-default"),
         "size": f"{w}x{h}", "n": n, "prompt_sha12": req["prompt_sha12"],
         "saved": [p.name for p in saved],
     }, indent=2) + "\n")
