@@ -190,21 +190,29 @@ def main(
         _run_gate("items", items_mod.check_items(src_root))
     if (src_root / "skills").exists():
         _run_gate("skills", items_mod.check_skills(src_root))
-    # sequences are a design tier (Story Director); the publisher reports
-    # their checklist non-fatally — errors are contradictions, warnings are
-    # the to-author list. They are NOT copied to content/ (no runtime yet;
-    # the SequenceRunner arrives in NS1).
+    # sequences (Story Director's tier): gate = contradictions block,
+    # to-author warnings inform; then publish to content/sequences/ for the
+    # SequenceRunner (NS1). The state ledger's runtime substrate is
+    # WorldState, so the doc travels whole.
     from automap import sequences as sequences_mod
-    if (src_root / "story" / "sequences").exists():
+    seq_src = src_root / "story" / "sequences"
+    seq_files = sorted(seq_src.glob("*.json")) if seq_src.exists() else []
+    if seq_files:
         seq_findings = sequences_mod.check_all(src_root)
         seq_errs = [f for f in seq_findings if f.severity == "error"]
         for f in seq_errs:
             log(f"ERROR: sequence [{f.beat}]: {f.message}")
         n_warn = len(seq_findings) - len(seq_errs)
-        log(f"sequences: {len(seq_errs)} contradictions, {n_warn} to-author "
-            "(checklist, not published — runtime lands in NS1)")
         if seq_errs:
             raise typer.Exit(code=1)
+        dst = content / "sequences"
+        _publish_dir_reset(dst)
+        for f in seq_files:
+            shutil.copy2(f, dst / f.name)
+            manifest["artifacts"].setdefault("sequences", []).append(
+                {"name": f.name, "sha256_12": _sha12(f)})
+        log(f"sequences: {len(seq_files)} published, {n_warn} to-author "
+            "warnings (the checklist)")
 
     for kind, gate in (("economy", economy_mod.check_economy),
                        ("ui", ui_mod.check_ui),
