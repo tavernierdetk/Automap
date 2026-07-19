@@ -32,6 +32,7 @@ Pure numpy/PIL, deterministic, no network.
 """
 from __future__ import annotations
 
+import cv2
 import numpy as np
 from PIL import Image
 
@@ -66,14 +67,28 @@ def _srgb_to_lab(rgb: np.ndarray) -> np.ndarray:
 # --- passes ---------------------------------------------------------------------
 
 def subject_mask(arr: np.ndarray, tol: float = 30.0) -> np.ndarray:
-    """Foreground mask: real alpha if present, else key out the dominant
-    border color (the prompt asks for a plain solid background)."""
+    """Foreground mask: real alpha if present, else remove the background by a
+    corner-seeded flood fill that grows by LOCAL colour similarity — so it
+    follows a gradient or a soft shadow and stops at the subject's hard edge
+    (a single global colour key can't, which is why self-hosted SD refs left
+    grey/shadow residue). Falls back to keying the median border colour when
+    the flood is degenerate (subject touches a corner, near-uniform image)."""
     if arr.shape[2] == 4 and (arr[:, :, 3] < 250).any():
         return arr[:, :, 3] > 127
-    rgb = arr[:, :, :3].astype(float)
-    border = np.concatenate([rgb[0], rgb[-1], rgb[:, 0], rgb[:, -1]])
-    bg = np.median(border, axis=0)
-    return np.linalg.norm(rgb - bg, axis=2) > tol
+    rgb = np.ascontiguousarray(arr[:, :, :3], dtype=np.uint8)
+    h, w = rgb.shape[:2]
+    ff = np.zeros((h + 2, w + 2), np.uint8)            # cv2 flood mask (+2 ring)
+    lo = up = (int(tol),) * 3
+    flags = 4 | cv2.FLOODFILL_MASK_ONLY | (255 << 8)   # 4-conn, neighbour range
+    for seed in ((0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)):
+        cv2.floodFill(rgb, ff, seed, 0, lo, up, flags)
+    fg = ~(ff[1:-1, 1:-1] > 0)
+    frac = float(fg.mean())
+    if frac < 0.02 or frac > 0.98:                     # removed nothing / everything
+        rgbf = rgb.astype(float)
+        border = np.concatenate([rgbf[0], rgbf[-1], rgbf[:, 0], rgbf[:, -1]])
+        fg = np.linalg.norm(rgbf - np.median(border, axis=0), axis=2) > tol
+    return fg
 
 
 def downscale(arr: np.ndarray, mask: np.ndarray, target: tuple[int, int],

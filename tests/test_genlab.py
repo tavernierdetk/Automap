@@ -323,6 +323,20 @@ def test_a1111_prompt_suffix_steers_the_local_model(tmp_path, monkeypatch):
 
 # --- repixel ------------------------------------------------------------------------
 
+def test_subject_mask_floodfills_arbitrary_background():
+    """The flood-fill mask strips ANY flat background colour (self-hosted SD
+    lands on grey/white/purple), keeping the subject; degenerate cases fall
+    back without crashing."""
+    for bg in [(150, 150, 150), (255, 255, 255), (195, 117, 180)]:  # grey/white/purple
+        arr = np.full((64, 64, 3), bg, np.uint8)
+        arr[20:44, 20:44] = (200, 80, 40)                # a distinct subject block
+        m = repixel.subject_mask(arr)
+        assert not m[2, 2] and not m[-3, -3], f"bg {bg} corners not removed"
+        assert m[32, 32], f"bg {bg} subject removed"
+        assert 0.05 < m.mean() < 0.6
+    repixel.subject_mask(np.full((32, 32, 3), 100, np.uint8))  # uniform: must not raise
+
+
 def test_repixel_passes_the_full_qc_gate(pal):
     sprite, material, band, names = repixel.repixelize(
         synthetic_reference(), pal, trees_px.SIZES["large"],
