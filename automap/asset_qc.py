@@ -155,6 +155,41 @@ def check_light_direction(arr, pal, descriptor: dict | None = None) -> Check:
                  f"bright({bx:.0f},{by:.0f}) vs dark({dx:.0f},{dy:.0f})")
 
 
+def check_perspective(arr: np.ndarray, descriptor: dict | None = None,
+                      tol: float = 0.11, float_exempt: float = 0.30) -> Check:
+    """Doctrine (2026-07-18): front-facing three-quarter top-down — the ground
+    contact is ~ONE flat line; reject the ISOMETRIC corner view (its diamond
+    base dips at center). SELF-GATES by shape: if the object's sides float
+    above the ground (a stem or canopy — tree, lectern, statue, topiary), the
+    base-dip is meaningless, so the asset is exempt. Only box-like props that
+    actually rest on a base are judged — no per-family tagging needed."""
+    d = descriptor or {}
+    # OPT-IN: only box-like families gate perspective (a rock/tree looks the
+    # same from any angle; the diamond-base signal only means iso on a box).
+    # A family sets perspective_gate True (or per-substyle to exempt a stem
+    # like the lectern).
+    if not d.get("perspective_gate", False):
+        return Check("perspective", True, 1.0, "exempt (not a gated family)")
+    if d.get("perspective", "three_quarter") != "three_quarter":
+        return Check("perspective", True, 1.0, f"exempt ({d.get('perspective')})")
+    m = _main_mass(arr)
+    cols = np.nonzero(m.any(axis=0))[0]
+    if len(cols) < 12:
+        return Check("perspective", True, 1.0, "too small to judge")
+    h = m.shape[0]
+    base = np.array([np.nonzero(m[:, c])[0].max() for c in cols], float)
+    third = len(cols) // 3
+    edges = np.concatenate([base[:third], base[-third:]]).mean()
+    bottom = base.max()
+    if (bottom - edges) / h > float_exempt:          # sides float — stem/organic
+        return Check("perspective", True, float((bottom - edges) / h),
+                     "exempt (sides float above ground — stem/organic)")
+    dip = (base[third:-third].mean() - edges) / len(cols)
+    ok = dip <= tol
+    return Check("perspective", ok, float(dip), f"base center-dip {dip:.2f}w"
+                 + ("" if ok else " — ISOMETRIC corner view (doctrine: front-facing)"))
+
+
 def check_band_balance(arr, pal) -> Check:
     """Shading must be banded, not mud: mid-tones 20-85%, extremes present."""
     main = _main_mass(arr)
@@ -300,6 +335,7 @@ def run_qc(arr: np.ndarray, meta: dict, pal: dict, descriptor: dict) -> list[Che
         check_band_balance(arr, pal),
         check_grid_alignment(arr),
         check_blocking_footprint(arr, meta, descriptor),
+        check_perspective(arr, descriptor),
     ]
     return checks
 

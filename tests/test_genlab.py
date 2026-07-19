@@ -323,6 +323,25 @@ def test_a1111_prompt_suffix_steers_the_local_model(tmp_path, monkeypatch):
 
 # --- repixel ------------------------------------------------------------------------
 
+def test_check_perspective_gates_isometric_boxes_only():
+    """Doctrine gate: a diamond-based (isometric) box FAILS in a gated family;
+    a flat-based (front-facing) box passes; ungated families + the per-substyle
+    opt-out are exempt."""
+    from automap import asset_qc
+    gated = {"perspective": "three_quarter", "perspective_gate": True}
+    flat = np.zeros((44, 44, 4), np.uint8)
+    flat[8:34, 10:34] = (120, 120, 120, 255)              # flat base -> front view
+    assert asset_qc.check_perspective(flat, gated).ok
+    iso = np.zeros((44, 44, 4), np.uint8)
+    for c in range(10, 34):
+        base = 30 + int(8 * (1 - abs(c - 22) / 12))       # base dips at center
+        iso[8:base, c] = (120, 120, 120, 255)
+    assert not asset_qc.check_perspective(iso, gated).ok  # isometric -> rejected
+    assert asset_qc.check_perspective(iso, {"perspective": "three_quarter"}).ok  # not gated
+    assert asset_qc.check_perspective(
+        iso, {"perspective": "three_quarter", "perspective_gate": False}).ok     # opt-out
+
+
 def test_subject_mask_floodfills_arbitrary_background():
     """The flood-fill mask strips ANY flat background colour (self-hosted SD
     lands on grey/white/purple), keeping the subject; degenerate cases fall

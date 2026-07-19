@@ -224,24 +224,23 @@ SUBJECTS = {
                   "verdigris stain bleeding under the top hoop",
     },
     "furniture": {
-        "desk": "a single wooden school desk seen from a high three-quarter "
-                "top-down angle: a sturdy oak writing table with a slightly "
-                "sloped top facing the viewer, clear plank grain, four square "
-                "legs, a small stack of parchment and a quill resting on top",
-        "bookcase": "a single tall wooden bookcase seen from a high "
-                    "three-quarter angle: an oak shelf unit of four shelves "
-                    "packed with rows of worn leather-bound books and a few "
-                    "glass potion bottles, a solid plank base, standing "
-                    "upright against a wall",
-        "lectern": "a single wooden lectern reading-stand seen from a high "
-                   "three-quarter angle: a slanted oak book-rest on a turned "
-                   "central post rising from a wide round base, an open tome "
-                   "resting on the slope",
+        # NOTE: subjects must NOT name a camera angle — the PERSPECTIVE block
+        # is the sole authority (saying "three-quarter angle" here fought it
+        # and pulled the model to an isometric corner view). Describe the
+        # object, not the view.
+        "desk": "a single wooden school desk: a sturdy oak writing table with "
+                "a slightly sloped top, clear plank grain, four square legs, a "
+                "small stack of parchment and a quill resting on top",
+        "bookcase": "a single tall wooden bookcase: an oak shelf unit of four "
+                    "shelves packed with rows of worn leather-bound books and "
+                    "a few glass potion bottles, on a solid plank base",
+        "lectern": "a single wooden lectern reading-stand: a slanted oak "
+                   "book-rest on a turned central post rising from a wide "
+                   "round base, an open tome resting on the slope",
         "chalkboard": "a single large slate chalkboard on a wooden A-frame "
-                      "stand seen from a high three-quarter angle: a dark "
-                      "blue-grey slate writing surface framed in oak, faint "
-                      "pale chalk diagrams on the slate, a narrow chalk tray "
-                      "across the bottom",
+                      "stand: a dark blue-grey slate writing surface framed in "
+                      "oak, faint pale chalk diagrams on the slate, a narrow "
+                      "chalk tray across the bottom",
     },
     "portal": {
         "arch": "a single carved stone arch gateway: a semicircular arch of "
@@ -755,22 +754,9 @@ def preview(req_dir: Path, identity: dict, log=print) -> Path | None:
         bad = [c for c in checks if not c.ok]
         verdict = "QC PASS" if not bad else \
             "QC FAIL: " + "; ".join(f"{c.name} ({c.detail})" for c in bad)
-        # perspective ADVISORY (never a gate): an isometric corner view's
-        # base contour bulges downward at center (diamond base); a
-        # doctrine-compliant front view's base line runs flat
-        subj = (material > 0) & (material < min(
-            i for i, m in names.items() if m.startswith("outline:")))
-        cols = np.nonzero(subj.any(axis=0))[0]
-        hint = ""
-        if len(cols) >= 12:
-            base_y = np.array([np.nonzero(subj[:, c])[0].max() for c in cols])
-            third = len(cols) // 3
-            bulge = base_y[third:-third].mean() - \
-                np.concatenate([base_y[:third], base_y[-third:]]).mean()
-            if bulge > 0.10 * len(cols):
-                hint = (f"  [perspective hint: base bulges {bulge:.0f}px at "
-                        "center — possible ISOMETRIC corner view]")
-        log(f"[genlab] preview {src.name}: {verdict}{hint}")
+        # (the isometric corner view is now a real gate — check_perspective in
+        # run_qc — not the old advisory hint)
+        log(f"[genlab] preview {src.name}: {verdict}")
         ref_t = ref.resize((max(1, int(ref.width * row_h / ref.height)), row_h))
         scale = max(1, row_h // sprite.height)
         spr_t = sprite.resize((sprite.width * scale, sprite.height * scale),

@@ -265,6 +265,11 @@ FAMILIES: dict[str, dict] = {
                        # albedo; the up-left key-light centroid check misreads
                        "lighting": "ambient",
                        "perspective": "three_quarter",
+                       # box-like pieces gate against the isometric corner
+                       # view; the lectern is a stem (book-rest on a post) so
+                       # its base dips at center regardless — exempt it
+                       "perspective_gate": {"desk": True, "bookcase": True,
+                                            "chalkboard": True, "lectern": False},
                        "shadow": "dither_ellipse"},
         # (w, h) — the aspect per class, chosen per substyle at request time
         "sizes": {"large": (96, 128), "medium": (96, 64), "small": (64, 96)},
