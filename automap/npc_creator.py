@@ -263,8 +263,10 @@ def ingest_figure(req_dir: Path, identity: dict, frames_root: Path,
 PIXELASSET_ROOT_DEFAULT = Path.home() / "Cowork" / "PixelAssetCreator"
 # the slicer's orientation folders ARE the engine animation contract;
 # per-animation fps by prefix (walk cycle 8, idle breath 4, run 10)
-ULPC_FPS = {"Walk": 8, "Idle": 4, "Run": 10}
+ULPC_FPS = {"Walk": 8, "Idle": 4, "Run": 10, "Faint": 9}
 ULPC_DEFAULT_FPS = 8
+# animations that play ONCE and hold their last frame (a collapse, not a loop)
+ULPC_NONLOOP = {"Faint", "Hurt"}
 
 
 def ulpc_fps_map(anim_dirs: list[str]) -> dict[str, int]:
@@ -349,6 +351,39 @@ def compose_ulpc(game_dir: Path, slug: str, build_path: Path,
             run_out.mkdir()
             for i, f in enumerate(cycle):
                 shutil.copy2(f, run_out / f"{slug}_run_{i:03d}.png")
+
+        # `hurt` (the 6-frame collapse) is a COMBAT row clothing layers carry,
+        # so — unlike idle/run — composing it natively keeps the body dressed.
+        # It's single-facing (camera-facing collapse), so it becomes one
+        # face-less `Faint`. Can't be synthesized from walk; needs its own pass.
+        # A failure here is non-fatal: the character just keeps the dissolve
+        # fallback in combat.
+        try:
+            hurt_build = json.loads(build_path.read_text())
+            hurt_build["animations"] = ["hurt"]
+            hurt_bf = Path(tmp) / "build.hurt.json"
+            hurt_bf.write_text(json.dumps(hurt_build))
+            hout = Path(tmp) / "hurt"
+            hout.mkdir()
+            hrun = subprocess.run(
+                ["node", str(bridge), str(hurt_bf), str(hout), slug,
+                 str(Path(tmp) / "hurt_result.json")],
+                cwd=pixelasset, capture_output=True, text=True)
+            hurt_src = hout / "ulpc_frames"
+            hurt_dirs = sorted(p for p in hurt_src.iterdir()
+                               if p.is_dir() and p.name.startswith("Hurt_")) \
+                if hrun.returncode == 0 and hurt_src.exists() else []
+            if hurt_dirs:
+                faint_out = dest / "Faint"
+                faint_out.mkdir()
+                for i, f in enumerate(sorted(hurt_dirs[0].glob("*.png"))):
+                    shutil.copy2(f, faint_out / f"{slug}_faint_{i:03d}.png")
+            else:
+                log(f"[ulpc] {slug}: no hurt frames — Faint skipped "
+                    f"(dissolve fallback){':' + hrun.stderr[-160:] if hrun.stderr else ''}")
+        except Exception as e:
+            log(f"[ulpc] {slug}: hurt compose skipped ({e})")
+
         anim_dirs = sorted(p.name for p in dest.iterdir() if p.is_dir())
     for w in result.get("warnings", []):
         log(f"[ulpc] {slug}: WARN {w.get('category')}/{w.get('variant')} "

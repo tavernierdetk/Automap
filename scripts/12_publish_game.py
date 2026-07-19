@@ -304,7 +304,11 @@ def main(
                     shutil.copy2(anim_dir / fn, out / fn)
                 anim_fps = (fps.get(anim_dir.name, 8)
                             if isinstance(fps, dict) else int(fps))
-                anims[anim_dir.name] = {"fps": anim_fps, "frames": frames}
+                # a collapse (Faint/Hurt) plays ONCE and holds; everything else
+                # loops. The engine reads this (creature_sprites honors `loop`).
+                loop = not anim_dir.name.split("_")[0] in ("Faint", "Hurt")
+                anims[anim_dir.name] = {"fps": anim_fps, "loop": loop,
+                                        "frames": frames}
             # the manifest the runtime actually READS (unlike the original's) —
             # frames listed in play order, fps explicit, loop by convention
             (cdst / slug / "manifest.json").write_text(json.dumps(
