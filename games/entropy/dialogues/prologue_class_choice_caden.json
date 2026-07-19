@@ -1,0 +1,12 @@
+{
+  "id": "prologue_class_choice_caden",
+  "intent": "Caden at the choosing",
+  "start": "n0",
+  "nodes": {
+    "n0": {
+      "speaker_id": "auregate_professor",
+      "text": "Take your seat, Caden. Whatever you choose, choose it for someone.",
+      "end_session": true
+    }
+  }
+}

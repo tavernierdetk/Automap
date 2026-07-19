@@ -102,3 +102,31 @@ unblocked pieces are **NS3** (platform) and the **Auregate scenes +
 age variants** (content); the incident and fragments wait on two human
 decisions (control model, fragment order) and one writing input (voice
 profiles).
+
+## Update — 2026-07-18: the playable slice landed
+
+A first playable vertical slice of the Shared Origin now runs from **New
+Game to a finish**, using provisional decisions (player = Caden, real
+names, linear / no fragments, the fair reused as `welcome_fair`):
+
+- **Content**: the `auregate_classroom` backdrop level (originals/), a
+  professor (`auregate_professor`) + `professor_wren`, six rough
+  underscore-id prologue dialogues, the fair augmented with the five
+  discipline stations, and `the_weirgate` incident cutscene (an
+  interstitial — camera holds the room, Wren warns, PCs frozen).
+- **Sequence + engine**: `prologue_shared_origin` wires each segment's
+  `location.level`, its `dialogue_refs`, and `incident.cutscene`; the
+  `formative_crisis` handler plays the cutscene (windowed) or resolves
+  headless; `boot._new_game()` starts the sequence with party `[caden]`;
+  the finish returns to the title.
+- **Verified**: `tests/test_prologue.gd` drives New Game →
+  classroom → fair → class choice → incident → end (0 failures);
+  full `tools/ci.sh` green (15 suites); Automap pytest green (360).
+  Windowed snapshots of the classroom and the incident interstitial
+  read as intended (see `tests/level_snapshot.tscn` /
+  `tests/incident_snapshot.tscn`).
+
+Still deferred (unchanged from above): NS4 age variants + real Auregate
+scenes, the incident's forced-outcome story-battle, NS5 fragments +
+continuity gate, portraits, music, and the writing pass. Human-blocked:
+control model, fragment order, voice profiles.

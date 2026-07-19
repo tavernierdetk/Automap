@@ -1,0 +1,12 @@
+{
+  "id": "prologue_class_choice_vec",
+  "intent": "Vec at the choosing",
+  "start": "n0",
+  "nodes": {
+    "n0": {
+      "speaker_id": "vec",
+      "text": "I want to be strong enough to hold the line when it matters. Whatever discipline does that.",
+      "end_session": true
+    }
+  }
+}

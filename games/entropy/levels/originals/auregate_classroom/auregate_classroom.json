@@ -1,0 +1,100 @@
+{
+  "id": "auregate_classroom",
+  "name": "The Auregate \u2014 Classroom",
+  "background": {
+    "file": "classroom.png",
+    "pos": [
+      512,
+      512
+    ],
+    "scale": [
+      1,
+      1
+    ]
+  },
+  "spawns": [
+    {
+      "tag": "start",
+      "pos": [
+        512,
+        780
+      ]
+    }
+  ],
+  "player": {
+    "slug": "caden",
+    "pos": [
+      512,
+      780
+    ]
+  },
+  "npcs": [
+    {
+      "slug": "auregate_professor",
+      "pos": [
+        512,
+        300
+      ],
+      "dialogue": "prologue_classroom_professor_instruction"
+    },
+    {
+      "slug": "vec",
+      "pos": [
+        380,
+        560
+      ],
+      "dialogue": "prologue_classroom_peer_banter"
+    },
+    {
+      "slug": "isaac",
+      "pos": [
+        648,
+        560
+      ],
+      "dialogue": "prologue_class_choice_isaac"
+    }
+  ],
+  "collision_rects": [
+    {
+      "pos": [
+        512,
+        130
+      ],
+      "size": [
+        1024,
+        40
+      ]
+    },
+    {
+      "pos": [
+        512,
+        900
+      ],
+      "size": [
+        1024,
+        40
+      ]
+    },
+    {
+      "pos": [
+        110,
+        512
+      ],
+      "size": [
+        40,
+        900
+      ]
+    },
+    {
+      "pos": [
+        914,
+        512
+      ],
+      "size": [
+        40,
+        900
+      ]
+    }
+  ],
+  "teleports": []
+}

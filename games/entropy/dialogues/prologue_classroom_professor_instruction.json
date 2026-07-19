@@ -1,0 +1,24 @@
+{
+  "id": "prologue_classroom_professor_instruction",
+  "intent": "professor introduces the Auregate",
+  "start": "n0",
+  "nodes": {
+    "n0": {
+      "speaker_id": "auregate_professor",
+      "text": "Settle, settle. You are here because the Order believes you can be trusted with a Nudge.",
+      "advance_hint": "Press Enter",
+      "next": "n1"
+    },
+    "n1": {
+      "speaker_id": "auregate_professor",
+      "text": "The Road is the shape of what should happen. A Gatewright reads it, and gently helps the world keep to it.",
+      "advance_hint": "Press Enter",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker_id": "auregate_professor",
+      "text": "At fifteen you each take a discipline. Tomorrow's Fair shows you the five. Watch closely.",
+      "end_session": true
+    }
+  }
+}

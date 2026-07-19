@@ -1052,24 +1052,59 @@
   ],
   "stations": [
     {
-      "id": "station.demo_weaver",
+      "id": "station.shaper",
       "pos": [
         1360,
         1300
       ],
-      "discipline": "weaver",
-      "blurb": "A demonstrator pulls a thread of smoke into a knot and back.",
-      "companion_line": "\u2014 hard to say what a Weaver even does, until it's done to you."
+      "discipline": "shaper",
+      "radius": 46,
+      "blurb": "Flagstones rise and settle at an open hand.",
+      "companion_line": "\u2014 watch how they never force it, Caden."
     },
     {
-      "id": "station.demo_shaper",
+      "id": "station.steward",
       "pos": [
-        1600,
+        1520,
         1300
       ],
-      "discipline": "shaper",
-      "blurb": "Flagstones rise and settle at the demonstrator's open hand.",
-      "companion_line": "\u2014 now THAT would be useful on a march."
+      "discipline": "steward",
+      "radius": 46,
+      "blurb": "A demonstrator calms a startled dray-beast with a word.",
+      "companion_line": "\u2014 watch how they never force it, Caden."
+    },
+    {
+      "id": "station.weaver",
+      "pos": [
+        1680,
+        1300
+      ],
+      "discipline": "weaver",
+      "radius": 46,
+      "blurb": "A thread of smoke is pulled into a knot, and back.",
+      "companion_line": "\u2014 watch how they never force it, Caden."
+    },
+    {
+      "id": "station.breaker",
+      "pos": [
+        1440,
+        1180
+      ],
+      "discipline": "breaker",
+      "radius": 46,
+      "blurb": "A block of stone is struck cleanly in two.",
+      "companion_line": "\u2014 watch how they never force it, Caden."
+    },
+    {
+      "id": "station.mentarch",
+      "pos": [
+        1600,
+        1180
+      ],
+      "discipline": "mentarch",
+      "radius": 46,
+      "blurb": "A demonstrator names the next card five times before it turns.",
+      "companion_line": "\u2014 watch how they never force it, Caden."
     }
   ]
 }

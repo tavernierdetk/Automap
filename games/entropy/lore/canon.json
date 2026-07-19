@@ -350,9 +350,21 @@
       "kind": "person",
       "name": "Professor Wren",
       "region": "originals",
-      "status": "proposed",
+      "status": "canon",
       "facts": [
-        "the trio's Auregate teacher, a Weaver; saved by Caden at the Weirgate at the cost of the town; survives; future role reserved (proposed; docs/explorations/incident-design.md)"
+        "the trio's Auregate teacher, a Weaver; saved by Caden at the Weirgate at the cost of the town; survives; future role reserved (proposed; docs/explorations/incident-design.md)",
+        "promoted to canon for the playable prologue slice (2026-07-18)"
+      ]
+    },
+    {
+      "id": "auregate_professor",
+      "kind": "person",
+      "name": "Professor Halden",
+      "region": "originals",
+      "status": "canon",
+      "facts": [
+        "the Auregate teacher (proposed; prologue)",
+        "promoted to canon for the playable prologue slice (2026-07-18)"
       ]
     }
   ]

@@ -1,0 +1,23 @@
+{
+  "id": "auregate_professor",
+  "name": "Professor Halden",
+  "archetype": "scholar",
+  "stats": {
+    "creature_affinity": 6,
+    "chaos_mastery": 6,
+    "kinesthetic": 5,
+    "lucidity": 6,
+    "terrain_control": 5
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "ulpc",
+    "frames": "professor_gaius"
+  },
+  "persona": {
+    "region": "originals"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "prologue_class_choice_isaac",
+  "intent": "Isaac takes Weaver",
+  "start": "n0",
+  "nodes": {
+    "n0": {
+      "speaker_id": "isaac",
+      "text": "Weaver. Of course. Someone has to understand the thing everyone else obeys.",
+      "end_session": true
+    }
+  }
+}

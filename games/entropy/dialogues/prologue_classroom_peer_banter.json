@@ -1,0 +1,30 @@
+{
+  "id": "prologue_classroom_peer_banter",
+  "intent": "classroom peer banter",
+  "start": "n0",
+  "nodes": {
+    "n0": {
+      "speaker_id": "vec",
+      "text": "The Welcome Fair's tomorrow, Caden. You can try every discipline before you ever choose.",
+      "advance_hint": "Press Enter",
+      "next": "n1"
+    },
+    "n1": {
+      "speaker_id": "isaac",
+      "text": "Every discipline. As if the choosing were the interesting part.",
+      "advance_hint": "Press Enter",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker_id": "caden",
+      "text": "It's the whole point, isn't it? Finding what you're for.",
+      "advance_hint": "Press Enter",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker_id": "vec",
+      "text": "It's finding what keeps people safe. That's what I'm for.",
+      "end_session": true
+    }
+  }
+}

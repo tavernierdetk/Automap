@@ -1,0 +1,12 @@
+{
+  "id": "prologue_fair_station_reactions",
+  "intent": "a companion at the fair",
+  "start": "n0",
+  "nodes": {
+    "n0": {
+      "speaker_id": "vec",
+      "text": "See how the demonstrator never forces it? Guidance, not force. The Order at its best.",
+      "end_session": true
+    }
+  }
+}

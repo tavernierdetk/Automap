@@ -287,7 +287,8 @@
       },
       "location": {
         "scene_role": "auregate_classroom",
-        "location_id": "location.auregate.classroom"
+        "location_id": "location.auregate.classroom",
+        "level": "auregate_classroom"
       },
       "participants": {
         "required": [
@@ -301,8 +302,8 @@
         ]
       },
       "dialogue_refs": [
-        "dialogue.prologue.classroom.peer_banter",
-        "dialogue.prologue.classroom.professor_instruction"
+        "prologue_classroom_peer_banter",
+        "prologue_classroom_professor_instruction"
       ],
       "produces": [
         "player_knowledge_road_intro",
@@ -365,7 +366,8 @@
       "location": {
         "scene_role": "auregate_fair",
         "location_id": "location.auregate.welcome_fair",
-        "entry_anchor": "fair_entrance"
+        "entry_anchor": "fair_entrance",
+        "level": "vaporis_fair"
       },
       "participants": {
         "required": [
@@ -384,7 +386,7 @@
         ]
       },
       "dialogue_refs": [
-        "dialogue.prologue.fair.station_reactions"
+        "prologue_fair_station_reactions"
       ],
       "produces": [
         "prologue_relationship_baseline",
@@ -443,7 +445,8 @@
       },
       "location": {
         "scene_role": "auregate_specialty_wing",
-        "location_id": "location.auregate.specialty_wing"
+        "location_id": "location.auregate.specialty_wing",
+        "level": "auregate_classroom"
       },
       "participants": {
         "required": [
@@ -454,9 +457,9 @@
         ]
       },
       "dialogue_refs": [
-        "dialogue.prologue.class_choice.isaac",
-        "dialogue.prologue.class_choice.caden",
-        "dialogue.prologue.class_choice.vec"
+        "prologue_class_choice_isaac",
+        "prologue_class_choice_caden",
+        "prologue_class_choice_vec"
       ],
       "produces": [
         "caden_selected_class",
@@ -544,7 +547,7 @@
         ]
       },
       "dialogue_refs": [
-        "dialogue.prologue.incident"
+        "prologue_incident"
       ],
       "produces": [
         "incident_interpretation_caden",
@@ -604,7 +607,8 @@
       "next_segment": {
         "id": "",
         "transition": "prologue_ends"
-      }
+      },
+      "cutscene": "the_weirgate"
     }
   ],
   "revelation_plan": {
@@ -630,31 +634,31 @@
   "dialogue_package": {
     "required_dialogue_sets": [
       {
-        "id": "dialogue.prologue.classroom.peer_banter",
-        "status": "unwritten"
+        "id": "prologue_classroom_peer_banter",
+        "status": "written"
       },
       {
-        "id": "dialogue.prologue.classroom.professor_instruction",
-        "status": "unwritten"
+        "id": "prologue_classroom_professor_instruction",
+        "status": "written"
       },
       {
-        "id": "dialogue.prologue.fair.station_reactions",
-        "status": "unwritten"
+        "id": "prologue_fair_station_reactions",
+        "status": "written"
       },
       {
-        "id": "dialogue.prologue.class_choice.isaac",
-        "status": "unwritten"
+        "id": "prologue_class_choice_isaac",
+        "status": "written"
       },
       {
-        "id": "dialogue.prologue.class_choice.caden",
-        "status": "unwritten"
+        "id": "prologue_class_choice_caden",
+        "status": "written"
       },
       {
-        "id": "dialogue.prologue.class_choice.vec",
-        "status": "unwritten"
+        "id": "prologue_class_choice_vec",
+        "status": "written"
       },
       {
-        "id": "dialogue.prologue.incident",
+        "id": "prologue_incident",
         "status": "unwritten"
       }
     ]

@@ -1,0 +1,23 @@
+{
+  "id": "professor_wren",
+  "name": "Professor Wren",
+  "archetype": "weaver",
+  "stats": {
+    "creature_affinity": 6,
+    "chaos_mastery": 6,
+    "kinesthetic": 5,
+    "lucidity": 6,
+    "terrain_control": 5
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "ulpc",
+    "frames": "dreamer_naia"
+  },
+  "persona": {
+    "region": "originals"
+  }
+}

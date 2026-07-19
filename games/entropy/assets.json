@@ -35,6 +35,12 @@
       "local": true
     },
     {
+      "slug": "auregate_professor",
+      "frames_dir": "work/game/entropy/creatures_px/professor_gaius",
+      "fps": 4,
+      "local": true
+    },
+    {
       "slug": "barker_vox",
       "frames_dir": "work/game/entropy/creatures_px/barker_vox",
       "fps": {
@@ -294,6 +300,12 @@
         "Walk_left": 8,
         "Walk_right": 8
       },
+      "local": true
+    },
+    {
+      "slug": "professor_wren",
+      "frames_dir": "work/game/entropy/creatures_px/dreamer_naia",
+      "fps": 4,
       "local": true
     },
     {

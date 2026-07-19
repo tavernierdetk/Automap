@@ -41,8 +41,10 @@ def test_transcribed_prologue_passes_with_a_checklist():
     assert "prologue_shared_origin" in docs
     findings = sequences.check_sequence(GAME, docs["prologue_shared_origin"])
     assert [f for f in findings if f.severity == "error"] == []
-    # the whole point: many to-author warnings
-    assert len([f for f in findings if f.severity == "warn"]) >= 10
+    # the whole point: it's a checklist of to-author warnings, never errors.
+    # (The count shrinks as the prologue gets authored — placeholders become
+    # real creatures/dialogues — so this floor only proves the mechanism.)
+    assert len([f for f in findings if f.severity == "warn"]) >= 5
 
 
 def test_clean_minimal_sequence_has_no_errors():
