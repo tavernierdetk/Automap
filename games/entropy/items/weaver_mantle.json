@@ -4,6 +4,10 @@
   "slot": "armor",
   "tier": 2,
   "name": "Weaver's Mantle",
-  "modifiers": { "lucidity": 2, "chaos_mastery": 1 },
-  "fiction": "A shoulder-drape, thread-of-brass through the hem. It seems to listen."
+  "modifiers": {
+    "lucidity": 2,
+    "chaos_mastery": 1
+  },
+  "fiction": "A shoulder-drape, thread-of-brass through the hem. It seems to listen.",
+  "icon": "armor_13"
 }

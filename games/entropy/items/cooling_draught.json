@@ -8,5 +8,6 @@
     "effect": "cure_status",
     "status_id": "poison"
   },
-  "fiction": "Condensed from the aqueduct on a cold morning."
+  "fiction": "Condensed from the aqueduct on a cold morning.",
+  "icon": "consumable_10"
 }

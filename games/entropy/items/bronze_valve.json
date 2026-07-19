@@ -3,5 +3,6 @@
   "kind": "key",
   "tier": 1,
   "name": "Bronze Valve",
-  "fiction": "Three-quarter bore, salvage from last year's coursework. The wheel turns on this."
+  "fiction": "Three-quarter bore, salvage from last year's coursework. The wheel turns on this.",
+  "icon": "key_1"
 }

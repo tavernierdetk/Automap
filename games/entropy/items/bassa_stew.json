@@ -8,5 +8,6 @@
     "effect": "heal",
     "amount": 40
   },
-  "fiction": "Strong enough to stand a spoon in."
+  "fiction": "Strong enough to stand a spoon in.",
+  "icon": "consumable_3"
 }

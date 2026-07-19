@@ -119,9 +119,9 @@ def items_icons(
     only = {s.strip() for s in item.split(",") if s.strip()}
     if only:
         items = {k: v for k, v in items.items() if k in only}
-    authored = json.loads((gdir / "items" / "icon_subjects.json").read_text()
-                          ).get("subjects", {}) \
-        if (gdir / "items" / "icon_subjects.json").exists() else {}
+    subjects_path = gdir / "icon_subjects.json"
+    authored = json.loads(subjects_path.read_text()).get("subjects", {}) \
+        if subjects_path.exists() else {}
     genlab_dir = ROOT / "work" / "game" / game / "genlab"
     staging = ROOT / "work" / "game" / game / "props"
     map_path = ROOT / "work" / "game" / game / "icon_candidates.json"
@@ -162,8 +162,13 @@ def items_icons(
             doc["icon"] = prop
             p.write_text(json.dumps(doc, indent=2) + "\n")
             typer.echo(f"  {iid}.icon = {prop}")
-        # prune icon-family candidates nobody picked — keep content/props clean
+        # prune icon-family candidates NObody references — keep content/props
+        # clean. Keep this pick set AND every icon any item already points at,
+        # so incremental assigns don't delete earlier picks.
         kept = set(chosen.values())
+        for doc in items_mod.load_items(gdir).values():
+            if doc.get("icon"):
+                kept.add(doc["icon"])
         removed = 0
         for name, e in list(staged.items()):
             if e.get("family") == "icon" and name not in kept:
