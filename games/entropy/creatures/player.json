@@ -1,0 +1,16 @@
+{
+  "id": "player",
+  "name": "Wanderer",
+  "archetype": "wanderer",
+  "stats": {
+    "creature_affinity": 13,
+    "chaos_mastery": 13,
+    "kinesthetic": 14,
+    "lucidity": 13,
+    "terrain_control": 13
+  },
+  "skills": ["attack"],
+  "xp_reward": 10,
+  "visual": {"family": "ulpc"},
+  "intent": "the created protagonist — a balanced base; the chosen discipline shapes the rest, the appearance recipe (save) bakes the body"
+}
