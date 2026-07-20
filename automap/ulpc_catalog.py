@@ -19,7 +19,7 @@ import shutil
 from pathlib import Path
 
 CATALOG_SCHEMA = "ulpc-catalog/1.0"
-ANIMS = ("walk", "hurt")            # walk → Walk/Idle/Run (synth); hurt → Faint
+ANIMS = ("walk", "hurt", "jump")    # walk → Walk/Idle/Run; hurt → Faint; jump → Celebrate
 FRAME = 64
 
 # --- the curated v1 selection --------------------------------------------------
