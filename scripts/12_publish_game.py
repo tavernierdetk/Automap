@@ -317,6 +317,21 @@ def main(
                 {"name": slug, "animations": len(anims)})
             log(f"creature '{slug}': {len(anims)} animation(s) + manifest")
 
+    # --- the curated ULPC layer catalog (the in-game character creator) ---
+    ulpc_src = root / "work" / "game" / game / "ulpc"
+    if (ulpc_src / "catalog.json").exists():
+        ulpc_dst = content / "ulpc"
+        _publish_dir_reset(ulpc_dst)
+        n = 0
+        for f in ulpc_src.rglob("*"):
+            if f.is_file():
+                rel = f.relative_to(ulpc_src)
+                (ulpc_dst / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(f, ulpc_dst / rel)
+                n += 1 if f.suffix == ".png" else 0
+        manifest["artifacts"]["ulpc"] = [{"sheets": n}]
+        log(f"ulpc catalog: {n} layer sheets + catalog.json")
+
     # --- the game-design document (the gspec: rules as data) ---
     design = src_root / "design.json"
     if design.exists():
