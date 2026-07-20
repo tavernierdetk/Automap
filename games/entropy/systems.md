@@ -66,8 +66,32 @@ constant in the same commit.
 - Required pause tabs: **items, save, quit** (equipment/status may be
   staged in later).
 
+## Level-up roulette (entropy control)
+
+- **The draw IS the level-up.** XP queues a *pending draw* per threshold;
+  the character does not grow until the draw resolves. No auto stat/skill
+  grant on XP.
+- **Commit at area entry, reveal at area exit** (free-roam only; the
+  prologue is excluded). The seed is fixed at commit and autosaved, so a
+  reload re-derives the identical result — **the wheel cannot be
+  save-scummed** (`engine/level_up/roulette.gd` is a pure function of the
+  seed via `ChaosRng`).
+- **Entropy control = `chaos_mastery`** scales the wheels three ways:
+  **dials** = `clampi(1 + chaos/5, 1, 4)` (choose best of N), **quality**
+  (skews the ChaosRng `alpha`, as combat luck does), and a **rig-the-wheel
+  budget** = `chaos/4` (lock a dial / remove a dud at commit).
+- **Two wheels:** a STAT wheel (each dial → "distribute N points" or a
+  fixed package) and a SKILL wheel (each dial → an unlearned discipline
+  skill or a wildcard). Rewards bank as `member_meta.bonuses` (summed in
+  effective_stats) and `member_meta.granted_skills` (unioned in
+  known_skills, safe from `set_class`).
+- Option pools + tiers currently live as constants in `roulette.gd`
+  (tunable); a `design.json` `roulette` block can externalize them later.
+
 ## Save contract (Systems fold: save/progression)
 
 - 3 slots (`user://saves/slot_<n>.json`) + legacy single file read as
   slot 0. A save is SERIALIZATION of PartyState + WorldState — never
   state invention; every field read with a default so older saves load.
+- Roulette state round-trips per member: `bonuses`, `granted_skills`,
+  `pending_draws`, and the in-flight `draw` token (seed + rig config).
