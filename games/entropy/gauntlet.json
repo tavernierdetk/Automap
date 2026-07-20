@@ -1,0 +1,9 @@
+{
+  "levels": 16,
+  "background": "BackgroundField.png",
+  "enemy": {
+    "per_encounter": 1,
+    "xp_factor": 0.6,
+    "stats": {"creature_affinity": 5, "chaos_mastery": 5, "kinesthetic": 5, "lucidity": 5, "terrain_control": 6}
+  }
+}

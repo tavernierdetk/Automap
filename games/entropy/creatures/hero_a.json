@@ -1,0 +1,20 @@
+{
+  "id": "hero_a",
+  "name": "Hero Aran",
+  "archetype": "wanderer",
+  "stats": {
+    "creature_affinity": 13,
+    "chaos_mastery": 13,
+    "kinesthetic": 14,
+    "lucidity": 13,
+    "terrain_control": 13
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 10,
+  "visual": {
+    "family": "ulpc"
+  },
+  "intent": "Combat Trial hero \u2014 the creator supplies look + discipline."
+}

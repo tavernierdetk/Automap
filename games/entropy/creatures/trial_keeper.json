@@ -1,0 +1,25 @@
+{
+  "id": "trial_keeper",
+  "name": "Quartermaster",
+  "archetype": "vendor",
+  "stats": {
+    "lucidity": 6,
+    "creature_affinity": 6,
+    "kinesthetic": 5,
+    "terrain_control": 5,
+    "chaos_mastery": 4
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 0,
+  "visual": {
+    "family": "ulpc"
+  },
+  "persona": {
+    "faction": "the_order",
+    "home": "gauntlet",
+    "region": "gauntlet"
+  },
+  "intent": "Combat Trial \u2014 the free quartermaster (own region for R-005)."
+}

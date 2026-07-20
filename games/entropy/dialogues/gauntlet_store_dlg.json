@@ -1,0 +1,32 @@
+{
+  "id": "gauntlet_store_dlg",
+  "intent": "Combat Trial \u2014 the free quartermaster.",
+  "start": "greet",
+  "nodes": {
+    "greet": {
+      "speaker_id": "trial_keeper",
+      "text": "Quartermaster's on the house for the Trial. Take what you need.",
+      "choices": [
+        {
+          "label": "Browse (free)",
+          "next_node": "done",
+          "effects": [
+            {
+              "type": "shop",
+              "id": "gauntlet_store"
+            }
+          ]
+        },
+        {
+          "label": "Not now",
+          "next_node": "done"
+        }
+      ]
+    },
+    "done": {
+      "speaker_id": "trial_keeper",
+      "text": "Give 'em hell.",
+      "end_session": true
+    }
+  }
+}

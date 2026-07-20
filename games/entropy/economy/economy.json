@@ -45,6 +45,28 @@
         "cooling_draught"
       ],
       "buyback_rate": 0.5
+    },
+    {
+      "id": "gauntlet_store",
+      "level": "gauntlet_01",
+      "keeper": "trial_keeper",
+      "inventory": [
+        "bassa_stew",
+        "brass_baton",
+        "brass_gorget",
+        "cooling_draught",
+        "coursework_spanner",
+        "founders_locket",
+        "gatewright_coat",
+        "gear_charm",
+        "laurel_charm",
+        "pressure_hammer",
+        "spun_sugar",
+        "verdigris_ring",
+        "weaver_mantle",
+        "weirsteel_plate"
+      ],
+      "free": true
     }
   ],
   "rewards": [

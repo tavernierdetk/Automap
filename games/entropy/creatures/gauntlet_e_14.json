@@ -1,0 +1,21 @@
+{
+  "id": "gauntlet_e_14",
+  "name": "Sparring Construct 14",
+  "archetype": "brute",
+  "stats": {
+    "creature_affinity": 5,
+    "chaos_mastery": 5,
+    "kinesthetic": 5,
+    "lucidity": 5,
+    "terrain_control": 6
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 2969,
+  "visual": {
+    "family": "battle",
+    "frames": "Alpha"
+  },
+  "intent": "Combat Trial dummy 14 \u2014 low stats, 2969 xp (~1 level)."
+}

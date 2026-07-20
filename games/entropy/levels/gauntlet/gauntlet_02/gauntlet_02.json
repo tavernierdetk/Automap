@@ -1,0 +1,92 @@
+{
+  "id": "gauntlet_02",
+  "kind": "backdrop",
+  "intent": "Combat Trial arena 2 \u2014 two combats + a free store.",
+  "background": {
+    "file": "BackgroundField.png",
+    "pos": [
+      576,
+      324
+    ],
+    "scale": [
+      1,
+      1
+    ]
+  },
+  "spawns": [
+    {
+      "tag": "entry",
+      "pos": [
+        180,
+        400
+      ]
+    }
+  ],
+  "encounters": [
+    {
+      "rect": {
+        "pos": [
+          420,
+          400
+        ],
+        "size": [
+          110,
+          120
+        ]
+      },
+      "enemies": [
+        "gauntlet_e_02"
+      ],
+      "seed": 200,
+      "layout": "field",
+      "intent": "Combat 1 of Trial 2."
+    },
+    {
+      "rect": {
+        "pos": [
+          800,
+          400
+        ],
+        "size": [
+          110,
+          120
+        ]
+      },
+      "enemies": [
+        "gauntlet_e_02"
+      ],
+      "seed": 201,
+      "layout": "field",
+      "intent": "Combat 2 of Trial 2."
+    }
+  ],
+  "npcs": [
+    {
+      "slug": "trial_keeper",
+      "dialogue": "gauntlet_store_dlg",
+      "trigger_radius": 80,
+      "pos": [
+        610,
+        250
+      ]
+    }
+  ],
+  "teleports": [
+    {
+      "target_level": "gauntlet_03",
+      "target_spawn_tag": "entry",
+      "require_action": true,
+      "rect": {
+        "pos": [
+          1040,
+          400
+        ],
+        "size": [
+          96,
+          150
+        ]
+      }
+    }
+  ],
+  "player": {}
+}

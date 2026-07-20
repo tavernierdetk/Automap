@@ -1,0 +1,20 @@
+{
+  "id": "hero_b",
+  "name": "Hero Bly",
+  "archetype": "wanderer",
+  "stats": {
+    "creature_affinity": 13,
+    "chaos_mastery": 13,
+    "kinesthetic": 14,
+    "lucidity": 13,
+    "terrain_control": 13
+  },
+  "skills": [
+    "attack"
+  ],
+  "xp_reward": 10,
+  "visual": {
+    "family": "ulpc"
+  },
+  "intent": "Combat Trial hero \u2014 the creator supplies look + discipline."
+}
