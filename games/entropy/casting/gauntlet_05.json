@@ -1,0 +1,12 @@
+{
+  "level": "gauntlet_05",
+  "region": "gauntlet",
+  "intent": "Combat Trial \u2014 the free quartermaster.",
+  "npcs": [
+    {
+      "slot": "store",
+      "creature": "trial_keeper",
+      "dialogue": "gauntlet_store_dlg"
+    }
+  ]
+}

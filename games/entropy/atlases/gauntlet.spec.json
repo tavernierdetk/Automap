@@ -1,0 +1,20 @@
+{
+  "name": "gauntlet",
+  "comment": "Combat Trial arena: a bounded sparring ground. A stone wall encloses a grass field; two packed-dirt rings mark where the fights happen; a worn gate-path leads to the next arena. Colors are literal — a neutral practice yard, no biome identity.",
+  "classes": [
+    {"name": "grass", "painter": "grass", "color": [0.34, 0.44, 0.24],
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "dirt", "painter": "earth", "color": [0.44, 0.35, 0.24],
+     "walkable": true, "speed_mod": 1.0, "hazard": false},
+    {"name": "wall", "painter": "rock", "color": [0.36, 0.36, 0.40],
+     "relief": "raised",
+     "walkable": false, "speed_mod": 1.0, "hazard": false},
+    {"name": "gate", "painter": "path", "color": [0.56, 0.50, 0.40],
+     "walkable": true, "speed_mod": 1.0, "hazard": false}
+  ],
+  "transitions": [
+    {"name": "wall", "base": "grass", "overlay": "wall"},
+    {"name": "dirt", "base": "grass", "overlay": "dirt"},
+    {"name": "gate", "base": "grass", "overlay": "gate"}
+  ]
+}

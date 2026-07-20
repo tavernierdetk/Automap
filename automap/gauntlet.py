@@ -38,32 +38,102 @@ def _write(path: Path, doc: dict) -> None:
     path.write_text(json.dumps(doc, indent=2) + "\n")
 
 
-def _level_doc(game_dir: Path, k: int, n: int, bg: str, per_enc: int) -> dict:
+# --- the arena: a bounded tiled yard (all arenas share this layout) ----------
+TILE = 32
+COLS, ROWS = 26, 18                 # 832 x 576 px
+MID = ROWS // 2                     # centre row (9)
+LEFT_RING = (8, MID)                # (col, row) — combat 1
+RIGHT_RING = (17, MID)              # combat 2
+ENTRY = (2, MID)                    # west spawn
+STORE = (13, 3)                     # north quartermaster
+EXIT = (23, MID)                    # east gate (teleport onward)
+
+
+def _px(cell: tuple[int, int]) -> list[int]:
+    """Cell (col, row) -> pixel centre."""
+    return [cell[0] * TILE + TILE // 2, cell[1] * TILE + TILE // 2]
+
+
+def _arena_rows() -> list[str]:
+    """The ground layer: a wall enclosure, grass field, two dirt combat rings,
+    a gate-path leading to the east exit."""
+    g = [["g"] * COLS for _ in range(ROWS)]
+    for r in range(ROWS):
+        for c in range(COLS):
+            if r in (0, ROWS - 1) or c in (0, COLS - 1):
+                g[r][c] = "w"                       # stone enclosure (blocks)
+    for (cc, cr) in (LEFT_RING, RIGHT_RING):        # 4x4 packed-dirt rings
+        for dr in range(-2, 2):
+            for dc in range(-2, 2):
+                r, c = cr + dr, cc + dc
+                if 0 < r < ROWS - 1 and 0 < c < COLS - 1:
+                    g[r][c] = "d"
+    for dr in range(-1, 2):                         # worn gate-path to the exit
+        r = MID + dr
+        for c in range(EXIT[0] - 1, COLS - 1):
+            g[r][c] = "p"
+    return ["".join(row) for row in g]
+
+
+def _level_doc(game_dir: Path, k: int, n: int, per_enc: int) -> dict:
     lid = "gauntlet_%02d" % k
     enemy = "gauntlet_e_%02d" % k
     nxt = "gauntlet_%02d" % (k + 1 if k < n else 1)   # last loops to the first
+    rings = [LEFT_RING, RIGHT_RING]
     enc = []
-    for i in range(2):                                # two combats
-        enc.append({"rect": {"pos": [420 + i * 380, 400], "size": [110, 120]},
+    for i in range(2):                                # two combats, one per ring
+        enc.append({"id": "%s#%d" % (lid, i + 1),
+                    "rect": {"pos": _px(rings[i]), "size": [120, 120]},
                     "enemies": [enemy] * per_enc, "seed": k * 100 + i,
                     "layout": "field",
                     "intent": "Combat %d of Trial %d." % (i + 1, k)})
-    doc = {
-        "id": lid, "kind": "backdrop",
-        "intent": "Combat Trial arena %d — two combats + a free store." % k,
-        "background": {"file": bg, "pos": [576, 324], "scale": [1, 1]},
-        "spawns": [{"tag": "entry", "pos": [180, 400]}],
+    return {
+        "id": lid, "kind": "tilemap",
+        "intent": "Combat Trial arena %d — a walled yard, two combats, a free "
+                  "store, a gate east to arena %s." % (k, nxt.split("_")[1]),
+        "tilemap": {"atlas": "gauntlet", "tile_size": TILE,
+                    "grid_size": [COLS, ROWS],
+                    "layers": [{"name": "ground",
+                                "palette": {"g": "grass", "d": "dirt",
+                                            "w": "wall", "p": "gate"},
+                                "rows": _arena_rows()}]},
+        "spawns": [{"tag": "entry", "pos": _px(ENTRY)}],
+        "npc_slots": [{"tag": "store", "pos": _px(STORE)}],
         "encounters": enc,
-        "npcs": [{"slug": KEEPER, "dialogue": STORE_DLG,
-                  "trigger_radius": 80, "pos": [610, 250]}],
         "teleports": [{"target_level": nxt, "target_spawn_tag": "entry",
                        "require_action": True,
-                       "rect": {"pos": [1040, 400], "size": [96, 150]}}],
-        "player": {},
+                       "rect": {"pos": _px(EXIT), "size": [64, 120]}}],
+        "player": {"pos": _px(ENTRY)},
     }
-    if k == 1:   # the shop's home level needs a matching npc_slot (casting gate)
-        doc["npc_slots"] = [{"tag": "store", "pos": [610, 250]}]
-    return doc
+
+
+def _brief(k: int, n: int) -> str:
+    nxt = k + 1 if k < n else 1
+    return (
+        "# Combat Trial — Arena %d (generated)\n\n"
+        "## The place\n"
+        "A bounded practice yard: a stone wall encloses a grass field. Two\n"
+        "packed-dirt rings mark where the fights happen; a worn gate-path leads\n"
+        "east to the next arena. Reads: (1) an enclosed ring, (2) two combat\n"
+        "grounds left and right, (3) the gate onward.\n\n"
+        "## Light & air\n"
+        "Neutral daylight, no biome — a flat, legible sparring yard.\n\n"
+        "## Zones\n"
+        "- Entry (west) — the player spawns here.\n"
+        "- Ring 1 / Ring 2 (dirt) — the two combats.\n"
+        "- Quartermaster (north) — the free store.\n"
+        "- Gate (east) — teleport to arena %d.\n\n"
+        "## Register\n"
+        "- Terrain: grass (floor), dirt (rings), wall (enclosure, blocks),\n"
+        "  gate (path). Atlas: gauntlet.\n"
+        "- Assets reused: none. Assets to create: none.\n\n"
+        "## Motion\n"
+        "Nothing lives here — a static yard.\n\n"
+        "## Acceptance reads\n"
+        "- The wall fully encloses the field but for the east gate.\n"
+        "- Two dirt rings are visible and reachable.\n"
+        "- The gate reads as the way out.\n" % (k, nxt)
+    )
 
 
 def _all_item_ids(game_dir: Path) -> list[str]:
@@ -81,7 +151,6 @@ def generate(game_dir: Path, log=print) -> dict:
     spec_path = game_dir / "gauntlet.json"
     spec = json.loads(spec_path.read_text()) if spec_path.exists() else DEFAULT_SPEC
     n = int(spec.get("levels", 16))
-    bg = str(spec.get("background", "BackgroundField.png"))
     esp = spec.get("enemy", DEFAULT_SPEC["enemy"])
     per_enc = int(esp.get("per_encounter", 1))
     xp_factor = float(esp.get("xp_factor", 2.0))
@@ -116,10 +185,20 @@ def generate(game_dir: Path, log=print) -> dict:
             "visual": {"family": "battle", "frames": "Alpha"},
             "intent": "Combat Trial dummy %d — low stats, %d xp (~1 level)." % (k, xp)})
         lid = "gauntlet_%02d" % k
-        _write(game_dir / "levels" / "gauntlet" / lid / (lid + ".json"),
-               _level_doc(game_dir, k, n, bg, per_enc))
+        ldir = game_dir / "levels" / "gauntlet" / lid
+        _write(ldir / (lid + ".json"), _level_doc(game_dir, k, n, per_enc))
+        # a brief per arena (the bake gate: intent before pixels) — generated
+        # test content, so every arena shares one honest template
+        (ldir / (lid + ".brief.md")).write_text(_brief(k, n))
+        # every arena seats the free quartermaster (baked scenes populate NPCs
+        # from the casting sheet, not inline level npcs)
+        _write(game_dir / "casting" / (lid + ".json"), {
+            "level": lid, "region": "gauntlet",
+            "intent": "Combat Trial — the free quartermaster.",
+            "npcs": [{"slot": "store", "creature": KEEPER,
+                      "dialogue": STORE_DLG}]})
 
-    # --- the free store: dialogue + keeper casting + economy shop ---
+    # --- the free store: the shared dialogue + economy shop ---
     _write(game_dir / "dialogues" / (STORE_DLG + ".json"), {
         "id": STORE_DLG, "intent": "Combat Trial — the free quartermaster.",
         "start": "greet",
@@ -132,10 +211,6 @@ def generate(game_dir: Path, log=print) -> dict:
                     {"label": "Not now", "next_node": "done"}]},
             "done": {"speaker_id": KEEPER, "text": "Give 'em hell.",
                      "end_session": True}}})
-    _write(game_dir / "casting" / "gauntlet_01.json", {
-        "level": "gauntlet_01", "region": "gauntlet",
-        "intent": "Combat Trial — the free quartermaster.",
-        "npcs": [{"slot": "store", "creature": KEEPER, "dialogue": STORE_DLG}]})
 
     eco_path = game_dir / "economy" / "economy.json"
     eco = json.loads(eco_path.read_text())

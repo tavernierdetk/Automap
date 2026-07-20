@@ -1,36 +1,74 @@
 {
   "id": "gauntlet_14",
-  "kind": "backdrop",
-  "intent": "Combat Trial arena 14 \u2014 two combats + a free store.",
-  "background": {
-    "file": "BackgroundField.png",
-    "pos": [
-      576,
-      324
+  "kind": "tilemap",
+  "intent": "Combat Trial arena 14 \u2014 a walled yard, two combats, a free store, a gate east to arena 15.",
+  "tilemap": {
+    "atlas": "gauntlet",
+    "tile_size": 32,
+    "grid_size": [
+      26,
+      18
     ],
-    "scale": [
-      1,
-      1
+    "layers": [
+      {
+        "name": "ground",
+        "palette": {
+          "g": "grass",
+          "d": "dirt",
+          "w": "wall",
+          "p": "gate"
+        },
+        "rows": [
+          "wwwwwwwwwwwwwwwwwwwwwwwwww",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wgggggddddgggggddddggggggw",
+          "wgggggddddgggggddddgggpppw",
+          "wgggggddddgggggddddgggpppw",
+          "wgggggddddgggggddddgggpppw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wggggggggggggggggggggggggw",
+          "wwwwwwwwwwwwwwwwwwwwwwwwww"
+        ]
+      }
     ]
   },
   "spawns": [
     {
       "tag": "entry",
       "pos": [
-        180,
-        400
+        80,
+        304
+      ]
+    }
+  ],
+  "npc_slots": [
+    {
+      "tag": "store",
+      "pos": [
+        432,
+        112
       ]
     }
   ],
   "encounters": [
     {
+      "id": "gauntlet_14#1",
       "rect": {
         "pos": [
-          420,
-          400
+          272,
+          304
         ],
         "size": [
-          110,
+          120,
           120
         ]
       },
@@ -42,13 +80,14 @@
       "intent": "Combat 1 of Trial 14."
     },
     {
+      "id": "gauntlet_14#2",
       "rect": {
         "pos": [
-          800,
-          400
+          560,
+          304
         ],
         "size": [
-          110,
+          120,
           120
         ]
       },
@@ -60,17 +99,6 @@
       "intent": "Combat 2 of Trial 14."
     }
   ],
-  "npcs": [
-    {
-      "slug": "trial_keeper",
-      "dialogue": "gauntlet_store_dlg",
-      "trigger_radius": 80,
-      "pos": [
-        610,
-        250
-      ]
-    }
-  ],
   "teleports": [
     {
       "target_level": "gauntlet_15",
@@ -78,15 +106,20 @@
       "require_action": true,
       "rect": {
         "pos": [
-          1040,
-          400
+          752,
+          304
         ],
         "size": [
-          96,
-          150
+          64,
+          120
         ]
       }
     }
   ],
-  "player": {}
+  "player": {
+    "pos": [
+      80,
+      304
+    ]
+  }
 }

@@ -26,14 +26,13 @@ A `combat_trial` world flag isolates the run from the Caden prologue.
 The spec is `games/entropy/gauntlet.json`:
 
 ```json
-{ "levels": 16, "background": "BackgroundField.png",
+{ "levels": 16,
   "enemy": { "per_encounter": 1, "xp_factor": 0.6,
              "stats": {"creature_affinity":5,"chaos_mastery":5,
                        "kinesthetic":5,"lucidity":5,"terrain_control":6} } }
 ```
 
 - `levels` — arena count (the "15–20" range).
-- `background` — shared backdrop (any published `content/backgrounds/*.png`).
 - `enemy.per_encounter` — enemies per combat (raise for harder fights).
 - `enemy.xp_factor` — each enemy grants `ceil(xp_factor · xp_to_next(k))`; two
   combats ≈ `2·xp_factor` levels. `0.6` → ~1.2 levels/area (crosses exactly one
@@ -41,46 +40,64 @@ The spec is `games/entropy/gauntlet.json`:
   area — but backlogs pending draws, so keep it near 0.5–0.7 for a clean 1:1.
 - `enemy.stats` — the sparring construct's five stats (low = easy).
 
-Then:
+The arenas are **tiled** (not painted backdrops): a walled yard, a grass field,
+two packed-dirt combat rings, a gate-path east. They share one atlas
+(`games/entropy/atlases/gauntlet.spec.json` → grass/dirt/wall/gate). Tilemaps
+must be **baked**, so:
 
 ```bash
-.venv/bin/python scripts/18_gauntlet.py --game entropy      # emit
-.venv/bin/python scripts/12_publish_game.py --game entropy  # publish (no bake — backdrops)
+.venv/bin/python scripts/18_gauntlet.py --game entropy               # emit
+IDS=$(python3 -c "print(' '.join('gauntlet_%02d'%k for k in range(1,17)))")
+.venv/bin/python scripts/13_scene_director.py bake --game entropy ${=IDS}  # publish + bake
 ```
+
+`bake` publishes (stage 12), reimports, then projects each `content/scenes/
+gauntlet_NN.tscn`. To retune enemy count/xp only, editing the atlas isn't
+needed — but the level count/layout change re-bakes all arenas.
 
 ## What the generator emits (`automap/gauntlet.py`)
 
-- `levels/gauntlet/gauntlet_NN/gauntlet_NN.json` — N **backdrop** arenas (bg +
-  `entry` spawn + two data `encounters[]` + inline store NPC + one-way teleport;
-  `gauntlet_01` also carries the `store` `npc_slot` its casting sheet needs).
+- `levels/gauntlet/gauntlet_NN/gauntlet_NN.json` — N **tilemap** arenas (a
+  `ground` layer: wall enclosure, grass, two dirt rings, gate-path; `entry`
+  spawn + two `encounters[]` with stable ids + a `store` `npc_slot` + a one-way
+  teleport). Last loops back to the first.
+- `levels/gauntlet/gauntlet_NN/gauntlet_NN.brief.md` — a templated brief per
+  arena (the bake gate wants intent before pixels; generated test content
+  shares one honest template).
+- `casting/gauntlet_NN.json` — every arena seats the free quartermaster (baked
+  scenes populate NPCs from the casting sheet, not inline level `npcs`).
 - `creatures/gauntlet_e_NN.json` — depth-scaled sparring constructs (low stats,
   computed `xp_reward`).
 - `creatures/hero_a|b|c.json` — balanced base party (look + discipline come from
   the creator at runtime).
 - `creatures/trial_keeper.json` — a **gauntlet-region** vendor (R-005 forbids
   casting the vaporis Naso into this region).
-- `dialogues/gauntlet_store_dlg.json` + `casting/gauntlet_01.json` — the store's
-  dialogue (shop effect) + keeper casting.
+- `dialogues/gauntlet_store_dlg.json` — the store's dialogue (shop effect).
 - `economy/economy.json` — a `gauntlet_store` shop with `free: true` and every
   **sellable** item (key items are quest-granted, excluded). Honored engine-side
   by `ShopSession` (price 0, always buyable) — the real `price_book` is untouched.
 
 ## Engine seams reused
 
-- **Backdrop encounters** — `engine/overworld/location.gd` builds an
-  `EncounterArea` per `encounters[]` entry (previously only the tilemap baker
-  did). Additive: no prior backdrop defined the field.
+- **One-shot encounters** — an `EncounterArea` carries an `encounter_id`; a won
+  battle calls `WorldState.clear_encounter(id)` (a saved flag), and a cleared
+  ring never re-arms (no re-trigger loop). Both the loader
+  (`overworld/location.gd`, backdrops) and the baker (`tools/bake_scene.gd`,
+  tilemaps) stamp the id + unique node names. Empty id = the legacy reusable
+  sparring ring (untouched baked scenes).
 - **Per-slug party** — `PartyState.appearances/char_names/_baked[slug]`;
   `creature_sprites.gd` bakes any slug with an appearance. The creator is reused
-  unchanged; the boot flow assigns each of the three to a slug.
+  unchanged; the boot flow sets `party_ids` first, then assigns each slug, then
+  `rebuild_party()` (so combat gets the trio, not the default lily/zo cache).
 - **Free shop** — `ShopSession` honors `doc.free` (schema `economy@1.1.0`).
 - **Roulette** — `Game.on_level_entered` commits, `change_level` reveals; the
   free-roam cycle already works.
 
 ## Tests
 
-- `tests/test_gauntlet.tscn` — the published chain is coherent (wired teleports,
-  two encounter volumes build, free store stocks the sellable catalog at 0, two
-  combats queue exactly one draw).
-- `tests/test_gauntlet_primitives.tscn` — the S1 engine primitives in isolation.
+- `tests/test_gauntlet.tscn` — the baked chain is coherent (tilemap kind, wired
+  teleports, the baked scene carries a tiled ground + both one-shot encounters +
+  the cast keeper, free store at 0, two combats queue one draw, `rebuild_party`
+  refreshes the roster, a cleared ring stays spent).
+- `tests/test_gauntlet_primitives.tscn` — the encounter/free-shop primitives.
 - `tests/test_party_appearance.tscn` — three distinct baked bodies persist.
