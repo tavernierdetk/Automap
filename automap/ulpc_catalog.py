@@ -99,6 +99,21 @@ def build_catalog(vendor: Path, out: Path, log=print) -> dict:
     catalog["layers"]["body"] = {"zpos": int(bl.get("zPos", 10)),
                                  "paths": body_paths, "colors": sorted(body_skin)}
 
+    # head (a SEPARATE ULPC layer, skin-toned like the body) — per-bodytype def
+    head_paths, head_skin = {}, set(SKIN)
+    for bt in BODYTYPES:
+        hdoc = _def(vendor, f"heads_human_{bt}")
+        if hdoc is None:
+            continue
+        hl = _layer(hdoc)
+        cat = hl.get(bt, "")
+        head_paths[bt] = cat
+        head_skin &= set(_copy_sheets(vendor, out, cat, SKIN, log))
+    if head_paths:
+        catalog["layers"]["head"] = {"zpos": int(_layer(_def(vendor,
+            f"heads_human_{BODYTYPES[0]}")).get("zPos", 100)),
+            "paths": head_paths, "colors": sorted(head_skin)}
+
     # the dressable/cosmetic axes
     for axis, spec in AXES.items():
         bts = spec.get("bodytypes", BODYTYPES)
