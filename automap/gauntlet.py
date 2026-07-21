@@ -107,10 +107,19 @@ def _level_doc(game_dir: Path, k: int, n: int, per_enc: int) -> dict:
         "spawns": [{"tag": "entry", "pos": _px(ENTRY)}],
         "npc_slots": [{"tag": "store", "pos": _px(STORE)}],
         # the arena's biome default: dusty loose ground that saps a clumsy
-        # fighter's blows but rewards a high terrain_control one (scales w/ depth)
-        "environment": {"name": "Trial Ring %d" % k, "tint": [0.92, 0.88, 0.80],
-                        "traits": [{"axis": "atk", "base": round(0.06 + 0.01 * k, 2),
-                                    "flip_at": 10, "name": "loose footing"}]},
+        # fighter's blows but rewards a high terrain_control one (scales w/ depth);
+        # a ground crack a Shaper can erupt (quake), and — deeper in — a living
+        # shift that splinters the earth mid-fight
+        "environment": {
+            "name": "Trial Ring %d" % k, "tint": [0.92, 0.88, 0.80],
+            "traits": [{"axis": "atk", "base": round(0.06 + 0.01 * k, 2),
+                        "flip_at": 10, "name": "loose footing"}],
+            "hazards": [{"id": "%s-crack" % lid, "name": "Ground Crack",
+                         "trigger": "quake", "payload": {"amount": 20 + 4 * k}}],
+            "shifts": [{"at": 5, "name": "the earth splinters",
+                        "add_hazard": {"id": "%s-fissure" % lid, "name": "Fresh Fissure",
+                                       "trigger": "quake", "payload": {"amount": 18 + 3 * k}}}],
+        },
         "encounters": enc,
         "teleports": [{"target_level": nxt, "target_spawn_tag": "entry",
                        "require_action": True,

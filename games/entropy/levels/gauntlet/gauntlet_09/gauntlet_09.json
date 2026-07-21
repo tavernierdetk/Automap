@@ -73,6 +73,30 @@
         "flip_at": 10,
         "name": "loose footing"
       }
+    ],
+    "hazards": [
+      {
+        "id": "gauntlet_09-crack",
+        "name": "Ground Crack",
+        "trigger": "quake",
+        "payload": {
+          "amount": 56
+        }
+      }
+    ],
+    "shifts": [
+      {
+        "at": 5,
+        "name": "the earth splinters",
+        "add_hazard": {
+          "id": "gauntlet_09-fissure",
+          "name": "Fresh Fissure",
+          "trigger": "quake",
+          "payload": {
+            "amount": 45
+          }
+        }
+      }
     ]
   },
   "encounters": [
