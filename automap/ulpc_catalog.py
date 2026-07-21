@@ -26,26 +26,62 @@ FRAME = 64
 # bodytypes the creator offers (each rewrites clothing/body paths); hair/glasses
 # are body-agnostic (`adult`). Keep male+female for v1; muscular/teen later.
 BODYTYPES = ("male", "female")
-SKIN = ("light", "amber", "olive", "bronze", "brown", "black")
-COLORS = ("black", "blue", "brown", "forest", "charcoal", "red")   # clothing
-HAIR_COLORS = ("blonde", "ash", "chestnut", "raven", "brown", "black")
+# curated slices of the (much larger) vendor palettes — all verified to exist
+SKIN = ("light", "amber", "olive", "bronze", "brown", "taupe", "black")
+COLORS = ("black", "blue", "navy", "forest", "green", "maroon", "red",   # clothing
+          "charcoal", "gray", "brown", "tan", "purple")
+HAIR_COLORS = ("black", "brown", "dark_brown", "light_brown", "chestnut", "ash",
+               "blonde", "ginger", "red", "raven", "gray", "platinum", "white",
+               "navy", "green", "purple")
 
 # axis -> (zpos comes from the def) list of definition-file stems to offer
 AXES: dict[str, dict] = {
-    "hair":    {"defs": ["hair_afro", "hair_bob", "hair_braid", "hair_buzzcut",
-                         "hair_bangslong", "hair_bedhead"], "colors": HAIR_COLORS},
-    "top":     {"defs": ["torso_clothes_longsleeve", "torso_clothes_tunic",
-                         "torso_clothes_robe", "torso_clothes_tshirt",
-                         "torso_clothes_vest", "torso_clothes_shortsleeve"],
-                "colors": COLORS},
-    "bottom":  {"defs": ["legs_pants", "legs_skirts_plain", "legs_shorts",
-                         "legs_leggings"], "colors": COLORS},
-    "feet":    {"defs": ["feet_shoes_basic"], "colors": COLORS},
-    "beard":   {"defs": ["beards_beard", "beards_mustache"], "colors": HAIR_COLORS,
-                "bodytypes": ("male",)},   # beards are male-sheeted
+    "hair":    {"defs": ["hair_afro", "hair_bob", "hair_bob_side_part",
+                         "hair_braid", "hair_braid2", "hair_bunches",
+                         "hair_buzzcut", "hair_cornrows", "hair_curly_long",
+                         "hair_curly_short", "hair_dreadlocks_long",
+                         "hair_dreadlocks_short", "hair_long_straight",
+                         "hair_long_messy", "hair_page", "hair_pixie",
+                         "hair_ponytail", "hair_ponytail2", "hair_princess",
+                         "hair_shorthawk", "hair_spiked", "hair_spiked2",
+                         "hair_topknot_long", "hair_wavy"], "colors": HAIR_COLORS},
+    "top":     {"defs": ["torso_clothes_longsleeve",
+                         "torso_clothes_longsleeve_formal",
+                         "torso_clothes_longsleeve_laced",
+                         "torso_clothes_longsleeve2_buttoned",
+                         "torso_clothes_longsleeve2_cardigan",
+                         "torso_clothes_longsleeve2_polo",
+                         "torso_clothes_longsleeve2_vneck",
+                         "torso_clothes_robe", "torso_clothes_shortsleeve",
+                         "torso_clothes_shortsleeve_polo",
+                         "torso_clothes_sleeveless",
+                         "torso_clothes_sleeveless_tanktop",
+                         "torso_clothes_tshirt", "torso_clothes_tshirt_vneck",
+                         "torso_clothes_tunic", "torso_clothes_vest",
+                         "torso_clothes_vest_open", "torso_clothes_blouse",
+                         "torso_clothes_blouse_longsleeve"], "colors": COLORS},
+    "bottom":  {"defs": ["legs_pants", "legs_pants2", "legs_leggings",
+                         "legs_leggings2", "legs_shorts", "legs_shorts_short",
+                         "legs_cuffed", "legs_hose", "legs_pantaloons",
+                         "legs_widepants", "legs_skirts_plain",
+                         "legs_skirt_straight"], "colors": COLORS},
+    "feet":    {"defs": ["feet_shoes_basic", "feet_boots_basic",
+                         "feet_boots_fold", "feet_boots_rim", "feet_sandals",
+                         "feet_slippers", "feet_shoes_ghillies",
+                         "feet_socks_high"], "colors": COLORS},
+    "beard":   {"defs": ["beards_beard", "beards_mustache", "beards_bigstache",
+                         "beards_chevron", "beards_french", "beards_handlebar",
+                         "beards_medium", "beards_trimmed", "beards_walrus"],
+                "colors": HAIR_COLORS, "bodytypes": ("male",)},  # male-sheeted
     "glasses": {"defs": ["facial_glasses_nerd", "facial_glasses_round",
-                         "facial_glasses_shades"], "colors": ("black", "brown")},
-    "hat":     {"defs": ["hat_bandana", "hat_cap"], "colors": COLORS},
+                         "facial_glasses_shades", "facial_glasses_halfmoon",
+                         "facial_glasses_secretary", "facial_glasses_sunglasses"],
+                "colors": ("black", "brown", "gray", "navy")},
+    "hat":     {"defs": ["hat_bandana", "hat_bandana2", "hat_cap_bonnie",
+                         "hat_cap_bonnie_tilt", "hat_cap_cavalier",
+                         "hat_cap_leather", "hat_hood_cloth",
+                         "hat_hood_sack_cloth", "hat_hood_hijab",
+                         "hat_bandana_pirate"], "colors": COLORS},
 }
 
 
