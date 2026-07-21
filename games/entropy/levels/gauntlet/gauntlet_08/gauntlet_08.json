@@ -79,6 +79,7 @@
         "id": "gauntlet_08-crack",
         "name": "Ground Crack",
         "trigger": "quake",
+        "sprite": "crack_0",
         "payload": {
           "amount": 52
         }
@@ -87,11 +88,12 @@
     "shifts": [
       {
         "at": 5,
-        "name": "the earth splinters",
+        "name": "the ground gives way",
         "add_hazard": {
-          "id": "gauntlet_08-fissure",
-          "name": "Fresh Fissure",
+          "id": "gauntlet_08-puddle",
+          "name": "Seeping Puddle",
           "trigger": "quake",
+          "sprite": "puddle_0",
           "payload": {
             "amount": 42
           }

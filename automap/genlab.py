@@ -257,6 +257,16 @@ SUBJECTS = {
     },
 }
 
+# combat terrain hazards (subjects never name a camera angle — PERSPECTIVE owns that)
+SUBJECTS["hazard"] = {
+    "crack": "a jagged dry fissure splitting bare earth: a dark branching rift "
+             "with a few smaller offshoot cracks and crumbled soil along its lips",
+    "gust": "a swirling curl of wind made visible by the dust and torn leaves it "
+            "sweeps up — a few open crescent arcs of debris spiraling around empty air",
+    "puddle": "a shallow puddle of still water pooled in a low patch of ground, "
+              "with a soft reflective sheen on its surface and a thin muddy rim",
+}
+
 PERSPECTIVE_TEXT = {
     # THE DOCTRINE (2026-07-18, reworded 2026-07-19): a high-angle FRONT view
     # — a camera PITCH (tilt down), never a YAW (turn to a corner). The word

@@ -491,6 +491,50 @@ FAMILIES: dict[str, dict] = {
     },
 }
 
+# Combat terrain HAZARDS — small ground-plane field objects (a crack, a gust of
+# wind-blown debris, a puddle) placed on the battle stage and set off by a
+# Shaper skill. genlab-generated, loaded individually by CombatHazard (like
+# icons — tileset:False), gust+puddle animate (crack is static).
+FAMILIES["hazard"] = {
+    "generator": "genlab",
+    "substyles": ("crack", "gust", "puddle"),
+    "default_min_variants": 2,
+    "style_tokens": {"gen1"},
+    "tileset": False,
+    "materials": ("earth", "stone", "water", "foliage"),   # prompt palette (union)
+    "materials_by_substyle": {                             # repixel scoping
+        "crack": ("earth", "stone"),
+        "gust": ("foliage", "earth"),
+        "puddle": ("water", "earth"),
+    },
+    "descriptor": {
+        "blocking": "none",                # a mark on the ground, blocks nothing
+        "anchor": "mass",
+        # the model is portrait-biased — hard-suppress people/objects so it draws
+        # a flat ground feature, not a face or a crate
+        "imagegen_negative": "person, face, portrait, character, creature, animal, "
+                             "human, figure, eyes, body, hands, monster, box, cube, "
+                             "crate, barrel, building, tree, blurry, photo, "
+                             "3d render, text, watermark, border",
+        "texture_motifs": "small flat shaded shards, streaks or ripples true to the material",
+        "perspective": "high_front",
+        "shadow": "none",
+        "lighting": "ground_plane",        # flat ground feature — exempt the QC light check
+        "prompt_notes": {
+            "crack": ("a dark jagged rift lying flat on the ground, read from above",
+                      "no vertical relief — it is a fissure IN the ground, not a wall"),
+            "gust": ("wispy and open — lots of magenta shows between the sweeping arcs",
+                     "it floats just above the ground, not a solid object"),
+            "puddle": ("a low flat pool lying on the ground, read from above",
+                       "soft reflective sheen, no vertical relief"),
+        },
+    },
+    "sizes": {"large": (64, 64), "medium": (64, 64), "small": (64, 64)},  # 32-grid
+    "animation": {"kind": "terrain_drift", "frames": 2,
+                  "mutable": ("water", "foliage", "earth"),
+                  "static_substyles": ("crack",)},
+}
+
 
 def animation_for(family: str, substyle: str) -> dict | None:
     """The family's animation contract for this substyle.
