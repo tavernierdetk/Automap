@@ -19,7 +19,10 @@ import shutil
 from pathlib import Path
 
 CATALOG_SCHEMA = "ulpc-catalog/1.0"
-ANIMS = ("walk", "hurt", "jump")    # walk → Walk/Idle/Run; hurt → Faint; jump → Celebrate
+ANIMS = ("walk", "hurt")            # walk → Walk/Idle/Run (synth); hurt → Faint
+# NOTE: only `walk` is guaranteed for every vendor layer — `jump`/`spellcast`/…
+# are missing for some garments (e.g. tshirt), so a non-walk animation drops
+# those tops. The victory celebration is a node-space hop over Idle instead.
 FRAME = 64
 
 # --- the curated v1 selection --------------------------------------------------
