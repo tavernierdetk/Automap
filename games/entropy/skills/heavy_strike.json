@@ -14,5 +14,6 @@
     "amount": 3
   },
   "fiction": "Put your back into it and your ribs behind it.",
-  "anim": "bash"
+  "anim": "bash",
+  "discipline": "breaker"
 }

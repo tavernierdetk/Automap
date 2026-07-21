@@ -12,5 +12,6 @@
     "turns": 3
   },
   "anim": "buff",
-  "fiction": "A word at the right moment is worth two hands."
+  "fiction": "A word at the right moment is worth two hands.",
+  "discipline": "steward"
 }

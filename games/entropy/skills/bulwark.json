@@ -12,5 +12,6 @@
     "turns": 4
   },
   "anim": "buff",
-  "fiction": "Set the stone at your back; let it take the blow."
+  "fiction": "Set the stone at your back; let it take the blow.",
+  "discipline": "shaper"
 }

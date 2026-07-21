@@ -14,5 +14,6 @@
     "kind": "poison"
   },
   "fiction": "A pinch of unlicensed chaos, smouldering.",
-  "anim": "bolt"
+  "anim": "bolt",
+  "discipline": "weaver"
 }

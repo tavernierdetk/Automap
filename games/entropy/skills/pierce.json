@@ -9,5 +9,6 @@
     "def_mult": 0.0
   },
   "fiction": "Finds the seam in any plating.",
-  "anim": "thrust"
+  "anim": "thrust",
+  "discipline": "breaker"
 }

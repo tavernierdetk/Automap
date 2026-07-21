@@ -9,5 +9,6 @@
     "def_mult": 0.5
   },
   "fiction": "The ground exhales at everyone.",
-  "anim": "cast"
+  "anim": "cast",
+  "discipline": "shaper"
 }

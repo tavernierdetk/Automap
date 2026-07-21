@@ -15,5 +15,6 @@
     "turns": 2
   },
   "anim": "cast",
-  "fiction": "The floor bucks; footing \u2014 and guard \u2014 go loose."
+  "fiction": "The floor bucks; footing \u2014 and guard \u2014 go loose.",
+  "discipline": "shaper"
 }

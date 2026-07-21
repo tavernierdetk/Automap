@@ -12,5 +12,6 @@
     "turns": 3
   },
   "anim": "heal",
-  "fiction": "A slow green tide, coming in over three breaths."
+  "fiction": "A slow green tide, coming in over three breaths.",
+  "discipline": "mentarch"
 }

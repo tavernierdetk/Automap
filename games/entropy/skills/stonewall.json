@@ -8,5 +8,6 @@
     "heal": true
   },
   "fiction": "Raise the ground to shield the one behind it.",
-  "anim": "heal"
+  "anim": "heal",
+  "discipline": "shaper"
 }

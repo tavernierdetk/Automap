@@ -8,5 +8,6 @@
     "heal": true
   },
   "fiction": "The voice you'd use on a spooked animal, weaponized for good.",
-  "anim": "heal"
+  "anim": "heal",
+  "discipline": "steward"
 }

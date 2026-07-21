@@ -11,5 +11,6 @@
     "floor": 1.0
   },
   "anim": "thrust",
-  "fiction": "Three quick turns of the wrench, rat-tat-tat."
+  "fiction": "Three quick turns of the wrench, rat-tat-tat.",
+  "discipline": "breaker"
 }

@@ -14,7 +14,8 @@
   ],
   "markers": {
     "motif": "mind",
-    "accent": "pale"
+    "accent": "pale",
+    "color": "#8fc7d8"
   },
   "fiction": "Orders mind and moment; clarity is the sharpest edge."
 }

@@ -13,7 +13,8 @@
   ],
   "markers": {
     "motif": "living_things",
-    "accent": "verdant"
+    "accent": "verdant",
+    "color": "#6fae5a"
   },
   "fiction": "Tends what lives; calls it, calms it, keeps it."
 }

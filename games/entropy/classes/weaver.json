@@ -13,7 +13,8 @@
   ],
   "markers": {
     "motif": "threads",
-    "accent": "iridescent"
+    "accent": "iridescent",
+    "color": "#a877d6"
   },
   "fiction": "Reads and pulls the threads of what-might-be \u2014 the discipline nearest the Road."
 }

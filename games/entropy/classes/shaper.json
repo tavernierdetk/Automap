@@ -14,7 +14,8 @@
   ],
   "markers": {
     "motif": "stone_and_soil",
-    "accent": "earthen"
+    "accent": "earthen",
+    "color": "#c9903e"
   },
   "fiction": "Shapes stone and soil to the will; the ground answers."
 }

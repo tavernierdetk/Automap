@@ -15,5 +15,6 @@
     "turns": 3
   },
   "anim": "cast",
-  "fiction": "A weight on the wrists; every swing comes late."
+  "fiction": "A weight on the wrists; every swing comes late.",
+  "discipline": "mentarch"
 }

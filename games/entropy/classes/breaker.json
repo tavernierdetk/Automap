@@ -14,7 +14,8 @@
   ],
   "markers": {
     "motif": "force",
-    "accent": "iron"
+    "accent": "iron",
+    "color": "#9aa4b0"
   },
   "fiction": "Meets the world with force, and the world gives way."
 }
