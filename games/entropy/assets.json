@@ -68,6 +68,7 @@
       "slug": "caden",
       "frames_dir": "work/game/entropy/creatures_px/caden",
       "fps": {
+        "Faint": 9,
         "Idle_back": 4,
         "Idle_front": 4,
         "Idle_left": 4,
@@ -168,6 +169,7 @@
       "slug": "isaac",
       "frames_dir": "work/game/entropy/creatures_px/isaac",
       "fps": {
+        "Faint": 9,
         "Idle_back": 4,
         "Idle_front": 4,
         "Idle_left": 4,
@@ -350,6 +352,7 @@
       "slug": "vec",
       "frames_dir": "work/game/entropy/creatures_px/vec",
       "fps": {
+        "Faint": 9,
         "Idle_back": 4,
         "Idle_front": 4,
         "Idle_left": 4,
