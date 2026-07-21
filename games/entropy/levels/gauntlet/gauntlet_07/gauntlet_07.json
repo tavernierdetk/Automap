@@ -59,6 +59,22 @@
       ]
     }
   ],
+  "environment": {
+    "name": "Trial Ring 7",
+    "tint": [
+      0.92,
+      0.88,
+      0.8
+    ],
+    "traits": [
+      {
+        "axis": "atk",
+        "base": 0.13,
+        "flip_at": 10,
+        "name": "loose footing"
+      }
+    ]
+  },
   "encounters": [
     {
       "id": "gauntlet_07#1",
@@ -96,7 +112,18 @@
       ],
       "seed": 701,
       "layout": "field",
-      "intent": "Combat 2 of Trial 7."
+      "intent": "Combat 2 of Trial 7.",
+      "environment": {
+        "name": "Sunken Ring 7",
+        "traits": [
+          {
+            "axis": "def",
+            "base": 0.12,
+            "flip_at": 10,
+            "name": "sunken footing"
+          }
+        ]
+      }
     }
   ],
   "teleports": [

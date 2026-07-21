@@ -59,6 +59,22 @@
       ]
     }
   ],
+  "environment": {
+    "name": "Trial Ring 16",
+    "tint": [
+      0.92,
+      0.88,
+      0.8
+    ],
+    "traits": [
+      {
+        "axis": "atk",
+        "base": 0.22,
+        "flip_at": 10,
+        "name": "loose footing"
+      }
+    ]
+  },
   "encounters": [
     {
       "id": "gauntlet_16#1",
@@ -96,7 +112,18 @@
       ],
       "seed": 1601,
       "layout": "field",
-      "intent": "Combat 2 of Trial 16."
+      "intent": "Combat 2 of Trial 16.",
+      "environment": {
+        "name": "Sunken Ring 16",
+        "traits": [
+          {
+            "axis": "def",
+            "base": 0.12,
+            "flip_at": 10,
+            "name": "sunken footing"
+          }
+        ]
+      }
     }
   ],
   "teleports": [

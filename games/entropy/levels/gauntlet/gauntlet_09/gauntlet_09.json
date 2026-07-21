@@ -59,6 +59,22 @@
       ]
     }
   ],
+  "environment": {
+    "name": "Trial Ring 9",
+    "tint": [
+      0.92,
+      0.88,
+      0.8
+    ],
+    "traits": [
+      {
+        "axis": "atk",
+        "base": 0.15,
+        "flip_at": 10,
+        "name": "loose footing"
+      }
+    ]
+  },
   "encounters": [
     {
       "id": "gauntlet_09#1",
@@ -96,7 +112,18 @@
       ],
       "seed": 901,
       "layout": "field",
-      "intent": "Combat 2 of Trial 9."
+      "intent": "Combat 2 of Trial 9.",
+      "environment": {
+        "name": "Sunken Ring 9",
+        "traits": [
+          {
+            "axis": "def",
+            "base": 0.12,
+            "flip_at": 10,
+            "name": "sunken footing"
+          }
+        ]
+      }
     }
   ],
   "teleports": [

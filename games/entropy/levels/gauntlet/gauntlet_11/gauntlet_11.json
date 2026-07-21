@@ -59,6 +59,22 @@
       ]
     }
   ],
+  "environment": {
+    "name": "Trial Ring 11",
+    "tint": [
+      0.92,
+      0.88,
+      0.8
+    ],
+    "traits": [
+      {
+        "axis": "atk",
+        "base": 0.17,
+        "flip_at": 10,
+        "name": "loose footing"
+      }
+    ]
+  },
   "encounters": [
     {
       "id": "gauntlet_11#1",
@@ -96,7 +112,18 @@
       ],
       "seed": 1101,
       "layout": "field",
-      "intent": "Combat 2 of Trial 11."
+      "intent": "Combat 2 of Trial 11.",
+      "environment": {
+        "name": "Sunken Ring 11",
+        "traits": [
+          {
+            "axis": "def",
+            "base": 0.12,
+            "flip_at": 10,
+            "name": "sunken footing"
+          }
+        ]
+      }
     }
   ],
   "teleports": [

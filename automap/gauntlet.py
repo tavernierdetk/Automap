@@ -82,11 +82,18 @@ def _level_doc(game_dir: Path, k: int, n: int, per_enc: int) -> dict:
     rings = [LEFT_RING, RIGHT_RING]
     enc = []
     for i in range(2):                                # two combats, one per ring
-        enc.append({"id": "%s#%d" % (lid, i + 1),
-                    "rect": {"pos": _px(rings[i]), "size": [120, 120]},
-                    "enemies": [enemy] * per_enc, "seed": k * 100 + i,
-                    "layout": "field",
-                    "intent": "Combat %d of Trial %d." % (i + 1, k)})
+        e = {"id": "%s#%d" % (lid, i + 1),
+             "rect": {"pos": _px(rings[i]), "size": [120, 120]},
+             "enemies": [enemy] * per_enc, "seed": k * 100 + i,
+             "layout": "field",
+             "intent": "Combat %d of Trial %d." % (i + 1, k)}
+        # the SECOND ring overrides the biome default with softer footing
+        # (a defensive trait), to demonstrate per-encounter environment override
+        if i == 1:
+            e["environment"] = {"name": "Sunken Ring %d" % k,
+                                "traits": [{"axis": "def", "base": 0.12,
+                                            "flip_at": 10, "name": "sunken footing"}]}
+        enc.append(e)
     return {
         "id": lid, "kind": "tilemap",
         "intent": "Combat Trial arena %d — a walled yard, two combats, a free "
@@ -99,6 +106,11 @@ def _level_doc(game_dir: Path, k: int, n: int, per_enc: int) -> dict:
                                 "rows": _arena_rows()}]},
         "spawns": [{"tag": "entry", "pos": _px(ENTRY)}],
         "npc_slots": [{"tag": "store", "pos": _px(STORE)}],
+        # the arena's biome default: dusty loose ground that saps a clumsy
+        # fighter's blows but rewards a high terrain_control one (scales w/ depth)
+        "environment": {"name": "Trial Ring %d" % k, "tint": [0.92, 0.88, 0.80],
+                        "traits": [{"axis": "atk", "base": round(0.06 + 0.01 * k, 2),
+                                    "flip_at": 10, "name": "loose footing"}]},
         "encounters": enc,
         "teleports": [{"target_level": nxt, "target_spawn_tag": "entry",
                        "require_action": True,
